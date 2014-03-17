@@ -1,3 +1,16 @@
-// Foundation JavaScript
-// Documentation can be found at: http://foundation.zurb.com/docs
-$(document).foundation();
+jQuery(document).foundation(
+	// Configure any Foundation libraries you need to.
+	// See: http://foundation.zurb.com/docs/javascript.html
+	/*{
+	
+	}*/
+);
+
+(function($){
+	
+	$(document).ready(function(){
+		// Do what you will
+	});
+	
+})(jQuery);
+
