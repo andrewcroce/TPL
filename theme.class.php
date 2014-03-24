@@ -25,6 +25,7 @@ if(!class_exists('Theme')){
 		**/
 		function __construct() {
 			
+			add_action('init', array(&$this, '_init'));
 			add_action('wp_print_styles', array(&$this,'_add_styles'));
 			add_action('wp_print_scripts', array(&$this,'_add_scripts'));
 			add_action('after_setup_theme', array(&$this,'_setup_theme'));
@@ -36,6 +37,22 @@ if(!class_exists('Theme')){
 			
 			// Add any additional action or filter hooks here.
 		}
+
+
+
+		/* 
+		* 
+		* We use a generalized init function to intercept any custom form submissions
+		* For example, if a form is submitted where $_POST['form_action'] == 'some_action',
+		* the function $this->_some_action() will process it
+		*
+		*/
+		function _init() {
+			$action = '_'.$_POST['form_action'];
+			$params = !empty($_POST['params']) ? $_POST['params'] : array();
+			$this->$action($params);
+		}
+		
 		
 		
 		/**
