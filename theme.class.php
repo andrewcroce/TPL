@@ -48,9 +48,11 @@ if(!class_exists('Theme')){
 		*
 		*/
 		function _init() {
-			$action = '_'.$_POST['form_action'];
-			$params = !empty($_POST['params']) ? $_POST['params'] : array();
-			$this->$action($params);
+			if( isset( $_POST['form_action'] ) ) {
+				$action = '_'.$_POST['form_action'];
+				$params = !empty($_POST['params']) ? $_POST['params'] : array();
+				$this->$action($params);
+			}
 		}
 		
 		
