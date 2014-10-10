@@ -13,29 +13,15 @@ It is packaged as a submodule of [WordPress-Skeleton, Fork](https://bitbucket.or
 
 ## Requirements
 
-  * Ruby 1.9+
   * [Node.js](http://nodejs.org)
-  * [compass](http://compass-style.org/): `gem install compass`
   * [bower](http://bower.io): `npm install bower -g`
+  * [Codekit](https://incident57.com/codekit/)
 
 ## Installation
 
-  * [Download or clone this starter compass project](https://bitbucket.org/andrewcroce/wordpress-foundation-starter-theme)
   * Run `bower install` to install the latest version of Foundation
-  
-Then when you're working on your project, just run the following command:
+  * Or, install Foundation's bower component through Codekit
 
-```bash
-compass watch
-```
-
-## Upgrading
-
-If you'd like to upgrade to a newer version of Foundation down the road just run:
-
-```bash
-bower update
-```
 
 ## Use It
 
@@ -54,8 +40,6 @@ This file contains and initializes our main theme class. All theme setup and cus
 
 *functions.php*
 
-This file is loaded by Wordpress when the theme is loaded, so we bootstrap here. 
+This file is loaded by Wordpress when the theme is loaded, so we bootstrap here.
 
 It is also used as the name suggests, to create *theme functions* to be used in template files.
-
-
