@@ -215,13 +215,28 @@ if(!class_exists('Theme')){
 				array(
 					'name' => 'Custom Post Type UI',
 					'slug' => 'custom-post-type-ui',
-					'required' => true
+					'required' => false
 				),
 				array(
 					'name' => 'Better WP Security',
 					'slug' => 'better-wp-security',
-					'required' => true
+					'required' => false
 				),
+				array(
+					'name' => 'W3 Total Cache',
+					'slug' => 'w3-total-cache',
+					'required' => false
+				),
+				array(
+					'name' => 'Manual Image Crop',
+					'slug' => 'manual-image-crop',
+					'required' => false
+				),
+				array(
+					'name' => 'Force Regenerate Thumbnails',
+					'slug' => 'force-regenerate-thumbnails',
+					'required' => false
+				)
 				
 				
 				
