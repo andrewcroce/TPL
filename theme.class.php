@@ -66,8 +66,7 @@ if(!class_exists('Theme')){
 		**/
 		function _add_styles() {
 			if (is_admin()) return;
-			wp_enqueue_style('theme', get_stylesheet_directory_uri() .'/stylesheets/app.css', array(), '1.0.0', 'screen');
-			wp_enqueue_style('override', get_stylesheet_directory_uri() .'/stylesheets/override.css', array('template'), '1.0.0', 'screen');
+			wp_enqueue_style('theme', get_stylesheet_directory_uri() .'/css/app.css', array(), '1.0.0', 'screen');
 		}
 		
 		
