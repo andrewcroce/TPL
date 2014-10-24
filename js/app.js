@@ -1,10 +1,6 @@
-jQuery(document).foundation(
-	// Configure any Foundation libraries you need to.
-	// See: http://foundation.zurb.com/docs/javascript.html
-	/*{
-	
-	}*/
-);
+// @codekit-prepend "../bower_components/foundation/js/foundation.js"
+
+jQuery(document).foundation();
 
 (function($){
 	

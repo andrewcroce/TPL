@@ -81,8 +81,7 @@ if(!class_exists('Theme')){
 		function _add_scripts() {
 			if (is_admin()) return;
 			wp_enqueue_script('modernizr', get_stylesheet_directory_uri() .'/bower_components/modernizr/modernizr.js', array(), '2.7.1');
-			wp_enqueue_script('foundation', get_stylesheet_directory_uri() .'/bower_components/foundation/js/foundation.min.js', array(), '5.0', true);
-			wp_enqueue_script('theme.app', get_stylesheet_directory_uri() .'/js/app.js', array('jquery','modernizr','foundation'), '0.1.0', true);
+			wp_enqueue_script('theme.app', get_stylesheet_directory_uri() .'/js/app.js', array('jquery','modernizr'), '0.1.0', true);
 			wp_localize_script('theme.app', 'theme', $this->_add_js_vars()); // Call _add_js_vars() to add PHP variables to frontend 
 		}
 		
