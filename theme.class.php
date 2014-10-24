@@ -31,7 +31,8 @@ if(!class_exists('Theme')){
 			add_action('after_setup_theme', array(&$this,'_setup_theme'));
 			add_action('tgmpa_register', array(&$this,'_register_plugins'));
 			add_action('template_redirect', array(&$this,'_template_redirect'));
-			
+
+			add_filter('posts_results', array(&$this,'_posts_results'));
 			add_filter('query_vars', array(&$this,'_query_vars'));
 			add_filter('rewrite_rules_array', array(&$this,'_rewrite_rules_array'));
 			
@@ -91,6 +92,7 @@ if(!class_exists('Theme')){
 		* Add JS Vars
 		* This adds PHP side variables to a front end Javascript object 'theme'.
 		* This is useful for doing AJAX, for example. In JS, theme.ajax_url will return the URL where all AJAX requests should be posted.
+		* @return  array Array of variables to be added to the front end window.theme
 		* 
 		**/
 		function _add_js_vars() {
@@ -102,6 +104,39 @@ if(!class_exists('Theme')){
 			);
 		}
 		
+
+
+		/**
+		 * Modify queries post object(s) when a WP_Query is run.
+		 * This applies to all query methods, including get_posts() function.
+		 * We are adding all custom ACF field data directly to the object, if ACF function exists.
+		 */
+		function _posts_results( $posts ) {
+
+			// Don't bother in the admin
+			if( is_admin() ) return;
+
+			// Check if ACF function is available
+			if( function_exists('get_fields') ) {
+
+				foreach ( $posts as $post ) {
+
+					//Loop through all custom fields
+					foreach ( get_fields( $post->ID ) as $key => $field ) {
+
+						// If the key isn't blank, and it doesn't exist already
+						if( !empty( $key ) && !property_exists( $post , $key ) ) {
+
+							// Add it to the post object
+							$post->{$key} = $field;
+						}
+
+					}
+
+				}
+			}
+			return $posts;
+		}
 		
 		
 		/**
