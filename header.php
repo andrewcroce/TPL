@@ -48,17 +48,17 @@
 		<header id="main-header">
 
 			<div id="content-wrapper" class="row">
-				<div class="large-12-columns">
+				<div class="large-12 columns">
 			
 					<div id="site-branding" role="banner">
 						<span id="site-title"><a href="<?= home_url() ?>" title="<?= esc_attr( get_bloginfo( 'name', 'display' ) ) ?>" rel="home"><?php bloginfo( 'name' ); ?></a></span>
 						<span id="site-description"><?php bloginfo( 'description' ); ?></span>
 					</div>
 					
-					<nav id="main-navigation" class="button-group" role="navigation">
+					<nav id="main-navigation" role="navigation">
 						<?php wp_nav_menu( array( 
 							'theme_location' => 'main_menu',
-							'items_wrap' => '<ul id="%1$s" class="%2$s">%3$s</ul>'
+							'items_wrap' => '<ul id="%1$s" class="inline-list %2$s">%3$s</ul>'
 						));?>
 					</nav>
 
