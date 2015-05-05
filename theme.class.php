@@ -29,7 +29,6 @@ if(!class_exists('Theme')){
 			add_action('wp_print_styles', array(&$this,'_add_styles'));
 			add_action('wp_print_scripts', array(&$this,'_add_scripts'));
 			add_action('after_setup_theme', array(&$this,'_setup_theme'));
-			add_action('tgmpa_register', array(&$this,'_register_plugins'));
 			add_action('template_redirect', array(&$this,'_template_redirect'));
 
 			add_filter('query_vars', array(&$this,'_query_vars'));
@@ -156,88 +155,6 @@ if(!class_exists('Theme')){
 			
 			
 		}
-		
-		
-		
-		
-		/**
-		*
-		* Prepackage Plugins
-		* This little nugget allows you to add plugins along with the theme. WP will give notice to install these plugins.
-		* Thanks to Thomas Griffin for this. PHP source in inc/plugin-activation.class.php.
-		* https://github.com/thomasgriffin/TGM-Plugin-Activation
-		* 
-		**/
-		function _register_plugins() {
-			
-			// My top three, packaged here
-			
-			$plugins = array(
-				array(
-					'name' => 'Advanced Custom Fields',
-					'slug' => 'advanced-custom-fields',
-					'required' => true
-				),
-				array(
-					'name' => 'Custom Post Type UI',
-					'slug' => 'custom-post-type-ui',
-					'required' => false
-				),
-				array(
-					'name' => 'Better WP Security',
-					'slug' => 'better-wp-security',
-					'required' => false
-				),
-				array(
-					'name' => 'W3 Total Cache',
-					'slug' => 'w3-total-cache',
-					'required' => false
-				),
-				array(
-					'name' => 'Manual Image Crop',
-					'slug' => 'manual-image-crop',
-					'required' => false
-				),
-				array(
-					'name' => 'Force Regenerate Thumbnails',
-					'slug' => 'force-regenerate-thumbnails',
-					'required' => false
-				)
-				
-				
-				
-				/* Paid Plugins
-				 * Get em yourself, and put the .zip files in /plugins/ folder within this theme
-				 * /
-				
-				/*
-				
-				array(
-					'name' => 'Advanced Custom Fields: Repeater Field',
-					'slug' => 'acf-repeater',
-					'required' => true,
-					'source' => get_stylesheet_directory().'/plugins/acf-repeater.zip'
-				),
-				array(
-					'name' => 'Advanced Custom Fields: Options Page',
-					'slug' => 'acf-options-page',
-					'required' => true,
-					'source' => get_stylesheet_directory().'/plugins/acf-options-page.zip'
-				),
-				array(
-					'name' => 'Gravity Forms',
-					'slug' => 'gravity-forms',
-					'required' => true,
-					'source' => get_stylesheet_directory().'/plugins/gravityforms.zip'
-				)
-				*/
-			);
-			$config = array(
-				'domain' => 'theme'
-			);
-			tgmpa( $plugins, $config );
-		}
-		
 		
 		
 		
