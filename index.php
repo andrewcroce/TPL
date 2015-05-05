@@ -11,6 +11,9 @@
 
 	<?php while( have_posts() ) : the_post(); ?>
 		
+
+		<?php content_wrapper_start(); ?>
+		
 		<article>
 			
 			<h1><?php the_title(); ?></h1>
@@ -18,6 +21,9 @@
 			<?php the_content(); ?>
 			
 		</article>
+
+		<?php content_wrapper_end(); ?>
+
 
 	<?php endwhile; ?>
 
