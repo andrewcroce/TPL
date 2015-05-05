@@ -1,4 +1,6 @@
-// @codekit-prepend "../bower_components/foundation/js/foundation.js"
+// Import the foundation base script, add additional libraries as needed
+// @codekit-prepend "../bower_components/foundation/js/foundation/foundation.js"
+
 
 jQuery(document).foundation();
 
