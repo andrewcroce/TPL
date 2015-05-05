@@ -173,16 +173,7 @@ if(!class_exists('Theme')){
 			// My top three, packaged here
 			
 			$plugins = array(
-				array(
-					'name' => 'Advanced Custom Fields',
-					'slug' => 'advanced-custom-fields',
-					'required' => true
-				),
-				array(
-					'name' => 'Custom Post Type UI',
-					'slug' => 'custom-post-type-ui',
-					'required' => false
-				),
+
 				array(
 					'name' => 'Better WP Security',
 					'slug' => 'better-wp-security',
@@ -202,35 +193,44 @@ if(!class_exists('Theme')){
 					'name' => 'Force Regenerate Thumbnails',
 					'slug' => 'force-regenerate-thumbnails',
 					'required' => false
-				)
-				
-				
-				
-				/* Paid Plugins
-				 * Get em yourself, and put the .zip files in /plugins/ folder within this theme
-				 * /
-				
-				/*
-				
+				),
 				array(
 					'name' => 'Advanced Custom Fields: Repeater Field',
 					'slug' => 'acf-repeater',
-					'required' => true,
-					'source' => get_stylesheet_directory().'/plugins/acf-repeater.zip'
+					'required' => false,
+					'source' => get_stylesheet_directory().'/plugin_installers/acf-repeater.zip'
 				),
 				array(
 					'name' => 'Advanced Custom Fields: Options Page',
 					'slug' => 'acf-options-page',
-					'required' => true,
-					'source' => get_stylesheet_directory().'/plugins/acf-options-page.zip'
+					'required' => false,
+					'source' => get_stylesheet_directory().'/plugin_installers/acf-options-page.zip'
+				),
+				array(
+					'name' => 'Advanced Custom Fields: Flexible Content',
+					'slug' => 'acf-flexible-content',
+					'required' => false,
+					'source' => get_stylesheet_directory().'/plugin_installers/acf-flexible-content.zip'
+				),
+				array(
+					'name' => 'Admin Menu Editor Pro',
+					'slug' => 'admin-menu-editor-pro',
+					'required' => false,
+					'source' => get_stylesheet_directory().'/plugin_installers/admin-menu-editor-pro.zip'
+				),
+				array(
+					'name' => 'Advanced Post Types Order',
+					'slug' => 'advanced-post-types-order',
+					'required' => false,
+					'source' => get_stylesheet_directory().'/plugin_installers/advanced-post-types-order.zip'
 				),
 				array(
 					'name' => 'Gravity Forms',
 					'slug' => 'gravity-forms',
-					'required' => true,
-					'source' => get_stylesheet_directory().'/plugins/gravityforms.zip'
+					'required' => false,
+					'source' => get_stylesheet_directory().'/plugin_installers/gravityforms.zip'
 				)
-				*/
+				
 			);
 			$config = array(
 				'domain' => 'theme'
