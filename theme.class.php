@@ -42,12 +42,22 @@ if(!class_exists('Theme')){
 
 		/* 
 		* 
-		* We use a generalized init function to intercept any custom form submissions
-		* For example, if a form is submitted where $_POST['form_action'] == 'some_action',
-		* the function $this->_some_action() will process it
+		* Init
+		* Hook into Wordpress initialization
 		*
 		*/
 		function _init() {
+
+			/* Set the permalink structure to use postname
+			*/
+			global $wp_rewrite;
+			$wp_rewrite->set_permalink_structure( '/%postname%/' );
+
+
+			/* We use a generalized init function to intercept any custom form submissions
+			* For example, if a form is submitted where $_POST['form_action'] == 'some_action',
+			* the function $this->_some_action() will process it
+			*/
 			if( isset( $_POST['form_action'] ) ) {
 				$action = '_'.$_POST['form_action'];
 				$params = !empty($_POST['params']) ? $_POST['params'] : array();
