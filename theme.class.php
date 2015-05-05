@@ -163,6 +163,22 @@ if(!class_exists('Theme')){
 			* 
 			**/
 			// add_image_size('my-image-size', 500,500,false);
+
+
+
+			/*
+			* Generate Style Guide Page
+			**/
+			$style_guide = get_page_by_path('style-guide');
+			if( is_null( $style_guide ) ){
+				wp_insert_post(array(
+					'post_content' => __('<p>This page is require to display the style guide, please do not delete it.</p>'),
+					'post_name' => 'style-guide',
+					'post_title' => 'Style Guide',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+			}
 			
 			
 		}

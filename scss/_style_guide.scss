@@ -1,0 +1,16 @@
+.guide-section-label {
+	font-size: em(18);
+	color: #888;
+}
+
+.guide-section-sub-label {
+	font-size: em(15);
+	font-family: 'Monaco',monospace;
+	color: #AAA;
+}
+
+.guide-section {
+	margin: $column_gutter 0;
+	border-top: 1px solid #DDD;
+	padding-top: $column_gutter;
+}
