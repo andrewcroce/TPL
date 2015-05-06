@@ -7,7 +7,7 @@
 
 	<div class="row">
 		<div class="large-12 columns">
-			<h2>Typography</h2>
+			<h2 class="guide-section-heading">Typography</h2>
 		</div>
 	</div>
 
@@ -63,6 +63,44 @@
 			
 			<div class="large-8 large-pull-4 columns">
 				<h3 class="small-heading">Dynamically utilize customized ideas</h3>
+			</div>
+		</div>
+	</section>
+
+
+
+
+	<div class="row">
+		<div class="large-12 columns">
+			<h2 class="guide-section-heading">Forms</h2>
+		</div>
+	</div>
+
+
+	<section id="text-field" class="guide-section">
+		<div class="row">
+			<div class="large-4 large-push-8 columns">
+				<h2 class="guide-section-label">Form Text Field</h2>
+				<span class="guide-section-sub-label">&lt;input type="text"/&gt;</span>
+			</div>
+			
+			<div class="large-8 large-pull-4 columns">
+				<label>Input label</label>
+				<input type="text" placeholder="Enter text here">
+			</div>
+		</div>
+	</section>
+
+	<section id="text-field" class="guide-section">
+		<div class="row">
+			<div class="large-4 large-push-8 columns">
+				<h2 class="guide-section-label">Form Text Field</h2>
+				<span class="guide-section-sub-label">&lt;input type="text"/&gt;</span>
+			</div>
+			
+			<div class="large-8 large-pull-4 columns">
+				<label>Input label</label>
+				<input type="text" placeholder="Enter text here">
 			</div>
 		</div>
 	</section>

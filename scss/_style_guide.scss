@@ -1,3 +1,12 @@
+.guide-section-heading {
+	font-size: em(18);
+	color: $primary-color;
+	text-transform: uppercase;
+	border-top: 1px solid #DDD;
+	margin: $column_gutter*2 0 0 0;
+	padding-top: $column_gutter;
+}
+
 .guide-section-label {
 	font-size: em(18);
 	color: #888;
