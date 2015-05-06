@@ -12,7 +12,7 @@
 	<?php while( have_posts() ) : the_post(); ?>
 		
 
-		<?php content_wrapper_start(); ?>
+		<?php tpl_wrapper_start(); ?>
 		
 		<article>
 			
@@ -22,7 +22,7 @@
 			
 		</article>
 
-		<?php content_wrapper_end(); ?>
+		<?php tpl_wrapper_end(); ?>
 
 
 	<?php endwhile; ?>

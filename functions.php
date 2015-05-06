@@ -1,6 +1,6 @@
 <?php
 
-include( 'inc/plugin-activation.class.php' );
+include( 'inc/class-tgm-plugin-activation.php' );
 include( 'theme.class.php' );
 
 
@@ -14,15 +14,15 @@ include( 'theme.class.php' );
 /**
  * Include the starting tags for the main content wrapper
  */
-function content_wrapper_start(){
-	include locate_template('wrappers/content_wrapper_start.php');
+function tpl_content_wrapper_start(){
+	include locate_template('tpl_wrappers/content_wrapper_start.php');
 }
 
 /**
  * Include the ending tags for the main content wrapper
  */
-function content_wrapper_end(){
-	include locate_template('wrappers/content_wrapper_end.php');
+function tpl_content_wrapper_end(){
+	include locate_template('tpl_wrappers/content_wrapper_end.php');
 }
 
 

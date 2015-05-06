@@ -1,7 +1,3 @@
-<?php get_header(); ?>
-
-<?php content_wrapper_start(); ?>
-
 <article class="style-guide">
 
 
@@ -108,7 +104,3 @@
 
 
 </article>
-
-<?php content_wrapper_end(); ?>
-
-<?php get_footer(); ?>
