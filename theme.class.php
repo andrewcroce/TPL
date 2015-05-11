@@ -8,13 +8,9 @@
  */
 
 
-if(!class_exists('Theme')){
+if(!class_exists('StarterTheme')){
 	
-	class Theme {
-		
-		function Theme() {
-			$this->__construct();
-		}
+	class StarterTheme {
 		
 		
 		/**
@@ -29,7 +25,8 @@ if(!class_exists('Theme')){
 			add_action('wp_print_styles', array(&$this,'_add_styles'));
 			add_action('wp_print_scripts', array(&$this,'_add_scripts'));
 			add_action('after_setup_theme', array(&$this,'_setup_theme'));
-			add_action('tgmpa_register', array(&$this,'_register_plugins'));
+			add_filter('template_include', array(&$this,'_template_include'));
+			add_filter('single_template', array(&$this,'_single_template'));
 			add_action('template_redirect', array(&$this,'_template_redirect'));
 
 			add_filter('query_vars', array(&$this,'_query_vars'));
@@ -188,87 +185,6 @@ if(!class_exists('Theme')){
 		
 		/**
 		*
-		* Prepackage Plugins
-		* This little nugget allows you to add plugins along with the theme. WP will give notice to install these plugins.
-		* Thanks to Thomas Griffin for this. PHP source in inc/plugin-activation.class.php.
-		* https://github.com/thomasgriffin/TGM-Plugin-Activation
-		* 
-		**/
-		function _register_plugins() {
-			
-			// My top three, packaged here
-			
-			$plugins = array(
-
-				array(
-					'name' => 'Better WP Security',
-					'slug' => 'better-wp-security',
-					'required' => false
-				),
-				array(
-					'name' => 'W3 Total Cache',
-					'slug' => 'w3-total-cache',
-					'required' => false
-				),
-				array(
-					'name' => 'Manual Image Crop',
-					'slug' => 'manual-image-crop',
-					'required' => false
-				),
-				array(
-					'name' => 'Force Regenerate Thumbnails',
-					'slug' => 'force-regenerate-thumbnails',
-					'required' => false
-				),
-				array(
-					'name' => 'Advanced Custom Fields: Repeater Field',
-					'slug' => 'acf-repeater',
-					'required' => false,
-					'source' => get_stylesheet_directory().'/plugin_installers/acf-repeater.zip'
-				),
-				array(
-					'name' => 'Advanced Custom Fields: Options Page',
-					'slug' => 'acf-options-page',
-					'required' => false,
-					'source' => get_stylesheet_directory().'/plugin_installers/acf-options-page.zip'
-				),
-				array(
-					'name' => 'Advanced Custom Fields: Flexible Content',
-					'slug' => 'acf-flexible-content',
-					'required' => false,
-					'source' => get_stylesheet_directory().'/plugin_installers/acf-flexible-content.zip'
-				),
-				array(
-					'name' => 'Admin Menu Editor Pro',
-					'slug' => 'admin-menu-editor-pro',
-					'required' => false,
-					'source' => get_stylesheet_directory().'/plugin_installers/admin-menu-editor-pro.zip'
-				),
-				array(
-					'name' => 'Advanced Post Types Order',
-					'slug' => 'advanced-post-types-order',
-					'required' => false,
-					'source' => get_stylesheet_directory().'/plugin_installers/advanced-post-types-order.zip'
-				),
-				array(
-					'name' => 'Gravity Forms',
-					'slug' => 'gravity-forms',
-					'required' => false,
-					'source' => get_stylesheet_directory().'/plugin_installers/gravityforms.zip'
-				)
-				
-			);
-			$config = array(
-				'domain' => 'theme'
-			);
-			tgmpa( $plugins, $config );
-		}
-		
-		
-		
-		
-		/**
-		*
 		* Add Custom WP Query Variables
 		* Allows you to add any new query variables you need to the WP query system.
 		* This will allow you to do things like query/search/filter by your custom variable using WP's built-in functionality,
@@ -283,6 +199,7 @@ if(!class_exists('Theme')){
 			*/
 			return $query_vars;
 		}
+		
 		
 		
 		/**
@@ -313,13 +230,34 @@ if(!class_exists('Theme')){
 			
 		}
 		
+
+
+
+		/**
+		 * Load templates in subdirectories
+		 */
+		function _template_include( $template ){
+
+			global $post;
+
+			// If this is a page, try to locate a template file with a matching name
+			if( is_page() ) {
+				if( file_exists( dirname(__FILE__) . '/tpl_pages/page-' . $post->post_name . '.php' ) ){
+					return locate_template( 'tpl_pages/page-' . $post->post_name . '.php' );
+				} else {
+					return locate_template( 'tpl_pages/page-default.php' );
+				}
+			}
+
+			return $template;
+		}
 		
 	}
 	
 }
 
-if(class_exists('Theme')){
-	$theme = new Theme();
+if(class_exists('StarterTheme')){
+	$theme = new StarterTheme();
 }
 
 ?>

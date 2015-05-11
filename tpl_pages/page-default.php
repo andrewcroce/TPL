@@ -1,7 +1,21 @@
-<article class="default page">
+<?php get_header(); ?>
 
-	<pre>
-		<?php print_r( $post ); ?>
-	</pre>
+<?php tpl_wrapper('content','start'); ?>
+
+<?php if( have_posts() ) : ?>
 	
-</article>
+	<?php while( have_posts() ) : the_post(); ?>
+
+		<article class="default page">
+
+			<?php dump( $post ); ?>
+		
+		</article>
+
+	<?php endwhile; ?>
+
+<?php endif; ?>
+
+<?php tpl_wrapper('content','end'); ?>
+
+<?php get_footer(); ?>

@@ -1,6 +1,5 @@
 <?php
 
-include( 'inc/class-tgm-plugin-activation.php' );
 include( 'theme.class.php' );
 
 
@@ -11,18 +10,13 @@ include( 'theme.class.php' );
 
 
 
-/**
- * Include the starting tags for the main content wrapper
- */
-function tpl_content_wrapper_start(){
-	include locate_template('tpl_wrappers/content_wrapper_start.php');
-}
 
-/**
- * Include the ending tags for the main content wrapper
- */
-function tpl_content_wrapper_end(){
-	include locate_template('tpl_wrappers/content_wrapper_end.php');
+function tpl_wrapper( $name, $position ){
+	if( file_exists( dirname(__FILE__) . '/tpl_wrappers/' . $name . '-wrapper-' . $position . '.php' )  ) {
+		include locate_template( 'tpl_wrappers/' . $name . '-wrapper-' . $position . '.php');
+	} else {
+		throw new Exception('No such template exists: "tpl_wrappers/' . $name . '-wrapper-' . $position . '.php"', 1);
+	}
 }
 
 
@@ -43,6 +37,17 @@ function get_snippet( $content, $limit, $break=" ", $pad="..." ) {
 		}
 	}
  	return wpautop($content);
+}
+
+
+
+/**
+ * Dump preformatted data to the page
+ */
+function dump( $data ){
+	echo '<pre>';
+	print_r( $data );
+	echo '</pre>';
 }
 
 

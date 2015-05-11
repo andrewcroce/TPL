@@ -1,3 +1,7 @@
+<?php get_header(); ?>
+
+<?php tpl_wrapper('content','start'); ?>
+
 <article class="style-guide">
 
 
@@ -101,6 +105,8 @@
 		</div>
 	</section>
 
-
-
 </article>
+
+<?php tpl_wrapper('content','end'); ?>
+
+<?php get_footer(); ?>
