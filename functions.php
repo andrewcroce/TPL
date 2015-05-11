@@ -1,5 +1,6 @@
 <?php
 
+include( 'plugins/plugins.php' );
 include( 'theme.class.php' );
 
 
