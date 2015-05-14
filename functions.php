@@ -1,6 +1,7 @@
 <?php
 
 include( 'plugins/plugins.php' );
+include( 'includes/helpers.php' );
 include( 'theme.class.php' );
 
 
