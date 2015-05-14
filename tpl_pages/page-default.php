@@ -1,21 +1,17 @@
 <?php get_header(); ?>
 
-<?php tpl_wrapper('content','start'); ?>
+<?php tpl('wrapper','content-start'); ?>
 
-<?php if( have_posts() ) : ?>
-	
-	<?php while( have_posts() ) : the_post(); ?>
-
-		<article class="default page">
-
-			<?php dump( $post ); ?>
+	<?php if( have_posts() ) : ?>
 		
-		</article>
+		<?php while( have_posts() ) : the_post(); ?>
 
-	<?php endwhile; ?>
+			<?php tpl('content','page', new ACFPost($post)); ?>
 
-<?php endif; ?>
+		<?php endwhile; ?>
 
-<?php tpl_wrapper('content','end'); ?>
+	<?php endif; ?>
+
+<?php tpl('wrapper','content-end'); ?>
 
 <?php get_footer(); ?>

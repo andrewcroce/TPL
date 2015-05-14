@@ -9,23 +9,23 @@
 
 <?php if( have_posts() ) : ?>
 
-	<?php while( have_posts() ) : the_post(); ?>
+	<?php tpl('wrapper','content-start'); ?>
+
+		<?php extract( get_paged_vars( $paged ) ); ?>
+
+		<ol class="posts-list page-<?php echo $page_number; ?>" start="<?php echo $start_number; ?>">
+
+			<?php while( have_posts() ) : the_post(); ?>
+				
+				<li><?php tpl('content','default', new ACFPost($post)); ?></li>
+			
+			<?php endwhile; ?>
+
+		</ol>
 		
+		<?php next_posts_link( '← Older Entries' ); previous_posts_link( 'Newer Entries →' ); ?>
 
-		<?php tpl_wrapper_start(); ?>
-		
-		<article>
-			
-			<h1><?php the_title(); ?></h1>
-			
-			<?php the_content(); ?>
-			
-		</article>
-
-		<?php tpl_wrapper_end(); ?>
-
-
-	<?php endwhile; ?>
+	<?php tpl('wrapper','content-end'); ?>
 
 <?php endif; ?>
 

@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<?php tpl_wrapper('content','start'); ?>
+<?php tpl('wrapper','content-start'); ?>
 
 <article class="style-guide">
 
@@ -94,19 +94,23 @@
 	<section id="text-field" class="guide-section">
 		<div class="row">
 			<div class="large-4 large-push-8 columns">
-				<h2 class="guide-section-label">Form Text Field</h2>
-				<span class="guide-section-sub-label">&lt;input type="text"/&gt;</span>
+				<h2 class="guide-section-label">Form Select Field</h2>
+				<span class="guide-section-sub-label">&lt;select/&gt;</span>
 			</div>
 			
 			<div class="large-8 large-pull-4 columns">
-				<label>Input label</label>
-				<input type="text" placeholder="Enter text here">
+				<label>Select label</label>
+				<select>
+					<option>Option One</option>
+					<option>Option Two</option>
+					<option>Option Three</option>
+				</select>
 			</div>
 		</div>
 	</section>
 
 </article>
 
-<?php tpl_wrapper('content','end'); ?>
+<?php tpl('wrapper','content-end'); ?>
 
 <?php get_footer(); ?>
