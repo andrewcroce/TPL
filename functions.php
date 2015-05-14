@@ -18,7 +18,7 @@ include( 'theme.class.php' );
  * 
  * If an object is passed in the third parameter, it will be available in the template
  * as a variable matching the passed $prefix string.
- * So calling tpl('foo','bar',$post); will make a variable called $foo available in the template.
+ * So calling tpl('foo','bar',$post); will make $post available in the template as a variable called $foo
  * 
  * @param string $prefix The first segment of the filename
  * @param string $name The second segment of the filename
@@ -35,14 +35,14 @@ function tpl( $prefix, $name, $object = null ) {
 		
 		// If an object was passed, assign it to a variable for the template
 		if( !is_null( $object ) )
-			${$name} = $object;
+			${$prefix} = $object;
 		
 		// Include the template
 		include locate_template( 'tpl_' . $prefix . 's/' . $prefix . '-' . $name . '.php');
 
 	// Otherwise trigger an error
 	} else {
-		trigger_error('No such template exists: "tpl_' . $prefix . 's/' . $prefix . '-' . $name . '.php"')
+		trigger_error('No such template exists: "tpl_' . $prefix . 's/' . $prefix . '-' . $name . '.php"');
 	}
 
 }
