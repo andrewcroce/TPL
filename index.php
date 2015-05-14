@@ -22,8 +22,8 @@
 			<?php endwhile; ?>
 
 		</ol>
-		
-		<?php next_posts_link( '← Older Entries' ); previous_posts_link( 'Newer Entries →' ); ?>
+
+		<?php tpl('nav','pagination',$wp_query); ?>
 
 	<?php tpl('wrapper','content-end'); ?>
 
