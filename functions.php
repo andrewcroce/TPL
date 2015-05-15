@@ -30,15 +30,17 @@ function tpl( $prefix, $name = null, $object = null ) {
 	if( is_null( $name ) )
 		$name = 'default';
 
+	// If an object was passed, assign it to a variable for the template
+	if( !is_null( $object ) )
+		${$prefix} = $object;
+
+	$filepath = 'tpl_' . $prefix . 's/' . $prefix . '-' . $name . '.php';
+
 	// If the matching file exists...
-	if( file_exists( dirname(__FILE__) . '/tpl_' . $prefix . 's/' . $prefix . '-' . $name . '.php' ) ) {
-		
-		// If an object was passed, assign it to a variable for the template
-		if( !is_null( $object ) )
-			${$prefix} = $object;
+	if( is_readable( dirname(__FILE__) . '/' . $filepath ) ) {
 		
 		// Include the template
-		include locate_template( 'tpl_' . $prefix . 's/' . $prefix . '-' . $name . '.php');
+		include locate_template( $filepath ) ;
 
 	// Otherwise trigger an error
 	} else {
