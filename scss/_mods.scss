@@ -1,0 +1,30 @@
+// Modify pagination to match WP output
+
+.pagination {
+	.page-numbers {
+		@extend .pagination;
+
+		li {
+			font-size: $pagination-li-font-size;
+			a, span {
+				padding: $pagination-link-pad;
+				line-height: inherit;
+				display: block;
+				border-radius: $global-radius;
+			}
+			a {
+				background: $pagination-link-active-bg;
+				color: $pagination-link-font-color;
+			}
+			.current {
+				background: $pagination-link-current-background;
+				color: $pagination-link-current-font-color;
+				font-weight: $pagination-link-current-font-weight;
+				cursor: $pagination-link-current-cursor;
+			}
+			.dots {
+				color: $pagination-link-unavailable-font-color;
+			}
+		}
+	}
+}

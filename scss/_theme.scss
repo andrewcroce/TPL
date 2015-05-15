@@ -3,7 +3,33 @@
 // 
 
 
+
+// ==========
+// Typography
+// ==========
+
+.large-heading {}
+
+.medium-heading {}
+
+.small-heading {}
+
+.important-text {
+	font-size: 1.25rem;
+	line-height: $base-line-height;
+}
+.secondary-text {
+	font-size: 0.85rem;
+	color: lighten( $body-font-color, 40% );
+	line-height: $base-line-height * 1.25;
+}
+
+
+
+// =======
 // Utility
+// =======
+
 .screenreader {
 	position: absolute;
 	left: -999em;
