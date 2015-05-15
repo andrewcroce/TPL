@@ -79,7 +79,13 @@
 
 <p><em>Located in functions.php</em></p>
 
-<p>This is a general purpose template include function. It will look for a PHP file matching the naming stucture {$prefix}-{$name}.php within a directory tpl_{$prefix}s (note the &#8216;s&#8217; at the end, the pluralization of the $prefix). So calling tpl(&#8216;foo&#8217;,&#8216;bar&#8217;); will look for tpl_foos/foo_bar.php. If an object is passed in the third parameter, it will be available in the template as a variable matching the passed $prefix string. So calling tpl(&#8216;foo&#8217;,&#8216;bar&#8217;,$post); will make $post available in the template as a variable called $foo.</p>
+<p>This is a general purpose template include function. It will look for a PHP file matching the naming stucture <code>{$prefix}-{$name}.php</code> within a directory <code>tpl_{$prefix}s</code> <em>(note the &#8216;s&#8217; at the end, the pluralization of the $prefix)</em>.</p>
+
+<p>So calling <code>tpl('foo','bar');</code> will look for <code>tpl_foos/foo_bar.php</code>. </p>
+
+<p>If an object is passed in the third parameter, it will be available in the template as a variable matching the passed <code>$prefix</code> string. </p>
+
+<p>So calling <code>tpl('foo','bar',$post);</code> will make $post available in the template as a variable called <code>$foo</code>.</p>
 
 <h3>Helper functions file</h3>
 

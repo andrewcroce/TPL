@@ -62,7 +62,13 @@ It is also used as the name suggests, to create *theme functions* to be used in 
 
 *Located in functions.php*
 
-This is a general purpose template include function. It will look for a PHP file matching the naming stucture {$prefix}-{$name}.php within a directory tpl_{$prefix}s (note the 's' at the end, the pluralization of the $prefix). So calling tpl('foo','bar'); will look for tpl_foos/foo_bar.php. If an object is passed in the third parameter, it will be available in the template as a variable matching the passed $prefix string. So calling tpl('foo','bar',$post); will make $post available in the template as a variable called $foo.
+This is a general purpose template include function. It will look for a PHP file matching the naming stucture `{$prefix}-{$name}.php` within a directory `tpl_{$prefix}s` *(note the 's' at the end, the pluralization of the $prefix)*.
+
+So calling `tpl('foo','bar');` will look for `tpl_foos/foo_bar.php`. 
+
+If an object is passed in the third parameter, it will be available in the template as a variable matching the passed `$prefix` string. 
+
+So calling `tpl('foo','bar',$post);` will make $post available in the template as a variable called `$foo`.
 
 ### Helper functions file
 
