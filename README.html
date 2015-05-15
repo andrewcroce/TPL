@@ -1,35 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+</head>
+<body>
 <h1>Wordpress Foundation Starter Theme</h1>
 
-<p>A starting point for Wordpress Themes, built on <a href="http://foundation.zurb.com/">Foundation</a></p>
+<p>A starting point for Wordpress Themes, built with <a href="http://foundation.zurb.com/">Foundation</a> and Bourbon mixin library.</p>
 
 <p>It is packaged as a submodule of <a href="https://bitbucket.org/andrewcroce/wordpress-skeleton">WordPress-Skeleton, Fork</a></p>
-
-<h2>Packaged Plugins</h2>
-
-<ul>
-<li><a href="http://www.advancedcustomfields.com/">Advanced Custom Fields</a></li>
-<li><a href="http://www.advancedcustomfields.com/add-ons/options-page/">Advanced Custom Fields Addon: Options Page</a> <strong>License Required</strong></li>
-<li><a href="http://www.advancedcustomfields.com/add-ons/repeater-field/">Advanced Custom Fields Addon: Repeater Field</a> <strong>License Required</strong></li>
-<li><a href="http://www.gravityforms.com/">Gravity Forms</a> <strong>License Required</strong></li>
-</ul>
-
 
 <h2>Requirements</h2>
 
 <ul>
-<li><a href="http://nodejs.org">Node.js</a></li>
-<li><a href="http://bower.io">bower</a>: <code>npm install bower -g</code></li>
-<li><a href="https://incident57.com/codekit/">Codekit</a></li>
+<li><a href="http://bower.io">bower</a>: <code>npm install bower -g</code> Manage your libraries.</li>
+<li>A SASS compiler. I recommend <a href="https://incident57.com/codekit/">Codekit</a>.</li>
+<li>A Javascript compiler. I also recommend <a href="https://incident57.com/codekit/">Codekit</a>.</li>
 </ul>
 
+<h2>Required/Recommended Plugins</h2>
+
+<p>The theme will prompt you to install these plugins automatically. Thanks to Thomas Griffen&#8217;s <a href="https://github.com/thomasgriffin/TGM-Plugin-Activation">Plugin Activation Class</a>.</p>
+
+<h3>Required</h3>
+
+<ul>
+<li><a href="http://www.advancedcustomfields.com/">Advanced Custom Fields</a>. Fantastic plugin for creating custom fields. I never leave home without it. Some built in theme functionality will not work without it, but it won&#8217;t fail catastrophically without it, however.</li>
+<li><a href="https://bitbucket.org/bneff84/advanced-custom-fields-objects">Advanced Custom Fields Objects</a>. A powerful OOP library for using ACF custom fields. Requires ACF, naturally.</li>
+<li><a href="https://wordpress.org/plugins/custom-post-type-ui/">Custom Post Type UI</a>. Not strictly necessary, but I deem it required! It makes creating custom post types and taxonomies a breeze.</li>
+</ul>
+
+<h3>Recommended</h3>
+
+<ul>
+<li><a href="http://www.advancedcustomfields.com/resources/flexible-content/">ACF Flexible Content</a>. Add multiple layouts with unique subfields (paid ACF add-on).</li>
+<li><a href="http://www.advancedcustomfields.com/add-ons/options-page/">ACF Options Page</a>. Add custom global site options (paid ACF add-on).</li>
+<li><a href="http://www.advancedcustomfields.com/add-ons/repeater-field/">ACF Repeater Field</a>. Add repeatable fields with subfields.</li>
+<li><a href="http://www.nsp-code.com/premium-plugins/wordpress-plugins/advanced-post-types-order/">(Advanced) Post Types Order</a>. Re-order your posts/custom post types. Pro version requires a license.</li>
+<li><a href="http://www.gravityforms.com/">Gravity Forms</a>. Probably the best form plugin for WP. Probably. Requires license.</li>
+<li><a href="http://adminmenueditor.com/">Admin Menu Editor (Pro)</a>. Edit the WP Admin menus to your heart&#8217;s content. Pro version requires a license.</li>
+<li><a href="https://wordpress.org/plugins/better-wp-security/">iThemes Security</a>. Formerly Better WP Security. A good idea, in general. Unless you want hackers.</li>
+<li><a href="https://wordpress.org/plugins/w3-total-cache/">W3 Total Cache</a>. I mainly use this for managing a generic mirror CDN on my local site copies. But it provides some powerful caching too.</li>
+<li><a href="https://wordpress.org/plugins/manual-image-crop/">Manual Image Crop</a>. This should be part of the core media library functionality. Lets you crop your images individually for each defined image size.</li>
+<li><a href="https://wordpress.org/plugins/force-regenerate-thumbnails/">Force Regenerate Thumbnails</a>. Like it says, regenerates all your image sizes.</li>
+</ul>
 
 <h2>Installation</h2>
 
 <ul>
-<li>Run <code>bower install</code> to install the latest version of Foundation</li>
-<li>Or, install Foundation&rsquo;s bower component through Codekit</li>
+<li>Run <code>bower install</code> to install the latest version of Foundation and its dependencies, and Bourbon mixin library.</li>
+<li>Or, preferably, install Foundation and Bourbon bower components through Codekit</li>
 </ul>
-
 
 <h2>Use It</h2>
 
@@ -39,7 +60,6 @@
 <li><a href="http://codex.wordpress.org/Theme_Development">Learn about theme development</a></li>
 <li><a href="http://codex.wordpress.org/images/1/18/Template_Hierarchy.png">Handy cheat sheet for template hierarchy and file naming</a></li>
 </ul>
-
 
 <h3>Theme Class File</h3>
 
@@ -54,3 +74,22 @@
 <p>This file is loaded by Wordpress when the theme is loaded, so we bootstrap here.</p>
 
 <p>It is also used as the name suggests, to create <em>theme functions</em> to be used in template files.</p>
+
+<h3>The tpl() Function</h3>
+
+<p><em>Located in functions.php</em></p>
+
+<p>This is a general purpose template include function. It will look for a PHP file matching the naming stucture {$prefix}-{$name}.php within a directory tpl_{$prefix}s (note the &#8216;s&#8217; at the end, the pluralization of the $prefix). So calling tpl(&#8216;foo&#8217;,&#8216;bar&#8217;); will look for tpl_foos/foo_bar.php. If an object is passed in the third parameter, it will be available in the template as a variable matching the passed $prefix string. So calling tpl(&#8216;foo&#8217;,&#8216;bar&#8217;,$post); will make $post available in the template as a variable called $foo.</p>
+
+<h3>Helper functions file</h3>
+
+<p><em>includes/helpers.php</em></p>
+
+<p>This file contains a few helpful functions to use in your theme</p>
+
+<p><em>get_paged_vars()</em> Get an array of useful variables associated to the current page number.
+<em>truncate()</em> Truncate any string of HTML. The function is aware of HTML tags, and will auto-close any broken elements.
+<em>dump()</em> Echo some preformatted data for dev/debug.</p>
+
+</body>
+</html>
