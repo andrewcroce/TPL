@@ -16,7 +16,7 @@ The theme will prompt you to install these plugins automatically. Thanks to Thom
 
 ### Required
   * [Advanced Custom Fields](http://www.advancedcustomfields.com/). Fantastic plugin for creating custom fields. I never leave home without it. Some built in theme functionality will not work without it, but it won't fail catastrophically without it, however.
-  * [Advanced Custom Fields Objects](https://bitbucket.org/bneff84/advanced-custom-fields-objects). A powerful OOP library for using ACF custom fields. Requires ACF, naturally.
+  * [Advanced Custom Fields Objects](https://bitbucket.org/bneff84/advanced-custom-fields-objects). A powerful OOP library for using ACF custom fields. Requires ACF, naturally. Thanks to [Brian Neff](https://bitbucket.org/bneff84) for this.
   * [Custom Post Type UI](https://wordpress.org/plugins/custom-post-type-ui/). Not strictly necessary, but I deem it required! It makes creating custom post types and taxonomies a breeze.
 
 ### Recommended
@@ -76,6 +76,8 @@ So calling `tpl('foo','bar',$post);` will make $post available in the template a
 
 This file contains a few helpful functions to use in your theme
 
-*get_paged_vars()* Get an array of useful variables associated to the current page number.
-*truncate()* Truncate any string of HTML. The function is aware of HTML tags, and will auto-close any broken elements.
-*dump()* Echo some preformatted data for dev/debug.
+`get_paged_vars()` Get an array of useful variables associated to the current page number.
+
+`truncate()` Truncate any string of HTML. The function is aware of HTML tags, and will auto-close any broken elements. Thanks to [Brian Neff](https://bitbucket.org/bneff84) for this.
+
+`dump()` Echo some preformatted data for dev/debug.
