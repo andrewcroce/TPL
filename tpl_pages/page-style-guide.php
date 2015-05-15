@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<?php tpl('wrapper','content-start'); ?>
+<?php tpl('wrapper','12col-start'); ?>
 
 <article class="style-guide">
 
@@ -111,6 +111,6 @@
 
 </article>
 
-<?php tpl('wrapper','content-end'); ?>
+<?php tpl('wrapper','12col-end'); ?>
 
 <?php get_footer(); ?>

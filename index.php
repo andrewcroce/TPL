@@ -9,7 +9,7 @@
 
 <?php if( have_posts() ) : ?>
 
-	<?php tpl('wrapper','content-start'); ?>
+	<?php tpl('wrapper','12col-start'); ?>
 
 		<?php extract( get_paged_vars( $paged ) ); ?>
 
@@ -25,7 +25,7 @@
 
 		<?php tpl('nav','pagination',$wp_query); ?>
 
-	<?php tpl('wrapper','content-end'); ?>
+	<?php tpl('wrapper','12col-end'); ?>
 
 <?php endif; ?>
 

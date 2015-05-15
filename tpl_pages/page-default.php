@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<?php tpl('wrapper','content-start'); ?>
+<?php tpl('wrapper','12col-start'); ?>
 
 	<?php if( have_posts() ) : ?>
 		
@@ -12,6 +12,6 @@
 
 	<?php endif; ?>
 
-<?php tpl('wrapper','content-end'); ?>
+<?php tpl('wrapper','12col-end'); ?>
 
 <?php get_footer(); ?>
