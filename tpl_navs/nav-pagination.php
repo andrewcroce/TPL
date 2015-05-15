@@ -42,7 +42,7 @@ echo paginate_links( array(
 	// 'plain' - A string with the links separated by a newline character.
 	// 'array' - An array of the paginated link list to offer full control of display.
 	// 'list' - Unordered HTML list.
-	'type' => 'plain',
+	'type' => 'list',
 
 	// (array) (optional) An array of query args to add.
 	'add_args' => false,
