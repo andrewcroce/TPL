@@ -1,4 +1,4 @@
-// Import the foundation base script, add additional libraries as needed
+// Import the foundation base script, add additional libraries/modules as needed
 // @codekit-prepend "../bower_components/foundation/js/foundation/foundation.js"
 
 

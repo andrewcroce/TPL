@@ -1,7 +1,11 @@
 <?php
 
 
-
+/**
+ * Get some useful variables related to the page numner
+ * @param  int $paged The WP global $paged variable or query parameter
+ * @return array      Array of variables
+ */
 function get_paged_vars( $paged ) {
 
     $vars = array();
