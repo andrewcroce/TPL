@@ -24,7 +24,7 @@ include( 'theme.class.php' );
  * @param string $name The second segment of the filename
  * @param mixed $object An optional object/array (i.e. a WP Post or ACF Post object) to pass to the template file
  */
-function tpl( $prefix, $name, $object = null ) {
+function tpl( $prefix, $name = null, $object = null ) {
 
 	// If no $name is provided, use 'default'
 	if( is_null( $name ) )
