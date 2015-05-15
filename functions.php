@@ -44,7 +44,7 @@ function tpl( $prefix, $name = null, $object = null ) {
 
 	// Otherwise trigger an error
 	} else {
-		trigger_error('No such template exists: "tpl_' . $prefix . 's/' . $prefix . '-' . $name . '.php"');
+		trigger_error('No such template exists: ' . $filepath );
 	}
 
 }
