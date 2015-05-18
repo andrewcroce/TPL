@@ -32,6 +32,7 @@ if(!class_exists('StarterTheme')){
 			add_filter('body_class', array(&$this,'_body_class'));
 			add_filter('query_vars', array(&$this,'_query_vars'));
 			add_filter('rewrite_rules_array', array(&$this,'_rewrite_rules_array'));
+			add_filter('acf/load_field/name=index_post_type', array(&$this,'_acf_load_index_post_type') );
 			
 			// Add any additional action or filter hooks here.
 		}
@@ -268,6 +269,30 @@ if(!class_exists('StarterTheme')){
 			}
 
 			return $template;
+		}
+
+
+
+		/**
+		 * Hook ACF field for "index_post_type".
+		 * This field is attached to pages with the "index" template, used for custom post type indexes/archives.
+		 * The field group is automatically registered in includes/acf_index_post_type_fields.php
+		 * @param  array $field The field properties
+		 * @return array       Modified field properties
+		 */
+		function _acf_load_index_post_type( $field ){
+
+			// Get all public post types
+			$post_types = get_post_types(array(
+				'public' => true
+			), 'objects');
+			
+			// Add them to the field's choices
+			foreach( $post_types as $key => $post_type ){
+				$field['choices'][$key] = $post_type->label;
+			}
+
+			return $field;
 		}
 		
 	}
