@@ -29,6 +29,7 @@ if(!class_exists('StarterTheme')){
 			add_filter('single_template', array(&$this,'_single_template'));
 			add_action('template_redirect', array(&$this,'_template_redirect'));
 
+			add_filter('body_class', array(&$this,'_body_class'));
 			add_filter('query_vars', array(&$this,'_query_vars'));
 			add_filter('rewrite_rules_array', array(&$this,'_rewrite_rules_array'));
 			
@@ -180,6 +181,23 @@ if(!class_exists('StarterTheme')){
 			
 		}
 		
+
+		/**
+		 * Modify body classes
+		 * @param  array $classes Array of default body classes
+		 * @return array          Modified array of body classes
+		 */
+		function _body_class( $classes ){
+
+			global $post;
+			
+			// Add the page slug class "page-{post_name}"
+			if( is_page() ){
+				$classes[] = 'page-' . $post->post_name;
+			}
+			
+			return $classes;
+		}
 		
 		
 		
