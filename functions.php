@@ -2,6 +2,7 @@
 
 include( 'plugins/plugins.php' );
 include( 'includes/helpers.php' );
+include( 'includes/acf_index_post_type_fields.php' );
 include( 'theme.class.php' );
 
 
