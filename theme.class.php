@@ -260,7 +260,7 @@ if(!class_exists('StarterTheme')){
 			global $post;
 
 			// If this is a page, try to locate a template file with a matching name
-			if( is_page() ) {
+			if( is_page() && !is_page_template() ) {
 				if( file_exists( dirname(__FILE__) . '/tpl_pages/page-' . $post->post_name . '.php' ) ){
 					return locate_template( 'tpl_pages/page-' . $post->post_name . '.php' );
 				} else {
