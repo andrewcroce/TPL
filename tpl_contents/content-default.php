@@ -1,4 +1,4 @@
-<article class="default content">
+<article class="content-default">
 			
 	<h1><?php echo $content->post_title; ?></h1>
 
