@@ -87,6 +87,16 @@
 
 <p>So calling <code>tpl('foo','bar',$post);</code> will make $post available in the template as a variable called <code>$foo</code>.</p>
 
+<h3>The index template</h3>
+
+<p><em>tpl_templates/tpl_index.php</em></p>
+
+<p>This is an admin-selectable page template which allows any page to be used as a post type &#8220;index&#8221; page. It is meant as a replacement for WP&#8217;s standard index and archive templates, which are just shy of useless.</p>
+
+<p>By selecting this template for a page, an additional select-box is displayed allowing the user to select a public post type. This page will then display a paginated list of posts from that post type below its main content.</p>
+
+<p>The ACF field group for this is automatically registered in <em>includes/acf_index_post_type_fields.php</em>. The select box is populated with post types in the <code>_acf_load_index_post_type()</code> function in <em>functions.php</em>.</p>
+
 <h3>Helper functions file</h3>
 
 <p><em>includes/helpers.php</em></p>

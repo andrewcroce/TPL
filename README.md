@@ -70,6 +70,16 @@ If an object is passed in the third parameter, it will be available in the templ
 
 So calling `tpl('foo','bar',$post);` will make $post available in the template as a variable called `$foo`.
 
+### The index template
+
+*tpl_templates/tpl_index.php*
+
+This is an admin-selectable page template which allows any page to be used as a post type "index" page. It is meant as a replacement for WP's standard index and archive templates, which are just shy of useless.
+
+By selecting this template for a page, an additional select-box is displayed allowing the user to select a public post type. This page will then display a paginated list of posts from that post type below its main content.
+
+The ACF field group for this is automatically registered in *includes/acf_index_post_type_fields.php*. The select box is populated with post types in the `_acf_load_index_post_type()` function in *functions.php*.
+
 ### Helper functions file
 
 *includes/helpers.php*
