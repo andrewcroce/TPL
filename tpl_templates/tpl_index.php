@@ -26,9 +26,9 @@
 			// Extract any relevant vars from our $paged var
 			extract( get_paged_vars( $paged ) ) ?>
 
-			<h1><?php echo $content->post_title; ?></h1>
+			<h1><?php echo $page->post_title; ?></h1>
 
-			<?php if( $page_number == 1 ) echo $content->filterContent('post_content'); // Presumably we should only display the content on the first page ?>
+			<?php if( $page_number == 1 ) echo $page->filterContent('post_content'); // Presumably we should only display the content on the first page ?>
 
 			<?php if( $index->have_posts() ) : // If our subquery has posts... ?>
 
