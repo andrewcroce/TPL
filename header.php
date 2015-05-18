@@ -36,7 +36,7 @@
 	<![endif]-->
 	
 </head>
-<body>
+<body <?php body_class(); ?>>
 	
 	<div id="skip-links" class="screenreader">
 		<a href="#main-navigation"><?= __('Go to navigation','theme') ?></a>
