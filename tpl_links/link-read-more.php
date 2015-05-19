@@ -1,0 +1,1 @@
+<a href="<?php echo esc_url( $link ); ?>" class="read-more"><?php echo __('Read More'); ?></a>
