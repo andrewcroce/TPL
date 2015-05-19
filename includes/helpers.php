@@ -26,12 +26,17 @@ function get_paged_vars( $paged ) {
 
 
 /**
-*
-* Get a truncated snippet/excerpt from any content
-* This is a much more robust replacement for WP's excerpt field. This will generate a snippet from any text string,
-* taking into account HTML tags that might be cut off in the middle.
-* 
-**/
+ * Get a truncated snippet/excerpt from any content
+ * This is a much more robust replacement for WP's excerpt field. This will generate a snippet from any text string,
+ * taking into account HTML tags that might be cut off in the middle.
+ * @param string $html HTML string to truncate
+ * @param int $maxLength Maximum character length to truncate the string to
+ * @param string $pad Text to follow the truncated text
+ * @param string $before Append content before the truncated string 
+ * @param string $after Append content after the truncated string
+ * @param boolean $isUtf8 Is the string UTF8 encoded?
+ * @return string
+ */
 function truncate( $html, $maxLength, $pad = '…', $before = '', $after = '', $isUtf8 = true ) {
 
     if( strlen( $html ) <= $maxLength ) {
@@ -132,10 +137,9 @@ function truncate( $html, $maxLength, $pad = '…', $before = '', $after = '', $
 
 
 
-
-
 /**
  * Dump preformatted data to the page
+ * @param mixed $data object/array/string/whatever to dump on the page
  */
 function dump( $data ){
 
