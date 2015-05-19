@@ -36,7 +36,7 @@
 
 					<?php while( $index->have_posts() ) : $index->the_post(); // Sub loop... ?>
 						
-						<li><?php tpl('content','default', new ACFPost($post)); ?></li>
+						<li><?php tpl('item','default', new ACFPost($post)); ?></li>
 					
 					<?php endwhile; wp_reset_postdata(); // Reset our loop back to the original page post ?>
 

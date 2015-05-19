@@ -17,7 +17,7 @@
 
 			<?php while( have_posts() ) : the_post(); ?>
 				
-				<li><?php tpl('content','default', new ACFPost($post)); ?></li>
+				<li><?php tpl('item','default', new ACFPost($post)); ?></li>
 			
 			<?php endwhile; ?>
 
