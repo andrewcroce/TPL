@@ -30,16 +30,26 @@ function get_paged_vars( $paged ) {
  * This is a much more robust replacement for WP's excerpt field. This will generate a snippet from any text string,
  * taking into account HTML tags that might be cut off in the middle.
  * @param string $html HTML string to truncate
- * @param int $maxLength Maximum character length to truncate the string to
- * @param string $pad Text to follow the truncated text
- * @param string $before Append content before the truncated string 
- * @param string $after Append content after the truncated string
- * @param boolean $isUtf8 Is the string UTF8 encoded?
+ * @param array $params Parameters array
+ *          int $max_length Maximum character length to truncate the string to
+ *          string $end_string Text to follow the truncated text
+ *          string $before Append content before the truncated string 
+ *          string $after Append content after the truncated string
+ *          boolean $is_utf8 Is the string UTF8 encoded?
  * @return string
  */
-function truncate( $html, $maxLength, $pad = '…', $before = '', $after = '', $isUtf8 = true ) {
+function truncate( $html, $params ) {
 
-    if( strlen( $html ) <= $maxLength ) {
+    $defaults = array(
+        'max_length' => 200,
+        'end_string' => '…',
+        'before' => '',
+        'after' => '',
+        'is_utf8' => true
+    );
+    extract( array_merge( $defaults, $params ) );
+
+    if( strlen( $html ) <= $max_length ) {
         return wpautop( $before . $html . $after );
     }
     
@@ -49,11 +59,11 @@ function truncate( $html, $maxLength, $pad = '…', $before = '', $after = '', $
     $tags = array();
 
     // For UTF-8, we need to count multibyte sequences as one character.
-    $re = $isUtf8
+    $re = $is_utf8
         ? '{</?([a-z]+)[^>]*>|&#?[a-zA-Z0-9]+;|[\x80-\xFF][\x80-\xBF]*}'
         : '{</?([a-z]+)[^>]*>|&#?[a-zA-Z0-9]+;}';
 
-    while( $printedLength < $maxLength && preg_match( $re, $html, $match, PREG_OFFSET_CAPTURE, $position ) ) {
+    while( $printedLength < $max_length && preg_match( $re, $html, $match, PREG_OFFSET_CAPTURE, $position ) ) {
         
         list( $tag, $tagPosition ) = $match[0];
 
@@ -61,9 +71,9 @@ function truncate( $html, $maxLength, $pad = '…', $before = '', $after = '', $
         $str = substr( $html, $position, $tagPosition - $position );
         
         //check to see if adding this text to the output would put us over the max length
-        if( $printedLength + strlen($str) > $maxLength){
+        if( $printedLength + strlen($str) > $max_length){
             
-            if( preg_match( '{\b}', $str, $wordBoundary, PREG_OFFSET_CAPTURE, $maxLength - $printedLength ) ) {
+            if( preg_match( '{\b}', $str, $wordBoundary, PREG_OFFSET_CAPTURE, $max_length - $printedLength ) ) {
                 
                 //we found a word boundary after the truncation point
                 $wordBoundary = $wordBoundary[0][1]; //linearize to the position of the boundary
@@ -72,8 +82,8 @@ function truncate( $html, $maxLength, $pad = '…', $before = '', $after = '', $
             
             } else {
                 //there's no word boundary after the truncation point
-                $output .= substr($str, 0, $maxLength - $printedLength);
-                $printedLength = $maxLength;
+                $output .= substr($str, 0, $max_length - $printedLength);
+                $printedLength = $max_length;
             }
 
             break;
@@ -82,7 +92,7 @@ function truncate( $html, $maxLength, $pad = '…', $before = '', $after = '', $
         $output .= $str;
         $printedLength += strlen($str);
         
-        if( $printedLength >= $maxLength ) break;
+        if( $printedLength >= $max_length ) break;
 
         if( $tag[0] == '&' || ord( $tag ) >= 0x80 ){
 
@@ -120,17 +130,17 @@ function truncate( $html, $maxLength, $pad = '…', $before = '', $after = '', $
     }
 
     // Print any remaining text.
-    if( $printedLength < $maxLength && $position < strlen( $html ) )
-        $output .= substr($html, $position, $maxLength - $printedLength);
+    if( $printedLength < $max_length && $position < strlen( $html ) )
+        $output .= substr($html, $position, $max_length - $printedLength);
     
-    //add the pad characters
-    $output .= $pad;
+    // Concatenate all the parts together
+    $output = $before . $output . $end_string . $after;
     
     // Close any open tags.
     while (!empty($tags))
         $output .= '</'.array_pop($tags).'>';
     
-    return wpautop( $before . $output . $after );
+    return wpautop( $output );
 
 }
 
