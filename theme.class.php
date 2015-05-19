@@ -268,6 +268,15 @@ if(!class_exists('StarterTheme')){
 				}
 			}
 
+			// If this is a single post type (other than a page), try to locate a template file with a matching name
+			if( is_single() ) {
+				if( file_exists( dirname(__FILE__) . '/tpl_singles/single-' . $post->post_type . '.php' ) ){
+					return locate_template( 'tpl_singles/single-' . $post->post_type . '.php' );
+				} else {
+					return locate_template( 'tpl_singles/single-default.php' );
+				}
+			}
+
 			return $template;
 		}
 
