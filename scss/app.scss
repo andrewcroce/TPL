@@ -1,7 +1,8 @@
 @import "settings";
 @import "../bower_components/bourbon/app/assets/stylesheets/bourbon";
 @import "../bower_components/foundation/scss/foundation";
-@import "mods";
+@import "foundation_mod/pagination";
+@import "foundation_mod/top-bar";
 
 // Or selectively include components
 // @import

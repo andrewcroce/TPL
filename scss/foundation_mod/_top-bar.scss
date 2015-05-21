@@ -1,0 +1,11 @@
+@media #{$topbar-media-query} {
+	.top-bar {
+		.name {
+			span {
+				a {
+					width: auto;
+				}
+			}
+		}
+	}
+}
