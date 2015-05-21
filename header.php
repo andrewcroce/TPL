@@ -37,27 +37,16 @@
 	
 </head>
 <body <?php body_class(); ?>>
-	
-	<div id="skip-links" class="screenreader">
-		<a href="#main-navigation"><?= __('Go to navigation','theme') ?></a>
-		<a href="#main-content"><?= __('Go to content','theme') ?></a>
-	</div>
+
+	<?php tpl('nav','skiplinks'); ?>
 	
 	<main id="main-container" role="main">
 		
 		<header id="main-header">
 
-			<?php tpl('wrapper','12col-start'); ?>
-			
-				<div id="site-branding" role="banner">
-					<span id="site-title"><a href="<?php echo home_url(); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></span>
-					<span id="site-description"><?php bloginfo( 'description' ); ?></span>
-				</div>
-				
-				<?php tpl('nav','main'); ?>
-
-			<?php tpl('wrapper','12col-end'); ?>
+			<?php tpl('block','topbar-header'); ?>
 			
 		</header>
+
 		<div id="main-content">
 			
