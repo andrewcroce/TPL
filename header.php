@@ -59,3 +59,5 @@
 			<?php tpl('wrapper','12col-end'); ?>
 			
 		</header>
+		<div id="main-content">
+			

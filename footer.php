@@ -1,3 +1,5 @@
+		</div><!-- end #main-content -->
+
 		<footer id="main-footer">
 
 			<?php tpl('wrapper','12col-start'); ?>
