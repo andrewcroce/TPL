@@ -25,10 +25,11 @@ if(!class_exists('StarterTheme')){
 			add_action('wp_print_styles', array(&$this,'_add_styles'));
 			add_action('wp_print_scripts', array(&$this,'_add_scripts'));
 			add_action('after_setup_theme', array(&$this,'_setup_theme'));
+			add_action('template_redirect', array(&$this,'_template_redirect'));
+			add_filter('wp_starter_skiplinks', array(&$this,'_add_skiplinks'));
+
 			add_filter('template_include', array(&$this,'_template_include'));
 			add_filter('single_template', array(&$this,'_single_template'));
-			add_action('template_redirect', array(&$this,'_template_redirect'));
-
 			add_filter('body_class', array(&$this,'_body_class'));
 			add_filter('query_vars', array(&$this,'_query_vars'));
 			add_filter('rewrite_rules_array', array(&$this,'_rewrite_rules_array'));
@@ -108,6 +109,28 @@ if(!class_exists('StarterTheme')){
 				'doc_title' => get_bloginfo('title'),
 				// Add any additional variables you want accessible in Javascript
 			);
+		}
+
+
+
+		/**
+		 * Custom filter function that adds skiplinks to tpl_navs/nav-skiplinks.php
+		 * @return array List of anchor links to add
+		 *    {anchor} => {label} 
+		 */
+		function _add_skiplinks() {
+
+			$links =  array(
+				'#main-navigation' => __('Skip to main navigation'),
+				'#main-content' => __('Skip to main content'),
+			);
+
+			// Add any context-specific skiplinks, i.e.
+			// if( is_page('foo') ){
+			//    $links['#foo'] = __('Skip to foo');
+			// }
+		
+			return $links;
 		}
 		
 		
