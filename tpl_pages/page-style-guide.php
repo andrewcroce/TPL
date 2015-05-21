@@ -339,6 +339,52 @@
 		</div>
 	</section>
 
+	<section id="tables" class="guide-section">
+		<div class="row">
+			<div class="large-4 large-push-8 columns">
+				<h2 class="guide-section-label">Tables</h2>
+				<span class="guide-section-sub-label">
+					&lt;table&gt;<br>
+					&nbsp;&lt;thead&gt;<br>
+					&nbsp;&nbsp;&lt;tr&gt;<br>
+					&nbsp;&nbsp;&nbsp;&lt;td&gt;<br>
+					&nbsp;&lt;tbody&gt;<br>
+					&nbsp;&nbsp;&lt;tr&gt;<br>
+					&nbsp;&nbsp;&nbsp;&lt;td&gt;<br>
+				</span>
+			</div>
+			
+			<div class="large-8 large-pull-4 columns">
+				<table>
+					<thead>
+						<tr>
+							<th>Header</th>
+							<th>Header</th>
+							<th>Header</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Cell</td>
+							<td>Cell</td>
+							<td>Cell</td>
+						</tr>
+						<tr>
+							<td>Cell</td>
+							<td>Cell</td>
+							<td>Cell</td>
+						</tr>
+						<tr>
+							<td>Cell</td>
+							<td>Cell</td>
+							<td>Cell</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+
 </article>
 
 <?php tpl('wrapper','12col-end'); ?>
