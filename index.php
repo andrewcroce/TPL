@@ -13,7 +13,7 @@
 
 		<?php extract( get_paged_vars( $paged ) ); ?>
 
-		<ol class="posts-list page-<?php echo $page_number; ?>" start="<?php echo $start_number; ?>">
+		<ol class="item-list page-<?php echo $page_number; ?>" start="<?php echo $start_number; ?>">
 
 			<?php while( have_posts() ) : the_post(); ?>
 				
