@@ -196,51 +196,43 @@
 		</div>
 	</div>
 
-	<section id="large-button" class="guide-section">
+	<section id="buttons" class="guide-section">
 		<div class="row">
 			<div class="large-4 large-push-8 columns">
-				<h2 class="guide-section-label">Large Button</h2>
-				<span class="guide-section-sub-label">&lt;a class="large button"&gt;</span>
+				<h2 class="guide-section-label">Buttons</h2>
+				<span class="guide-section-sub-label">
+					&lt;a class="large button"&gt;<br/>
+					&lt;a class="button"&gt;<br/>
+					&lt;a class="small button"&gt;<br/>
+					&lt;a class="tiny button"&gt;<br/>
+				</span>
 			</div>
 			
 			<div class="large-8 large-pull-4 columns">
-				<a class="large button">Click Me</a>
+				<a class="large button" role="button" tabindex="0">Click Me</a>
+				<a class="button" role="button" tabindex="0">Click Me</a>
+				<a class="small button" role="button" tabindex="0">Click Me</a>
+				<a class="tiny button" role="button" tabindex="0">Click Me</a>
 			</div>
 		</div>
 	</section>
-	<section id="medium-button" class="guide-section">
+	<section id="buttons" class="guide-section">
 		<div class="row">
 			<div class="large-4 large-push-8 columns">
-				<h2 class="guide-section-label">Medium Button</h2>
-				<span class="guide-section-sub-label">&lt;a class="button"&gt;</span>
+				<h2 class="guide-section-label">Secondary Buttons</h2>
+				<span class="guide-section-sub-label">
+					&lt;a class="large secondary button"&gt;<br/>
+					&lt;a class="secondary button"&gt;<br/>
+					&lt;a class="small secondary button"&gt;<br/>
+					&lt;a class="tiny secondary button"&gt;<br/>
+				</span>
 			</div>
 			
 			<div class="large-8 large-pull-4 columns">
-				<a class="button">Click Me</a>
-			</div>
-		</div>
-	</section>
-	<section id="small-button" class="guide-section">
-		<div class="row">
-			<div class="large-4 large-push-8 columns">
-				<h2 class="guide-section-label">Small Button</h2>
-				<span class="guide-section-sub-label">&lt;a class="small button"&gt;</span>
-			</div>
-			
-			<div class="large-8 large-pull-4 columns">
-				<a class="small button">Click Me</a>
-			</div>
-		</div>
-	</section>
-	<section id="tiny-button" class="guide-section">
-		<div class="row">
-			<div class="large-4 large-push-8 columns">
-				<h2 class="guide-section-label">Tiny Button</h2>
-				<span class="guide-section-sub-label">&lt;a class="tiny button"&gt;</span>
-			</div>
-			
-			<div class="large-8 large-pull-4 columns">
-				<a class="tiny button">Click Me</a>
+				<a class="large secondary button" role="button" tabindex="0">Click Me</a>
+				<a class="secondary button" role="button" tabindex="0">Click Me</a>
+				<a class="small secondary button" role="button" tabindex="0">Click Me</a>
+				<a class="tiny secondary button" role="button" tabindex="0">Click Me</a>
 			</div>
 		</div>
 	</section>
@@ -276,7 +268,7 @@
 		<div class="row">
 			<div class="large-4 large-push-8 columns">
 				<h2 class="guide-section-label">Pagination</h2>
-				<span class="guide-section-sub-label"><nav class="pagination">&lt;nav class="pagination"&gt;<br>&nbsp;&lt;ul class="page-numbers"&gt;<br>&nbsp;&nbsp;&lt;li class="current"&gt;</span>
+				<span class="guide-section-sub-label">&lt;nav class="pagination"&gt;<br>&nbsp;&lt;ul class="page-numbers"&gt;<br>&nbsp;&nbsp;&lt;li class="current"&gt;</span>
 			</div>
 			
 			<div class="large-8 large-pull-4 columns">
@@ -293,6 +285,56 @@
 						<li><a class="next page-numbers" href="#">Next »</a></li>
 					</ul>
 				</nav>
+			</div>
+		</div>
+	</section>
+
+
+	<section id="panels" class="guide-section">
+		<div class="row">
+			<div class="large-4 large-push-8 columns">
+				<h2 class="guide-section-label">Panel</h2>
+				<span class="guide-section-sub-label">&lt;div class="panel"&gt;<br>&lt;div class="callout panel"&gt;</span>
+			</div>
+			
+			<div class="large-4 large-pull-4 columns">
+				<div class="panel">Here's a normal panel</div>
+			</div>
+			<div class="large-4 large-pull-4 columns">
+				<div class="callout panel">Here's a callout panel</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="alert-boxes" class="guide-section">
+		<div class="row">
+			<div class="large-4 large-push-8 columns">
+				<h2 class="guide-section-label">Alert Boxes</h2>
+				<span class="guide-section-sub-label">
+					&lt;div class="alert-box"&gt;<br>
+					&lt;div class="secondary alert-box"&gt;<br>
+					&lt;div class="success alert-box"&gt;<br>
+					&lt;div class="alert alert-box"&gt;<br>
+				</span>
+			</div>
+			
+			<div class="large-8 large-pull-4 columns">
+				<div class="alert-box" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
+					Here's a normal alert
+					<button href="#" tabindex="0" class="close" aria-label="Close Alert">&times;</button>
+				</div>
+				<div class="secondary alert-box" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
+					Here's a secondary alert
+					<button href="#" tabindex="0" class="close" aria-label="Close Alert">&times;</button>
+				</div>
+				<div class="success alert-box" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
+					Here's a success alert
+					<button href="#" tabindex="0" class="close" aria-label="Close Alert">&times;</button>
+				</div>
+				<div class="alert alert-box" data-alert tabindex="0" aria-live="assertive" role="dialogalert">
+					Here's a warning alert
+					<button href="#" tabindex="0" class="close" aria-label="Close Alert">&times;</button>
+				</div>
 			</div>
 		</div>
 	</section>
