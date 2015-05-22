@@ -2,16 +2,16 @@
 	
 	<header>
 
-		<h1><?php echo $content->post_title; ?></h1>
+		<h1><?php echo $params['content']->post_title; ?></h1>
 
-		<time datetime="<?php echo $content->post_date->format('Y-m-d H:i'); ?>">
+		<time datetime="<?php echo $params['content']->post_date->format('Y-m-d H:i'); ?>">
 
-			<?php echo $content->post_date->format('F j, Y'); ?>
+			<?php echo $params['content']->post_date->format('F j, Y'); ?>
 
 		</time>
 		
 	</header>		
 
-	<?php echo $content->filterContent('post_content'); ?>
+	<?php echo $params['content']->filterContent('post_content'); ?>
 			
 </article>

@@ -14,10 +14,10 @@ echo paginate_links( array(
 	'format' => '/page/%#%',
 
 	// (integer) (optional) The total amount of pages.
-	'total' => $nav->max_num_pages,
+	'total' => $params['query']->max_num_pages,
 
 	// (integer) (optional) The current page number.
-	'current' => max( 1, $nav->query_vars['paged'] ),
+	'current' => max( 1, $params['query']->query_vars['paged'] ),
 	
 	// (boolean) (optional) If set to True, then it will show all of the pages instead of a short list of the pages near the current page.
 	// By default, the 'show_all' is set to false and controlled by the 'end_size' and 'mid_size' arguments.

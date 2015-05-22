@@ -66,10 +66,6 @@ This is a general purpose template include function. It will look for a PHP file
 
 So calling `tpl('foo','bar');` will look for `tpl_foos/foo_bar.php`. 
 
-If an object is passed in the third parameter, it will be available in the template as a variable matching the passed `$prefix` string. 
-
-So calling `tpl('foo','bar',$post);` will make $post available in the template as a variable called `$foo`.
-
 ### The index template
 
 *tpl_templates/tpl_index.php*

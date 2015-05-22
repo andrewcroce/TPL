@@ -17,23 +17,17 @@ include( 'theme.class.php' );
  * within a directory tpl_{$prefix}s (note the 's' at the end, the pluralization of the $prefix).
  * So calling tpl('foo','bar'); will look for tpl_foos/foo_bar.php
  * 
- * If an object is passed in the third parameter, it will be available in the template
- * as a variable matching the passed $prefix string.
- * So calling tpl('foo','bar',$post); will make $post available in the template as a variable called $foo
+ * If a params array is passed in the third parameter, it will be available in the template
  * 
  * @param string $prefix The first segment of the filename
  * @param string $name The second segment of the filename
- * @param mixed $object An optional object/array (i.e. a WP Post or ACF Post object) to pass to the template file
+ * @param array $params An optional parameters array to pass to the template file
  */
-function tpl( $prefix, $name = null, $object = null ) {
+function tpl( $prefix, $name = null, $params = null ) {
 
 	// If no $name is provided, use 'default'
 	if( is_null( $name ) )
 		$name = 'default';
-
-	// If an object was passed, assign it to a variable for the template
-	if( !is_null( $object ) )
-		${$prefix} = $object;
 
 	$filepath = 'tpl_' . $prefix . 's/' . $prefix . '-' . $name . '.php';
 

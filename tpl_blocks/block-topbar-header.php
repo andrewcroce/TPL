@@ -11,7 +11,7 @@
 	</div>
 
 	<section class="top-bar-section">
-		<?php tpl('nav','main','right'); ?>
+		<?php tpl('nav','main', array( 'classes' => 'right' )); ?>
 	</section>
 
 </div>
