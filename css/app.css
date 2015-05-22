@@ -1,3 +1,4 @@
+@charset "UTF-8";
 meta.foundation-version {
   font-family: "/5.5.2/"; }
 
@@ -6375,6 +6376,14 @@ th.hide-for-touch {
   font-size: 0.85rem;
   color: #888888;
   line-height: 1.875; }
+
+.item p {
+  display: inline; }
+  .item p:after {
+    content: ' •';
+    padding: 0 0.46875rem; }
+  .item p:last-child:after {
+    display: none; }
 
 .screenreader {
   position: absolute;

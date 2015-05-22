@@ -26,6 +26,41 @@
 
 
 
+// ==============
+// Item Templates
+// ==============
+
+.item {
+	
+	p {
+		display: inline;
+
+		&:after {
+			content: ' •';
+			padding: 0 $column-gutter/4;
+		}
+		&:last-child {
+			&:after {
+				display: none;
+			}
+		}
+	}
+
+}
+
+
+
+
+// ======
+// Images
+// ======
+
+img, .wp-caption {
+	
+}
+
+
+
 // =======
 // Utility
 // =======
