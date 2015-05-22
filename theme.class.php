@@ -34,6 +34,8 @@ if(!class_exists('StarterTheme')){
 			add_filter('query_vars', array(&$this,'_query_vars'));
 			add_filter('rewrite_rules_array', array(&$this,'_rewrite_rules_array'));
 			add_filter('acf/load_field/name=index_post_type', array(&$this,'_acf_load_index_post_type') );
+			add_filter('the_content', array(&$this,'_the_content'));
+
 			
 			// Add any additional action or filter hooks here.
 		}
@@ -338,6 +340,19 @@ if(!class_exists('StarterTheme')){
 			}
 
 			return $field;
+		}
+
+
+
+		/**
+		 * Hook The Content Tilter
+		 * @param  string $content HTML content
+		 * @return string          Modified HTML
+		 */
+		function _the_content( $content ){
+
+			// Strip <p> tags around images
+			return preg_replace('/<p>\s*(<a .*>)?\s*(<img .* \/>)\s*(<\/a>)?\s*<\/p>/iU', '\1\2\3', $content);
 		}
 		
 	}
