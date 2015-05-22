@@ -10,7 +10,7 @@ tpl( 'link', 'read-more', array( 'url' => get_permalink( $params['item']->ID ) )
 $permalink = ob_get_clean(); ?>
 
 
-<article class="item-default">
+<article class="item default">
 	
 	<header>
 
@@ -25,8 +25,8 @@ $permalink = ob_get_clean(); ?>
 	</header>		
 
 	<?php // Truncate the content, appending the permalink
-	echo truncate( $params['item']->filterContent('post_content'), array(
-		'after' => $permalink
+	echo truncate( $params['item']->post_content, array(
+		'after' => ' ' . $permalink
 	)); ?>
 			
 </article>
