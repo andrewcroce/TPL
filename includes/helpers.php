@@ -45,9 +45,13 @@ function truncate( $html, $params ) {
         'end_string' => '…',
         'before' => '',
         'after' => '',
-        'is_utf8' => true
+        'is_utf8' => true,
+        'allowed_tags' => '<p>'
     );
+
     extract( array_merge( $defaults, $params ) );
+
+    $html = strip_tags( $html, $allowed_tags );
 
     if( strlen( $html ) <= $max_length ) {
         return wpautop( $before . $html . $after );
@@ -140,7 +144,7 @@ function truncate( $html, $params ) {
     while (!empty($tags))
         $output .= '</'.array_pop($tags).'>';
     
-    return wpautop( $output );
+    return wpautop( $output, false );
 
 }
 
