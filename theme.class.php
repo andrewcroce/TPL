@@ -352,7 +352,12 @@ if(!class_exists('StarterTheme')){
 		function _the_content( $content ){
 
 			// Strip <p> tags around images
-			return preg_replace('/<p>\s*(<a .*>)?\s*(<img .* \/>)\s*(<\/a>)?\s*<\/p>/iU', '\1\2\3', $content);
+			$content = preg_replace('/<p>\s*(<a .*>)?\s*(<img .* \/>)\s*(<\/a>)?\s*<\/p>/iU', '\1\2\3', $content);
+
+			// Wrap it in a wysiwyg class
+			$content = '<div class="wysiwyg">' . $content . '</div>';
+
+			return $content;
 		}
 		
 	}
