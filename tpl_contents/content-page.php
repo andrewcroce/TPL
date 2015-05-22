@@ -1,4 +1,4 @@
-<article class="content-page">
+<article class="content page">
 			
 	<h1><?php echo $params['content']->post_title; ?></h1>
 

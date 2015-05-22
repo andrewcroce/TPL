@@ -1,4 +1,4 @@
-<article class="content-default">
+<article class="content default">
 	
 	<header>
 
