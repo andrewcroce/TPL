@@ -219,6 +219,19 @@ if(!class_exists('StarterTheme')){
 			if( is_page() ){
 				$classes[] = 'page-' . $post->post_name;
 			}
+
+			// Add a class for the parent page name
+			if( is_page() && $post->post_parent ){
+				$post_parent = get_post($post->post_parent);
+        		$classes[] = "parent-" . $post_parent->post_name;
+			}
+
+			// Add a class for the template name, if one is being used
+			$template = get_page_template();
+			if( $template != null ) {
+			    $path = pathinfo( $template );
+			    $classes[] = str_replace( 'tpl_', 'template-', $path['filename'] );
+			}
 			
 			return $classes;
 		}
