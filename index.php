@@ -23,7 +23,7 @@
 
 		</ol>
 
-		<?php tpl('nav','pagination',$wp_query); ?>
+		<?php tpl('nav','pagination',array( 'query'=> $wp_query )); ?>
 
 	<?php tpl('wrapper','12col-end'); ?>
 
