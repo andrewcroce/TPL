@@ -5,7 +5,14 @@ include( 'includes/helpers.php' );
 include( 'includes/acf_index_post_type_fields.php' );
 include( 'theme.class.php' );
 
-
+//pull in tpl functions
+$folders = glob( dirname(__FILE__).'/tpl_*' );
+foreach( $folders as $folder ) {
+	$foldername = pathinfo( $folder , PATHINFO_FILENAME );
+	$prefix = substr( $foldername , 4 , strlen( $foldername ) - 5 );
+	
+	if( is_readable( $folder . '/' . $prefix . '_functions.php' ) ) require_once $folder . '/' . $prefix . '_functions.php';
+}
 
 /* ====================================== */
 /* THEME FUNCTIONS */
