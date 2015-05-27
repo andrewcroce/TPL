@@ -29,7 +29,6 @@ if(!class_exists('StarterTheme')){
 			add_filter('wp_starter_skiplinks', array(&$this,'_add_skiplinks'));
 
 			add_filter('template_include', array(&$this,'_template_include'));
-			add_filter('single_template', array(&$this,'_single_template'));
 			add_filter('body_class', array(&$this,'_body_class'));
 			add_filter('query_vars', array(&$this,'_query_vars'));
 			add_filter('rewrite_rules_array', array(&$this,'_rewrite_rules_array'));
