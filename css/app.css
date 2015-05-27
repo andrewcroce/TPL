@@ -6402,10 +6402,10 @@ th.hide-for-touch {
   position: absolute;
   left: -999em; }
 
-.posts-list {
+.item-list {
   margin: 0;
   list-style: none; }
-  .posts-list > li {
+  .item-list > li {
     margin-bottom: 1.875rem; }
 
 .item p {

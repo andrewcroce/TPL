@@ -32,7 +32,7 @@
 
 			<?php if( $index->have_posts() ) : // If our subquery has posts... ?>
 
-				<ol class="posts-list page-<?php echo $page_number; ?>" start="<?php echo $start_number; ?>">
+				<ol class="item-list page-<?php echo $page_number; ?>" start="<?php echo $start_number; ?>">
 
 					<?php while( $index->have_posts() ) : $index->the_post(); // Sub loop... ?>
 						
