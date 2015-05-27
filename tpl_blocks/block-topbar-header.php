@@ -17,7 +17,14 @@
 	</div>
 
 	<section class="top-bar-section">
+		<div class="right has-form">
+			<?php get_search_form(); ?>
+		</div>
+	</section>
+
+	<section class="top-bar-section">
 		<?php tpl_nav( 'main_menu', 'main-navigation', 'right' ); ?>
 	</section>
+	
 
 </div>
