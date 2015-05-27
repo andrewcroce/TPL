@@ -1,0 +1,45 @@
+// =================================
+// Posts List
+// Generic styles for lists of posts
+// i.e. on an index page
+// =================================
+.posts-list {
+
+	// Remove margin and numbers
+	margin: 0;
+	list-style: none;
+
+	> li {
+		margin-bottom: $column-gutter;
+	}
+}
+
+
+
+// ============================================
+// Item Template
+// A post list item, often inside a .posts-list
+// ============================================
+
+.item {
+	
+	// The default item has an excerpt generated from the truncate() function
+	p {
+		// Make excerpt paragraphs wrap
+		display: inline;
+
+		// Place a bullet between inline paragraphs
+		&:after {
+			content: ' •';
+			padding: 0 $column-gutter/4;
+		}
+
+		// Last one doesn't get a bullet
+		&:last-child {
+			&:after {
+				display: none;
+			}
+		}
+	}
+
+}
