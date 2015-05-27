@@ -238,22 +238,24 @@ if(!class_exists('StarterTheme')){
 		}
 		
 		
-		
+	
+
 		/**
-		*
-		* Add Custom WP Query Variables
-		* Allows you to add any new query variables you need to the WP query system.
-		* This will allow you to do things like query/search/filter by your custom variable using WP's built-in functionality,
-		* rather than using the $_REQUEST global and reinventing the wheel.
-		* 
-		**/
+		 * Add Custom WP Query Variables
+		 *
+		 * Allows you to add any new query variables you need to the WP query system.
+		 * This will allow you to do things like query/search/filter by your custom variable using WP's built-in functionality,
+		 * rather than using the $_REQUEST global and reinventing the wheel.
+		 *  
+		 * @param  array $query_vars  	Query vars array to be modified
+		 * @return array 				Modified query vars array
+		 **/
 		function _query_vars( $query_vars ) {
-			/*
-			array_push( $query_vars,
-				'some_query_var',
+
+			$new_vars = array(
+				// Add vars
 			);
-			*/
-			return $query_vars;
+			return array_merge( $new_vars, $query_vars );
 		}
 		
 		
@@ -263,7 +265,9 @@ if(!class_exists('StarterTheme')){
 		* Setup Custom URLS
 		* Allows you to create your own URL structures and replacement patterns.
 		* Often you will need to use this in conjunction with a custom query variable, in order to create pretty URL's that use that variable.
-		* 
+		*
+		* @param  array $rules  	Rewrite rules array to be modified
+		* @return array 			Modified rewrite rules array
 		**/
 		function _rewrite_rules_array( $rules ) {
 			
@@ -291,7 +295,10 @@ if(!class_exists('StarterTheme')){
 
 		/**
 		 * Load templates in subdirectories
-		 */
+		 *
+		 * @param string $template 	Path to template file
+		 * @return string 			Path to (different) template file
+		 **/
 		function _template_include( $template ){
 
 			global $post;
@@ -344,7 +351,7 @@ if(!class_exists('StarterTheme')){
 
 
 		/**
-		 * Hook The Content Tilter
+		 * Hook The Content Filter
 		 * @param  string $content HTML content
 		 * @return string          Modified HTML
 		 */
