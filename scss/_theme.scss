@@ -26,38 +26,53 @@
 
 
 
-// ==============
-// Item Templates
-// ==============
+// ======================================================
+// WYSIWYG Blocks
+// Everything passed through 'the_content' filter will be
+// automatically wrapped in div.wysiwyg
+// ======================================================
 
-.item {
+.wysiwyg {
+
+	// ==============
+	// WYSIWYG Images
+	// ==============
 	
-	p {
-		display: inline;
+	img, .wp-caption {
+		
+		margin: 0 auto $column-gutter;
+		width: 100%;
+		height: auto;
 
-		&:after {
-			content: ' •';
-			padding: 0 $column-gutter/4;
+		// Images inside a caption
+		img {
+			margin: 0;
+			display: inline-block;
 		}
-		&:last-child {
-			&:after {
-				display: none;
+
+		@media #{$medium-up}{
+			width: auto;
+			&.alignleft {
+				float: left;
+				clear: left;
+				margin-right: $column-gutter;
+			}
+			&.alignright {
+				float: right;
+				clear: right;
+				margin-left: $column-gutter;
+			}
+		}
+
+		&.wp-caption {
+			width: auto !important;
+			.wp-caption-text {
+				// Caption styles
 			}
 		}
 	}
-
 }
 
-
-
-
-// ======
-// Images
-// ======
-
-img, .wp-caption {
-	
-}
 
 
 
