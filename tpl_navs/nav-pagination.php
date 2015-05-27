@@ -1,3 +1,20 @@
+<?php 
+/**
+ * Pagination Template - tpl_pagination()
+ * 
+ * @var array $params {
+ *      
+ *      Parameters passed into the template from tpl_pagination()
+ *
+ * 		@var  WP_Query $query     A WP Query object from which to generate pagination
+ *      @var  string $prev_text   Text for the prev link. Default: "« Previous"
+ *      @var  string $next_text   Text for the next link. Default: "Next »"
+ * }	
+ * 
+ */ 
+
+extract( $params ); ?>
+
 <nav class="pagination">
 
 <?php
@@ -14,10 +31,10 @@ echo paginate_links( array(
 	'format' => '/page/%#%',
 
 	// (integer) (optional) The total amount of pages.
-	'total' => $params['query']->max_num_pages,
+	'total' => $query->max_num_pages,
 
 	// (integer) (optional) The current page number.
-	'current' => max( 1, $params['query']->query_vars['paged'] ),
+	'current' => max( 1, $query->query_vars['paged'] ),
 	
 	// (boolean) (optional) If set to True, then it will show all of the pages instead of a short list of the pages near the current page.
 	// By default, the 'show_all' is set to false and controlled by the 'end_size' and 'mid_size' arguments.
@@ -33,10 +50,10 @@ echo paginate_links( array(
 	'prev_next' => true,
 
 	// (string) (optional) The previous page text. Works only if 'prev_next' argument is set to true.
-	'prev_text' => __('« Previous'),
+	'prev_text' => $prev_text,
 
 	// (string) (optional) The next page text. Works only if 'prev_next' argument is set to true.
-	'next_text' => __('Next »'),
+	'next_text' => $next_text,
 
 	// (string) (optional) Controls format of the returned value. Possible values are:
 	// 'plain' - A string with the links separated by a newline character.

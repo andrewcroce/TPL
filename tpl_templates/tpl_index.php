@@ -36,13 +36,13 @@
 
 					<?php while( $index->have_posts() ) : $index->the_post(); // Sub loop... ?>
 						
-						<li><?php tpl('item','default', array( 'item' => new ACFPost($post) )); ?></li>
+						<li><?php tpl_item( new ACFPost($post) ); ?></li>
 					
 					<?php endwhile; wp_reset_postdata(); // Reset our loop back to the original page post ?>
 
 				</ol>
 
-				<?php tpl('nav','pagination', array( 'query' => $index ) ); // Pagination ?>
+				<?php tpl_pagination( $index ); ?>
 
 			<?php endif; ?>
 

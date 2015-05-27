@@ -1,12 +1,24 @@
 <?php
 
 /**
- * @param ACFPost $acfPost The WP_Post for the page wrapped in ACFPost object.
+ * [tpl_content description]
+ * @param  ACFPost $post The WP_Post for the post wrapped in ACFPost object.
  */
-function tpl_content_page( $acfPost ) {
+function tpl_content( $post ) {
+	tpl( 'content' , 'default' , array(
+		'post' => $post,
+	) );
+}
+
+
+/**
+ * Include the page content template
+ * @param ACFPost $page The WP_Post for the page wrapped in ACFPost object.
+ */
+function tpl_content_page( $page ) {
 
 	tpl( 'content' , 'page' , array(
-		'acfPost' => $acfPost,
+		'page' => $page,
 	) );
 
 }

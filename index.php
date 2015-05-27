@@ -17,13 +17,13 @@
 
 			<?php while( have_posts() ) : the_post(); ?>
 				
-				<li><?php tpl('item','default', array( 'item' => new ACFPost($post) )); ?></li>
+				<li><?php tpl_item( new ACFPost($post) ); ?></li>
 			
 			<?php endwhile; ?>
 
 		</ol>
 
-		<?php tpl('nav','pagination',array( 'query'=> $wp_query )); ?>
+		<?php tpl_pagination( $wp_query ); ?>
 
 	<?php tpl('wrapper','12col-end'); ?>
 

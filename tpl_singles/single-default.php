@@ -6,7 +6,7 @@
 		
 		<?php while( have_posts() ) : the_post(); ?>
 
-			<?php tpl('content','default', array( 'content' => new ACFPost($post) )); ?>
+			<?php tpl_content( new ACFPost($post) ); ?>
 
 		<?php endwhile; ?>
 
