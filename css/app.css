@@ -6377,6 +6377,37 @@ th.hide-for-touch {
   color: #888888;
   line-height: 1.875; }
 
+.wysiwyg img, .wysiwyg .wp-caption {
+  margin: 0 auto 1.875rem;
+  width: 100%;
+  height: auto; }
+  .wysiwyg img img, .wysiwyg .wp-caption img {
+    margin: 0;
+    display: inline-block; }
+  @media only screen and (min-width: 40.0625em) {
+    .wysiwyg img, .wysiwyg .wp-caption {
+      width: auto; }
+      .wysiwyg img.alignleft, .wysiwyg .wp-caption.alignleft {
+        float: left;
+        clear: left;
+        margin-right: 1.875rem; }
+      .wysiwyg img.alignright, .wysiwyg .wp-caption.alignright {
+        float: right;
+        clear: right;
+        margin-left: 1.875rem; } }
+  .wysiwyg img.wp-caption, .wysiwyg .wp-caption.wp-caption {
+    width: auto !important; }
+
+.screenreader {
+  position: absolute;
+  left: -999em; }
+
+.posts-list {
+  margin: 0;
+  list-style: none; }
+  .posts-list > li {
+    margin-bottom: 1.875rem; }
+
 .item p {
   display: inline; }
   .item p:after {
@@ -6384,7 +6415,3 @@ th.hide-for-touch {
     padding: 0 0.46875rem; }
   .item p:last-child:after {
     display: none; }
-
-.screenreader {
-  position: absolute;
-  left: -999em; }
