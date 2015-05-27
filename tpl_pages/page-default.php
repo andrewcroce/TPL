@@ -1,4 +1,9 @@
-<?php get_header(); ?>
+<?php 
+/**
+ * The default template for single pages
+ * 
+ **/
+get_header(); ?>
 
 <?php tpl('wrapper','12col-start'); ?>
 

@@ -1,4 +1,10 @@
-<?php get_header(); ?>
+<?php 
+/**
+ * Style guide template
+ * This is just some hard-coded HTML, add or remove as needed.
+ * 
+ **/
+get_header(); ?>
 
 <?php tpl('wrapper','12col-start'); ?>
 
