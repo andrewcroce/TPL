@@ -1,18 +1,33 @@
 <?php
 
+/**
+ * Include some stuff
+ */
 include( 'plugins/plugins.php' );
 include( 'includes/helpers.php' );
 include( 'includes/acf_index_post_type_fields.php' );
 include( 'theme.class.php' );
 
-//pull in tpl functions
-$folders = glob( dirname(__FILE__).'/tpl_*' );
+/**
+ * This little snippet automatically includes any function files in tpl_ folders according to the naming structure.
+ * So, a file at path tpl_foos/foo_functions.php will be included here
+ * 
+ */
+
+$folders = glob( dirname(__FILE__).'/tpl_*' ); // Get all our tpl_ folders
+
 foreach( $folders as $folder ) {
-	$foldername = pathinfo( $folder , PATHINFO_FILENAME );
-	$prefix = substr( $foldername , 4 , strlen( $foldername ) - 5 );
+
+	$foldername = pathinfo( $folder , PATHINFO_FILENAME ); // Get the folder name
+	$prefix = substr( $foldername , 4 , strlen( $foldername ) - 5 ); // Infer the corresponding prefix name
 	
+	// If the matching functions file exists and is readable, include it.
 	if( is_readable( $folder . '/' . $prefix . '_functions.php' ) ) require_once $folder . '/' . $prefix . '_functions.php';
 }
+
+
+
+
 
 /* ====================================== */
 /* THEME FUNCTIONS */
