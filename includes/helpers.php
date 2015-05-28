@@ -2,30 +2,6 @@
 
 
 /**
- * Get some useful variables related to the page numner
- * @param  int $paged The WP global $paged variable or query parameter
- * @return array      Array of variables
- */
-function get_paged_vars( $paged ) {
-
-    $vars = array();
-
-    if( $paged == 0 ) {
-        $vars['page_number'] = 1;
-        $vars['start_number'] = 1;
-    } else {
-        $posts_per_page = get_option('posts_per_page');
-        $vars['page_number'] = $paged;
-        $vars['start_number'] =  (( $posts_per_page * $paged ) - $posts_per_page ) + 1;
-    }
-
-    return $vars;
-}
-
-
-
-
-/**
  * Get a truncated snippet/excerpt from any content
  * This is a much more robust replacement for WP's excerpt field. This will generate a snippet from any text string,
  * taking into account HTML tags that might be cut off in the middle.

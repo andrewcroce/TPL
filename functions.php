@@ -50,3 +50,26 @@ function tpl( $prefix, $name = null, $params = null ) {
 	}
 
 }
+
+
+
+
+
+/**
+ * Get some useful variables related to the page number.
+ * These are used, for instance, to label paginated list pages
+ * @param  WP_Query $query A WP Query object from which to generate page variables
+ * @return array      Array of variables
+ */
+function get_paged_vars( $query ) {
+
+    $page_number = empty( $query->query['paged'] ) ? 1 : $query->query['paged'] ;
+    $start_number = (( $query->query_vars['posts_per_page'] * $page_number ) - $query->query_vars['posts_per_page'] ) + 1;
+
+    return array(
+        'page_number' => $page_number,
+        'start_number' => $start_number,
+        'end_number' => $start_number + ( $query->post_count - 1 ),
+        'total_number' => $query->found_posts
+    );
+}
