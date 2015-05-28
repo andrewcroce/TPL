@@ -28,7 +28,7 @@ $permalink = ob_get_clean(); ?>
 	
 	<header>
 
-		<h1><?php echo $post->post_title; ?></h1>
+		<h2><?php echo $post->post_title; ?></h2>
 		
 		<?php if( $include_date ) : ?>
 		
