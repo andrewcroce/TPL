@@ -6,14 +6,15 @@
  **/
 
 ?>
+extract( get_paged_vars( $wp_query ) ); ?>
+
 <?php get_header(); ?>
 
 <?php if( have_posts() ) : ?>
 
 	<?php tpl('wrapper','12col-start'); ?>
 		
-		<?php // If this is a search, extract some useful pagination variables and display a search header
-		if( is_search() ) : extract( get_paged_vars( $wp_query ) ); ?>
+		<?php if( is_search() ) : ?>
 
 			<header>
 
