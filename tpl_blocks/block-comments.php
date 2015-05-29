@@ -58,13 +58,13 @@ if( post_password_required( $post->ID ) ) return; ?>
 				// Note that your callback must include the opening <div>, <ol>, or <ul> tag (corresponding with the style parameter), but not the closing tags. 
 				// WordPress will supply the closing tag automatically, or you can use end-callback to override this default. 
 				// The callback is separate from the end-callback to facilitate hierarchical comments. Use with caution.
-				'callback' => null,
+				'callback' => 'tpl_comment',
 
 				// ( callback ) The name of a custom function to use to close each comment. 
 				// Using this will make your custom function get called to at the end of each comment, bypassing the WordPress default of using </div>, </ol>, or </li> based on the style parameter. 
 				// Use to customize the ending tags for a comment. 
 				// The callback is separate from the end-callback to facilitate hierarchical comments. Use with caution.
-				'end-callback' => null,
+				'end-callback' => 'tpl_comment_end',
 
 				// ( string ) The type of comment(s) to display. Can be 'all', 'comment', 'trackback', 'pingback', or 'pings'. 'pings' is both 'trackback' and 'ping back' together.
 				'type' => 'all',
@@ -79,7 +79,7 @@ if( post_password_required( $post->ID ) ) return; ?>
 				'per_page' => '',
 
 				// ( integer ) Size that the avatar should be shown as, in pixels. http://gravatar.com/ supports sizes between 1 and 512. Use 0 to hide avatars.
-				'avatar_size' => 32,
+				'avatar_size' => 40,
 
 				// ( boolean ) Setting this to true will display the most recent comment first then going back in order.
 				'reverse_top_level' => null,
