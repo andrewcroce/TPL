@@ -25,7 +25,6 @@ if(!class_exists('StarterTheme')){
 			add_action('wp_print_scripts', array(&$this,'_add_scripts'));
 			add_action('after_setup_theme', array(&$this,'_setup_theme'));
 			add_action('template_redirect', array(&$this,'_template_redirect'));
-			//add_action('wp_default_scripts', array(&$this,'_wp_default_scripts'));
 
 			add_filter('wp_starter_skiplinks', array(&$this,'_add_skiplinks'));
 			add_filter('template_include', array(&$this,'_template_include'));
@@ -102,7 +101,7 @@ if(!class_exists('StarterTheme')){
 			// Deregister jquery, so we can re-register it in the footer
 			wp_deregister_script('jquery');
 
-			wp_enqueue_script('modernizr', get_stylesheet_directory_uri() .'/bower_components/modernizr/modernizr.js', array(), '2.7.1');
+			wp_enqueue_script('modernizr', get_stylesheet_directory_uri() .'/bower_components/modernizr/modernizr.js', array(), '2.8.3');
 			wp_enqueue_script('jquery', site_url('/wp-includes/js/jquery/jquery.js?ver='.$wp_jquery_ver), array(), $wp_jquery_ver, true );
 			wp_enqueue_script('theme.app', get_stylesheet_directory_uri() .'/js/min/app-min.js', array('modernizr','jquery'), '0.1.0', true);
 			wp_localize_script('theme.app', 'theme', $this->_add_js_vars()); // Call _add_js_vars() to add PHP variables to frontend 
@@ -228,6 +227,7 @@ if(!class_exists('StarterTheme')){
 		}
 		
 
+
 		/**
 		 * Modify body classes
 		 * @param  array $classes Array of default body classes
@@ -260,7 +260,6 @@ if(!class_exists('StarterTheme')){
 		
 		
 	
-
 		/**
 		 * Add Custom WP Query Variables
 		 *
@@ -310,7 +309,6 @@ if(!class_exists('StarterTheme')){
 			
 		}
 		
-
 
 
 		/**
