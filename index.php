@@ -5,7 +5,13 @@
  * 
  **/
 
-?>
+/**
+ * Extract some useful pagination variables from get_paged_vars()
+ * @var int $page_number	Current page number
+ * @var int $start_number	The number of the first post on this page
+ * @var int $end_number		The number of the last post on this page
+ * @var int $total_number	The total number of posts found in the query
+ */
 extract( get_paged_vars( $wp_query ) ); ?>
 
 <?php get_header(); ?>

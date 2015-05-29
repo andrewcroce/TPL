@@ -74,7 +74,14 @@ function tpl( $prefix, $name = null, $params = null ) {
  * Get some useful variables related to the page number.
  * These are used, for instance, to label paginated list pages
  * @param  WP_Query $query A WP Query object from which to generate page variables
- * @return array      Array of variables
+ * @return array {
+ *         Array of pagination-related variables
+ *         
+ *         @var int $page_number	Current page number
+ *         @var int $start_number	The number of the first post on this page
+ *         @var int $end_number		The number of the last post on this page
+ *         @var int $total_number	The total number of posts found in the query
+ * }
  */
 function get_paged_vars( $query ) {
 

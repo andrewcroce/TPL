@@ -1,7 +1,7 @@
 <?php
 
 /**
- * [tpl_content description]
+ * Include the default post content template
  * @param  ACFPost $post The WP_Post for the post wrapped in ACFPost object.
  */
 function tpl_content( $post ) {
