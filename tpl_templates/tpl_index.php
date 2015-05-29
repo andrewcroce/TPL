@@ -3,7 +3,9 @@
 * This page template is meant as a general purpose replacement for WP's archive template.
 * By assigning it to a page, you can select a post type for which to list a paginated index.
 * It gives you the flexibility of a standard page, with the pagination features of an archive.
-* 
+*
+**/
+
 /**
  * Extract some useful pagination variables from get_paged_vars()
  * @var int $page_number	Current page number
