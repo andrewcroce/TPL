@@ -43,3 +43,50 @@
 	}
 
 }
+
+
+
+
+
+// ================================================
+// Comment Template
+// A single comment, see tpl_items/item_comment.php
+// ================================================
+
+.comments-section {
+	margin-top: $column-gutter;
+	
+	.comment {
+
+		footer {
+			.avatar-column {
+				padding-right: 0;
+				img {
+					width: 100%;
+				}
+			}
+			time {
+				display: block;
+				margin-bottom: $column-gutter;
+			}
+		}
+		.comment-actions {
+			@include sub-nav();
+			list-style-type: none;
+			li {
+				margin: 0;
+			}
+		}
+	}
+	.children {
+		@extend .panel;
+		@extend .item-list;
+		list-style-type: none;
+		@media #{$medium-up}{
+			margin-left: $column-gutter;
+		}
+		@media #{$large-up}{
+			margin-left: $column-gutter * 2;
+		}
+	}
+}
