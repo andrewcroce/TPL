@@ -106,6 +106,10 @@ if(!class_exists('StarterTheme')){
 			wp_enqueue_script('theme.app', get_stylesheet_directory_uri() .'/js/min/app-min.js', array('modernizr','jquery'), '0.1.0', true);
 			wp_localize_script('theme.app', 'theme', $this->_add_js_vars()); // Call _add_js_vars() to add PHP variables to frontend 
 
+			if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+				wp_enqueue_script( 'comment-reply' );
+			}
+
 		}
 		
 		
