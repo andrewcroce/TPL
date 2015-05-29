@@ -17,7 +17,6 @@ if(!class_exists('StarterTheme')){
 		*
 		* Constructor
 		* Primarily used to set up action and filter hooks.
-		* 
 		**/
 		function __construct() {
 			
@@ -26,8 +25,9 @@ if(!class_exists('StarterTheme')){
 			add_action('wp_print_scripts', array(&$this,'_add_scripts'));
 			add_action('after_setup_theme', array(&$this,'_setup_theme'));
 			add_action('template_redirect', array(&$this,'_template_redirect'));
-			add_filter('wp_starter_skiplinks', array(&$this,'_add_skiplinks'));
+			//add_action('wp_default_scripts', array(&$this,'_wp_default_scripts'));
 
+			add_filter('wp_starter_skiplinks', array(&$this,'_add_skiplinks'));
 			add_filter('template_include', array(&$this,'_template_include'));
 			add_filter('body_class', array(&$this,'_body_class'));
 			add_filter('query_vars', array(&$this,'_query_vars'));
@@ -45,7 +45,6 @@ if(!class_exists('StarterTheme')){
 		* 
 		* Init
 		* Hook into Wordpress initialization
-		*
 		*/
 		function _init() {
 
@@ -72,13 +71,11 @@ if(!class_exists('StarterTheme')){
 		*
 		* Add Styles
 		* This adds CSS files to the theme. You shouldn't need to add files, since app.css is compiled from SASS.
-		* 
 		**/
 		function _add_styles() {
 			if (is_admin()) return;
 			wp_enqueue_style('theme', get_stylesheet_directory_uri() .'/css/app.css', array(), '1.0.0', 'screen');
 		}
-		
 		
 
 
@@ -166,10 +163,8 @@ if(!class_exists('StarterTheme')){
 			load_theme_textdomain( 'theme', get_template_directory() . '/languages' );
 			
 			/**
-			*
 			* Widget Positions
 			* You will be able to add widgets to these positions in the WordPress admin.
-			*
 			**/
 			
 			/*
@@ -185,9 +180,7 @@ if(!class_exists('StarterTheme')){
 			
 			
 			/**
-			*
-			* Menus
-			* 
+			* Register Menus
 			**/
 			
 			register_nav_menus( array(
@@ -207,17 +200,17 @@ if(!class_exists('StarterTheme')){
 				'search-form', 'comment-form', 'comment-list', 'gallery', 'caption'
 			) );
 			
+
+
 			/**
-			*
-			* Images
+			* Image Sizes
 			* refer to http://codex.wordpress.org/Function_Reference/add_image_size
-			* 
 			**/
 			// add_image_size('my-image-size', 500,500,false);
 
 
 
-			/*
+			/**
 			* Generate Style Guide Page
 			**/
 			$style_guide = get_page_by_path('style-guide');
@@ -311,8 +304,7 @@ if(!class_exists('StarterTheme')){
 		/**
 		*
 		* Template Redirection
-		* Generic hook for handling various redirections. Do what you will.
-		* 
+		* Generic hook for handling various redirections. Do what you will... carefully
 		**/
 		function _template_redirect() {
 			
@@ -385,7 +377,7 @@ if(!class_exists('StarterTheme')){
 		 */
 		function _the_content( $content ){
 
-			// Strip <p> tags around images
+			// Strip <p> tags around images, because images are not paragraphs
 			$content = preg_replace('/<p>\s*(<a .*>)?\s*(<img .* \/>)\s*(<\/a>)?\s*<\/p>/iU', '\1\2\3', $content);
 
 			// Wrap it in a wysiwyg class
