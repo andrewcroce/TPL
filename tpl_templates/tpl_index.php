@@ -4,7 +4,14 @@
 * By assigning it to a page, you can select a post type for which to list a paginated index.
 * It gives you the flexibility of a standard page, with the pagination features of an archive.
 * 
-*/ ?>
+/**
+ * Extract some useful pagination variables from get_paged_vars()
+ * @var int $page_number	Current page number
+ * @var int $start_number	The number of the first post on this page
+ * @var int $end_number		The number of the last post on this page
+ * @var int $total_number	The total number of posts found in the query
+ */
+extract( get_paged_vars( $wp_query ) ); ?>
 
 <?php get_header(); ?>
 
@@ -21,10 +28,7 @@
 			$index = new WP_Query(array(
 				'post_type' => $page->index_post_type,
 				'paged' => $paged
-			)); 
-
-			// Extract any relevant vars from our $paged var
-			extract( get_paged_vars( $paged ) ) ?>
+			)); ?>
 
 			<h1><?php echo $page->post_title; ?></h1>
 
