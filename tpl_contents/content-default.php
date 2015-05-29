@@ -28,5 +28,11 @@ extract( $params ); ?>
 	</header>		
 
 	<?php echo $post->filterContent('post_content'); ?>
+
+	<?php if( comments_open( $post->ID ) || get_comments_number( $post->ID ) ) : ?>
+		
+		<?php tpl_comments( $post ); ?>
+
+	<?php endif; ?>
 			
 </article>
