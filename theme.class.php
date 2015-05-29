@@ -80,21 +80,40 @@ if(!class_exists('StarterTheme')){
 		}
 		
 		
+
+
 		/**
 		*
 		* Add Scripts
 		* This adds javascript files to the theme. Add any additional script files using the wp_enqueue_script() method.
 		* Be mindful of the array of dependencies, the third parameter. Specifying a dependencies will ensure scripts are loaded in proper order.
 		* 
+		* Only modernizr is loaded in the header, otherwise we could see a noticable delay in applied CSS that depends on modernizr classes (FOUC <http://en.wikipedia.org/wiki/Flash_of_unstyled_content>).
+		* All other scripts are loaded in non render-blocking fashion in the footer
+		*
+		* It is recommended that all JS libraries you use are prepended to app-min.js using a JS compiler, such as Codekit.
+		* This will keep the number of individual HTTP requests to a minimum.
 		**/
 		function _add_scripts() {
+			
+			// Don't mess with admin scripts
 			if (is_admin()) return;
+
+			// Find the current required jquery version
+			$wp_jquery_ver = $GLOBALS['wp_scripts']->registered['jquery']->ver;
+
+			// Deregister jquery, so we can re-register it in the footer
+			wp_deregister_script('jquery');
+
 			wp_enqueue_script('modernizr', get_stylesheet_directory_uri() .'/bower_components/modernizr/modernizr.js', array(), '2.7.1');
-			wp_enqueue_script('theme.app', get_stylesheet_directory_uri() .'/js/min/app-min.js', array('jquery','modernizr'), '0.1.0', true);
+			wp_enqueue_script('jquery', site_url('/wp-includes/js/jquery/jquery.js?ver='.$wp_jquery_ver), array(), $wp_jquery_ver, true );
+			wp_enqueue_script('theme.app', get_stylesheet_directory_uri() .'/js/min/app-min.js', array('modernizr','jquery'), '0.1.0', true);
 			wp_localize_script('theme.app', 'theme', $this->_add_js_vars()); // Call _add_js_vars() to add PHP variables to frontend 
+
 		}
 		
 		
+
 		/**
 		*
 		* Add JS Vars
