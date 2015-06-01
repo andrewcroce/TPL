@@ -44,6 +44,15 @@ function tpl_comment( $comment, $args, $depth ) {
 
 }
 
+
+/**
+ * Include the closing <li> for a comment item
+ * This is only meant to be used as a callback for wp_list_comments() 'end-callback' argument
+ * 
+ * @param  object $comment 	WP Comment object
+ * @param  array $args    	Arguments from wp_list_comments()
+ * @param  int $depth   	Comment depth, i.e. is it a top-level comment, a reply, or a reply to a reply, etc.
+ */
 function tpl_comment_end( $comment, $args, $depth ){
 	echo '</li>';
 }

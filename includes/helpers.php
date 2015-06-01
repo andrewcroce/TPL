@@ -6,12 +6,15 @@
  * This is a much more robust replacement for WP's excerpt field. This will generate a snippet from any text string,
  * taking into account HTML tags that might be cut off in the middle.
  * @param string $html HTML string to truncate
- * @param array $params Parameters array
- *          int $max_length Maximum character length to truncate the string to
- *          string $end_string Text to follow the truncated text
- *          string $before Append content before the truncated string 
- *          string $after Append content after the truncated string
- *          boolean $is_utf8 Is the string UTF8 encoded?
+ * @param array $params {
+ *          Parameters array
+ *          
+ *          @var int $max_length Maximum character length to truncate the string to
+ *          @var string $end_string Text to follow the truncated text
+ *          @var string $before Append content before the truncated string 
+ *          @var string $after Append content after the truncated string
+ *          @var boolean $is_utf8 Is the string UTF8 encoded?
+ * }
  * @return string
  */
 function truncate( $html, $params ) {
