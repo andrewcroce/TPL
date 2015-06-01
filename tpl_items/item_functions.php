@@ -16,6 +16,17 @@ function tpl_item( $post, $include_date = true ) {
 
 
 /**
+ * Include the default page template
+ * @param  ACFPost $page WP Post object wrapped in ACF Post object
+ */
+function tpl_item_page( $page ) {
+	tpl('item', 'page', array(
+		'page' => $page
+	) );
+}
+
+
+/**
  * Include the default comment template
  * Note, this should probably only be used as a callback for wp_list_comments()
  * 
