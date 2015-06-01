@@ -5,26 +5,48 @@
  */
 
 if( function_exists("register_field_group")) {
+
+	// Post Types
+	$post_type_choices = array();
+	$taxonomy_sets = array();
+	$post_types = get_post_types(array(
+		'public' => true
+	), 'objects');
+			
+	// Add them to the post_type_choices array
+	foreach( $post_types as $key => $post_type ){
+		PC::debug($key);
+		$post_type_choices[$key] = $post_type->label;
+		$taxonomies = get_taxonomies(array(
+			'public'   => true,
+			'object_type' => array( $key )
+		),'objects');
+		if( !empty( $taxonomies ) )
+			$taxonomy_sets[$key] = $taxonomies;
+	}
+
+	PC::debug($taxonomy_sets);
+
+	// Build our fields array
+	$fields = array (
+		array (
+			'key' => 'field_555a3932c85f3',
+			'label' => 'Post Type',
+			'name' => 'index_post_type',
+			'type' => 'select',
+			'instructions' => 'This page will be an index for a post type, please select the post type.',
+			'choices' => $post_type_choices,
+			'default_value' => '',
+			'allow_null' => 0,
+			'multiple' => 0,
+		)
+	);
+
+
 	register_field_group(array (
 		'id' => 'acf_index-template-fields',
 		'title' => 'Index Template Fields',
-		'fields' => array (
-			array (
-				'key' => 'field_555a3932c85f3',
-				'label' => 'Post Type',
-				'name' => 'index_post_type',
-				'type' => 'select',
-				'instructions' => 'This page will be an index for a post type, please select the post type.',
-				'choices' => array (
-					'post' => 'Posts',
-					'page' => 'Pages',
-					'attachment' => 'Media',
-				),
-				'default_value' => '',
-				'allow_null' => 0,
-				'multiple' => 0,
-			),
-		),
+		'fields' => $fields,
 		'location' => array (
 			array (
 				array (

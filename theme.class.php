@@ -31,7 +31,7 @@ if(!class_exists('StarterTheme')){
 			add_filter('body_class', array(&$this,'_body_class'));
 			add_filter('query_vars', array(&$this,'_query_vars'));
 			add_filter('rewrite_rules_array', array(&$this,'_rewrite_rules_array'));
-			add_filter('acf/load_field/name=index_post_type', array(&$this,'_acf_load_index_post_type') );
+			//add_filter('acf/load_field/name=index_post_type', array(&$this,'_acf_load_index_post_type') );
 			add_filter('the_content', array(&$this,'_the_content'));
 
 			
