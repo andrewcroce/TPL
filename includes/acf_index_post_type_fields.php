@@ -15,7 +15,6 @@ if( function_exists("register_field_group")) {
 			
 	// Add them to the post_type_choices array
 	foreach( $post_types as $key => $post_type ){
-		PC::debug($key);
 		$post_type_choices[$key] = $post_type->label;
 		$taxonomies = get_taxonomies(array(
 			'public'   => true,
