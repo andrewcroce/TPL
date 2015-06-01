@@ -7,7 +7,6 @@
  *      Parameters passed into the template from tpl_item()
  *
  * 		@var ACFPost $post 			Post object wrapped in ACF object
- * 		@var boolean $include_date	Show the date?
  * }	
  * 
  */ 
@@ -24,27 +23,30 @@ tpl_readmore( get_permalink( $post->ID ) );
 $permalink = ob_get_clean(); ?>
 
 
-<article class="item default">
+<article class="item default" itemscope itemtype="http://schema.org/Article">
 	
 	<header>
 
-		<h2><?php echo $post->post_title; ?></h2>
+		<h2 itemprop="headline" class="title"><?php echo $post->post_title; ?></h2>
+
+		<span itemprop="author" itemscope itemtype="http://schema.org/Person" class="author meta">
+			<span itemprop="name"><?php echo get_the_author_meta( 'display_name', $post->post_author ); ?></span>
+		</span>
 		
-		<?php if( $include_date ) : ?>
-		
-			<time datetime="<?php echo $post->post_date->format('Y-m-d H:i'); ?>">
-
-				<?php echo $post->post_date->format('F j, Y'); ?>
-
-			</time>
-
-		<?php endif ?>
+		<time itemprop="datePublished" datetime="<?php echo $post->post_date->format('c'); ?>" class="publish-date meta">
+			<?php echo $post->post_date->format('F j, Y'); ?>
+		</time>
 		
 	</header>		
 
-	<?php // Truncate the content, appending the permalink
-	echo truncate( $post->post_content, array(
-		'after' => ' ' . $permalink
-	)); ?>
+	<div class="excerpt"><?php // Truncate the content, appending the permalink
+		echo truncate( $post->post_content, array(
+			'after' => ' ' . $permalink
+		)); ?>
+	</div>
+	
+	<?php // Additional structured meta data ?>
+	<meta itemprop="articleBody" content="<?php echo htmlspecialchars( $post->filterContent('post_content') ); ?>">
+	<meta itemprop="url" content="<?php echo get_permalink( $post->ID ); ?>">
 			
 </article>

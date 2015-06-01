@@ -31,7 +31,7 @@
 extract( $params ); ?>
 
 <li>
-	<article class="comment level-<?php echo $depth; ?>" id="comment-<?php echo $comment->comment_ID; ?>">
+	<article itemprop="comment" itemscope itemtype="http://schema.org/Comment" class="comment level-<?php echo $depth; ?>" id="comment-<?php echo $comment->comment_ID; ?>">
 
 		<div class="row">
 			
@@ -53,9 +53,11 @@ extract( $params ); ?>
 						<div class="small-12 columns">
 					<?php endif; ?>
 
-							<?php printf( __( '%s' ), sprintf( '<b class="fn">%s</b>', get_comment_author_link() ) ); ?>
+							<span itemscope itemprop="author" itemtype="http://schema.org/Person" class="comment-author">
+								<span itemprop="name"><?php echo get_comment_author(); ?></span>
+							</span>
 
-							<time datetime="<?php comment_time( 'c' ); ?>">
+							<time itemprop="dateCreated" datetime="<?php comment_time( 'c' ); ?>" class="comment-publish-date meta">
 								<?php printf( _x( '%1$s at %2$s', '1: date, 2: time' ), get_comment_date(), get_comment_time() ); ?>
 							</time>
 
@@ -67,7 +69,7 @@ extract( $params ); ?>
 
 			</div>
 
-			<div class="large-8 medium-8 columns">
+			<div itemprop="text" class="large-8 medium-8 columns">
 				<?php echo wpautop( $comment->comment_content . ' ' .
 						get_comment_reply_link( array_merge( $args, array(
 							'add_below' => 'div-comment',

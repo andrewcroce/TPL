@@ -31,6 +31,8 @@ if( post_password_required( $post->ID ) ) return; ?>
 	<?php if( !empty( $comments ) ) : ?>
 		
 		<h3><?php echo __('Comments'); ?></h3>
+
+		<meta itemprop="commentCount" content="<?php echo count( $comments ); ?>" >
 		
 
 

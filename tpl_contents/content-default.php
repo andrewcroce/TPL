@@ -13,26 +13,29 @@
 
 extract( $params ); ?>
 
-<article class="content default">
+<article class="content default" itemscope itemtype="http://schema.org/Article">
 	
 	<header>
 
-		<h1><?php echo $post->post_title; ?></h1>
+		<h1 itemprop="headline" class="title"><?php echo $post->post_title; ?></h1>
 
-		<time datetime="<?php echo $post->post_date->format('Y-m-d H:i'); ?>">
-
+		<span itemprop="author" itemscope itemtype="http://schema.org/Person" class="author meta">
+			<span itemprop="name"><?php echo get_the_author_meta( 'display_name', $post->post_author ); ?></span>
+		</span>
+		
+		<time itemprop="datePublished" datetime="<?php echo $post->post_date->format('c'); ?>" class="publish-date meta">
 			<?php echo $post->post_date->format('F j, Y'); ?>
-
 		</time>
 		
 	</header>		
 
-	<?php echo $post->filterContent('post_content'); ?>
+	<div itemprop="articleBody"><?php echo $post->filterContent('post_content'); ?></div>
 
 	<?php if( comments_open( $post->ID ) || get_comments_number( $post->ID ) ) : ?>
-		
 		<?php tpl_comments( $post ); ?>
-
 	<?php endif; ?>
+
+	<?php // Additional structured meta data ?>
+	<meta itemprop="url" content="<?php echo get_permalink( $post->ID ); ?>">
 			
 </article>

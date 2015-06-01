@@ -27,13 +27,14 @@ $permalink = ob_get_clean(); ?>
 	
 	<header>
 
-		<h2><?php echo $page->post_title; ?></h2>
+		<h2 class="title"><?php echo $page->post_title; ?></h2>
 		
 	</header>		
 
-	<?php // Truncate the content, appending the permalink
-	echo truncate( $page->post_content, array(
-		'after' => ' ' . $permalink
-	)); ?>
+	<div class="excerpt"><?php // Truncate the content, appending the permalink
+		echo truncate( $page->post_content, array(
+			'after' => ' ' . $permalink
+		)); ?>
+	</div>
 			
 </article>

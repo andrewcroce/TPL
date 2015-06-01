@@ -15,7 +15,7 @@ extract( $params ); ?>
 
 <article class="content page">
 			
-	<h1><?php echo $page->post_title; ?></h1>
+	<h1 class="title"><?php echo $page->post_title; ?></h1>
 
 	<?php echo $page->filterContent('post_content'); ?>
 			
