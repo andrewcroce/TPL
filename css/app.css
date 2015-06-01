@@ -6379,7 +6379,7 @@ th.hide-for-touch {
   font-size: 1.25rem;
   line-height: 1.5; }
 
-.secondary-text, time {
+.secondary-text, .meta {
   font-size: 0.85rem;
   color: #888888;
   line-height: 1.875; }
