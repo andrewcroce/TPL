@@ -42,7 +42,23 @@ extract( get_paged_vars( $wp_query ) ); ?>
 
 					<?php while( $index->have_posts() ) : $index->the_post(); // Sub loop... ?>
 						
-						<li><?php tpl_item( new ACFPost($post) ); ?></li>
+						<li><?php
+
+							// If theres an item template function for this post type
+							// i.e tpl_item_{post_type}()
+							if( function_exists( 'tpl_item_' . $post->post_type ) ) {
+
+								// Call that template function
+								call_user_func( 'tpl_item_' . $post->post_type, new ACFPost($post) );
+							
+							} else {
+								
+								// Otherwise use the default
+								tpl_item( new ACFPost($post) );
+							
+							} ?>
+
+						</li>
 					
 					<?php endwhile; wp_reset_postdata(); // Reset our loop back to the original page post ?>
 
