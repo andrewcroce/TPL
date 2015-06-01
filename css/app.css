@@ -6423,6 +6423,11 @@ th.hide-for-touch {
   .item p:last-child:after {
     display: none; }
 
+.meta:after {
+  content: ' •'; }
+.meta:last-child:after {
+  display: none; }
+
 .comments-section {
   margin-top: 1.875rem; }
   .comments-section .comment footer .avatar-column {

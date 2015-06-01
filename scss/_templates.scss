@@ -44,6 +44,18 @@
 
 }
 
+.meta {
+	&:after {
+		content: ' •';
+	}
+	// Last one doesn't get a bullet
+	&:last-child {
+		&:after {
+			display: none;
+		}
+	}
+}
+
 
 
 
