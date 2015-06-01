@@ -30,9 +30,6 @@
 	color: lighten( $body-font-color, 40% );
 	line-height: $base-line-height * 1.25;
 }
-.meta {
-	@extend .secondary-text;
-}
 
 
 // ======================================================

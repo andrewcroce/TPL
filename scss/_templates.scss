@@ -44,7 +44,14 @@
 
 }
 
+
+// ===========================================
+// Article Meta Info
+// ===========================================
 .meta {
+	@extend .secondary-text;
+
+	// Place a bullet after each one
 	&:after {
 		content: ' •';
 	}
