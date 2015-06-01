@@ -8,8 +8,7 @@
 function tpl_item( $post, $include_date = true ) {
 
 	tpl('item', 'default', array(
-		'post' => $post,
-		'include_date' => $include_date
+		'post' => $post
 	) );
 
 }
