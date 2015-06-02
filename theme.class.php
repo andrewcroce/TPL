@@ -62,6 +62,11 @@ if(!class_exists('StarterTheme')){
 				$params = !empty($_POST['params']) ? $_POST['params'] : array();
 				$this->$action($params);
 			}
+
+			/**
+			 * Include our custom ACF Fieldset for the post type index page template
+			 */
+			include( 'includes/acf_index_post_type_fields.php' );
 		}
 		
 		
