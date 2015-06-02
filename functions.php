@@ -5,7 +5,6 @@
  */
 include( 'plugins/plugins.php' );
 include( 'includes/helpers.php' );
-include( 'includes/acf_index_post_type_fields.php' );
 include( 'theme.class.php' );
 
 /**
@@ -66,6 +65,72 @@ function tpl( $prefix, $name = null, $params = null ) {
 
 }
 
+
+
+/**
+ * Used on the index page template to get several variables related to the index
+ * @param  ACF_Post  $page  The WP Post object wrapped in ACF Post object
+ * @param  integer $paged 	The current page number
+ * @return array         	Array of variables
+ */
+function get_index_vars( $page, $paged = 0 ) {
+
+	global $wp_query;
+
+	// Prepare our index query arguments
+	$index = array(
+		'post_type' => $page->index_post_type,
+		'paged' => $paged
+	);
+
+	// Put any URL GET variables into the query args.
+	// This may not be the best way to do this, but it allows us to only get the variables that appear in the URL.
+	// If we use the $wp_query global for this, it comes with other vars we don't want here, like 'pagename'
+	
+
+	/*=================================*/
+	//THIS BE BROKEN
+	$tax_query = array();
+	foreach ($_GET as $key => $value) {
+
+		if( term_exists( $value, $key ) ){
+			$tax_query[] = array(
+				'taxonomy' => $key,
+				'field' => 'slug',
+				'terms' => $value
+			);
+		}
+		
+	}
+	$index['tax_query'] = $tax_query;
+	PC::debug($index);
+	/*=================================*/
+
+	// Prepare our vars array
+	$vars = array(
+		'index' => new WP_Query( $index ),
+		'post_type' => get_post_type_object( $page->index_post_type )
+	);
+
+	// If the page has enabled taxonomy filters...
+	if( isset( $page->{ 'index_taxonomies_for_' . $page->index_post_type } ) ) {
+
+		// Loop through each of them
+		foreach( $page->{ 'index_taxonomies_for_' . $page->index_post_type } as $taxonomy ){
+
+			// Get the full WP taxonomy object
+			$taxonomy_object = get_taxonomy( $taxonomy );
+
+			// Add a custom property "filter_style" to the object
+			// Unless changed, this is either "single" or "multi", to allow admin to choose whether each taxonomy can use filter by multiple terms at once
+			$taxonomy_object->filter_style = $page->{'filter_style_for_' . $page->index_post_type . '_' . $taxonomy};
+			
+			// Add them to the vars array
+			$vars['taxonomies'][] = $taxonomy_object;
+		}
+	}
+	return $vars;
+}
 
 
 
