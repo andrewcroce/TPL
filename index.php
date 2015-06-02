@@ -42,7 +42,7 @@ extract( get_paged_vars( $wp_query ) ); ?>
 
 		</ol>
 
-		<?php tpl_pagination( $wp_query ); ?>
+		<?php tpl_nav_pagination( $wp_query ); ?>
 
 	<?php tpl('wrapper','12col-end'); ?>
 
