@@ -23,18 +23,32 @@ extract( get_paged_vars( $wp_query ) ); ?>
 		
 		<?php while( have_posts() ) : the_post(); 
 
-			// The page
+			/**
+			 * The page
+			 */
 			$page = new ACFPost( $post );
 
-			// Create a new sub-query for our selected post type
-			$index = new WP_Query(array(
-				'post_type' => $page->index_post_type,
-				'paged' => $paged
-			)); ?>
+			/**
+			 * Extract variables for the index
+			 * @var WP_Query $index 	Query object for our post type index
+			 * @var object $post_type 	Information about our indexed post type
+			 * @var array $taxonomies 	List of taxonomy objects that we can filter by
+			 */
+			extract( get_index_vars( $page, $paged ) ); ?>
 
+			
 			<h1><?php echo $page->post_title; ?></h1>
 
+
 			<?php if( $page_number == 1 ) echo $page->filterContent('post_content'); // Presumably we should only display the content on the first page ?>
+						
+			
+			<?php if( !empty( $taxonomies ) ) : ?>
+				
+				<?php tpl_nav_taxonomy_filters( $taxonomies, $post_type ); ?>
+					
+			<?php endif; ?>
+
 
 			<?php if( $index->have_posts() ) : // If our subquery has posts... ?>
 
@@ -64,7 +78,11 @@ extract( get_paged_vars( $wp_query ) ); ?>
 
 				</ol>
 
-				<?php tpl_pagination( $index ); ?>
+				<?php tpl_nav_pagination( $index ); ?>
+
+			<?php else : ?>
+
+				<?php echo wpautop( sprintf(__('Sorry there are no matching %s, please try changing your selected filters.'), strtolower( $post_type->label )) ); ?>
 
 			<?php endif; ?>
 

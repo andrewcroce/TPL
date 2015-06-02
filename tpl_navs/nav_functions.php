@@ -18,6 +18,27 @@ function tpl_nav( $menu_location = 'main_menu', $id = '', $classes = '' ) {
 
 }
 
+/**
+ * Include the taxonomy filters template
+ * Used on the index page template
+ * @param  array $taxonomies Array of taxonomy objects. 
+ *                           Each taxonomy object may be supplemented by a "filter_style" property, either "single" or "multi".
+ *                           We will default to "single" if this property isn't present
+ * @param  object/string $post_type  Post type object or post type name
+ */
+function tpl_nav_taxonomy_filters( $taxonomies, $post_type ){
+
+	// If a post type string was passed, get the object
+	if( is_string( $post_type ) )
+		$post_type = get_post_type_object( $post_type );
+
+	tpl('nav','taxonomy-filters', array(
+		'taxonomies' => $taxonomies,
+		'post_type' => $post_type
+	));
+
+}
+
 
 /**
  * Include paginationt template
@@ -25,7 +46,7 @@ function tpl_nav( $menu_location = 'main_menu', $id = '', $classes = '' ) {
  * @param  string $prev_text   Text for the prev link. Default: "« Previous"
  * @param  string $next_text   Text for the next link. Default: "Next »"
  */
-function tpl_pagination( $query, $prev_text = '', $next_text = '' ) {
+function tpl_nav_pagination( $query, $prev_text = '', $next_text = '' ) {
 
 	if( empty( $prev_text ) ) $prev_text = __('« Previous');
 	if( empty( $next_text ) ) $next_text = __('Next »');
