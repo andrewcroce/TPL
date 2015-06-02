@@ -62,6 +62,9 @@
 		}
 	}
 }
+.meta-label {
+	@extend .secondary-text;
+}
 
 
 
@@ -106,6 +109,50 @@
 		}
 		@media #{$large-up}{
 			margin-left: $column-gutter * 2;
+		}
+	}
+}
+
+
+// =====================================
+// Taxonomy Filters Template
+// See tpl_navs/nav-taxonomy-filters.php
+// =====================================
+
+.f-dropdown.taxonomy-filter-list {
+	max-width: 50%;
+	max-height: 75vh;
+	overflow-y: auto; 
+	width: auto;
+	> li {
+		padding: 0.5em;
+		input {
+			display: inline;
+			float: left;
+			clear: left;
+			margin: 0 0.5em 0 0;
+			vertical-align: top;
+			line-height: 1;
+		}
+		label {
+			display: inline;
+			margin: 0;
+			vertical-align: top;
+			line-height: 1;
+		}
+		&:nth-child(even){
+			background: lighten( $secondary-color, 6% );
+		}
+		&:hover {
+			background: $secondary-color;
+		}
+	}
+}
+
+.current-taxonomies {
+	.current-terms {
+		&:last-child {
+			margin-bottom: $column-gutter;
 		}
 	}
 }
