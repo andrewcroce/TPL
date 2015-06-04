@@ -1,10 +1,22 @@
 <?php
 
 /**
+ * Include the template to display a query's currently applied taxonomy filters
+ *
+ * @param  WP_Query $query 			A WP Query object, possibly containing a tax_query with currently applied term filters
+ */
+function tpl_block_current_taxonomy_filters( $query ){
+	tpl('block','current-taxonomy-filters',array(
+		'query' => $query
+	));
+}
+
+
+/**
  * Include the comments template for a post
  * @param  ACFPost $post WP Post object wrapped in ACF Post object
  */
-function tpl_comments( $post, $status = 'approve' ) {
+function tpl_block_comments( $post, $status = 'approve' ) {
 
 	global $user_identity;
 

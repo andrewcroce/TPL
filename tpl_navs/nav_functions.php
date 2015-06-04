@@ -21,12 +21,13 @@ function tpl_nav( $menu_location = 'main_menu', $id = '', $classes = '' ) {
 /**
  * Include the taxonomy filters template
  * Used on the index page template
- * @param  array $taxonomies Array of taxonomy objects. 
- *                           Each taxonomy object may be supplemented by a "filter_style" property, either "single" or "multi".
- *                           We will default to "single" if this property isn't present
- * @param  object/string $post_type  Post type object or post type name
+ * @param  array 			$taxonomies 	Array of taxonomy objects. 
+ *                               			Each taxonomy object may be supplemented by a "filter_style" property, either "single" or "multi".
+ *                                  		We will default to "single" if this property isn't present
+ * @param  object/string 	$post_type  	Post type object or post type name
+ * @param  WP_Query 	 	$index 			WP Query object these filters apply to	
  */
-function tpl_nav_taxonomy_filters( $taxonomies, $post_type ){
+function tpl_nav_taxonomy_filters( $taxonomies, $post_type, $index ){
 
 	// If a post type string was passed, get the object
 	if( is_string( $post_type ) )
@@ -34,7 +35,8 @@ function tpl_nav_taxonomy_filters( $taxonomies, $post_type ){
 
 	tpl('nav','taxonomy-filters', array(
 		'taxonomies' => $taxonomies,
-		'post_type' => $post_type
+		'post_type' => $post_type,
+		'index' => $index
 	));
 
 }

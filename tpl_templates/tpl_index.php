@@ -40,12 +40,15 @@ extract( get_paged_vars( $wp_query ) ); ?>
 			<h1><?php echo $page->post_title; ?></h1>
 
 
+			<?php tpl_block_current_taxonomy_filters( $index ); ?>
+
+
 			<?php if( $page_number == 1 ) echo $page->filterContent('post_content'); // Presumably we should only display the content on the first page ?>
 						
 			
 			<?php if( !empty( $taxonomies ) ) : ?>
 				
-				<?php tpl_nav_taxonomy_filters( $taxonomies, $post_type ); ?>
+				<?php tpl_nav_taxonomy_filters( $taxonomies, $post_type, $index ); ?>
 					
 			<?php endif; ?>
 
