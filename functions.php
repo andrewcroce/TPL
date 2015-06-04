@@ -5,6 +5,7 @@
  */
 include( 'plugins/plugins.php' );
 include( 'includes/helpers.php' );
+include( 'includes/settings.php' );
 include( 'theme.class.php' );
 
 /**
