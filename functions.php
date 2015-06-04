@@ -79,37 +79,38 @@ function get_index_vars( $page, $paged = 0 ) {
 	global $wp_query;
 
 	// Prepare our index query arguments
-	$index = array(
+	$index_arguments = array(
 		'post_type' => $page->index_post_type,
 		'paged' => $paged
-	);
+	);	
 
-	// Put any URL GET variables into the query args.
-	// This may not be the best way to do this, but it allows us to only get the variables that appear in the URL.
-	// If we use the $wp_query global for this, it comes with other vars we don't want here, like 'pagename'
-	
-
-	/*=================================*/
-	//THIS BE BROKEN
+	// Prepare an empty taxonomy query
 	$tax_query = array();
+
+	// Loop through our URL parameters
 	foreach ($_GET as $key => $value) {
 
-		if( term_exists( $value, $key ) ){
+		// Use the URL params to check if there are any taxonomies with matching query_vars
+		$matching_taxonomies = get_taxonomies( array( 'query_var' => $key ), 'objects' );
+
+		// If we have a match
+		if( !empty( $matching_taxonomies ) ){
+
+			// Set a taxonomy query with that taxonomy name and value(s)
 			$tax_query[] = array(
-				'taxonomy' => $key,
+				'taxonomy' => reset($matching_taxonomies)->name,
 				'field' => 'slug',
-				'terms' => $value
+				'terms' => explode( ',', $value )
 			);
 		}
 		
 	}
-	$index['tax_query'] = $tax_query;
-	PC::debug($index);
-	/*=================================*/
+	// Apply the taxonomy query to the WP query arguments
+	$index_arguments['tax_query'] = $tax_query;
 
-	// Prepare our vars array
+	// Prepare an array of variables to return
 	$vars = array(
-		'index' => new WP_Query( $index ),
+		'index' => new WP_Query( $index_arguments ), // Run a WP_Query
 		'post_type' => get_post_type_object( $page->index_post_type )
 	);
 
