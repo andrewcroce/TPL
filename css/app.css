@@ -946,7 +946,7 @@ select {
   .large-11 {
     width: 91.6666666667%; }
 
-  .large-12, .header.row {
+  .large-12, .header.row > .columns {
     width: 100%; }
 
   .large-offset-0 {

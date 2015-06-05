@@ -1,3 +1,5 @@
 .header.row {
-	@extend .large-12;
+	> .columns {
+		@extend .large-12;
+	}
 }
