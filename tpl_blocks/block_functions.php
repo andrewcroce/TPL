@@ -1,9 +1,10 @@
 <?php
 
 
-function tpl_block_page_header( $title ){
+function tpl_block_page_header( $title, $meta_items ){
 	tpl('block','page-header',array(
-		'title' => 'title'
+		'title' => $title,
+		'meta_items' => $meta_items
 	));
 }
 
