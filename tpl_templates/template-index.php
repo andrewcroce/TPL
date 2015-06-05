@@ -34,13 +34,15 @@ extract( get_paged_vars( $wp_query ) ); ?>
 			 */
 			extract( get_index_vars( $page, $paged ) ); ?>
 
-			<?php tpl_wrapper_header_start() ?>
+
+			<header>
+
 				<h1><?php echo $page->post_title; ?></h1>
-			<?php tpl_wrapper_header_end() ?>
 
-
-			<?php tpl_block_current_taxonomy_filters( $index ); ?>
-
+				<?php tpl_block_current_taxonomy_filters( $index ); ?>
+				
+			</header>
+			
 
 			<?php if( $page_number == 1 ) echo $page->filterContent('post_content'); // Presumably we should only display the content on the first page ?>
 						

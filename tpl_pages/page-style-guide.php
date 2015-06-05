@@ -6,7 +6,6 @@
  **/
 get_header(); ?>
 
-<?php tpl('wrapper','12col-start'); ?>
 
 <article class="style-guide">
 
@@ -393,6 +392,5 @@ get_header(); ?>
 
 </article>
 
-<?php tpl('wrapper','12col-end'); ?>
 
 <?php get_footer(); ?>

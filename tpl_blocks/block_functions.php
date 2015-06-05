@@ -1,5 +1,12 @@
 <?php
 
+
+function tpl_block_page_header( $title ){
+	tpl('block','page-header',array(
+		'title' => 'title'
+	));
+}
+
 /**
  * Include the template to display a query's currently applied taxonomy filters
  *
