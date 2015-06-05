@@ -34,8 +34,9 @@ extract( get_paged_vars( $wp_query ) ); ?>
 			 */
 			extract( get_index_vars( $page, $paged ) ); ?>
 
-			
-			<h1><?php echo $page->post_title; ?></h1>
+			<?php tpl_wrapper_header_start() ?>
+				<h1><?php echo $page->post_title; ?></h1>
+			<?php tpl_wrapper_header_end() ?>
 
 
 			<?php tpl_block_current_taxonomy_filters( $index ); ?>
