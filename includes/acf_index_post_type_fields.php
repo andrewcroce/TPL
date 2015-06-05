@@ -144,7 +144,7 @@ if( function_exists("register_field_group")) {
 				array (
 					'param' => 'page_template',
 					'operator' => '==',
-					'value' => 'tpl_templates/tpl_index.php',
+					'value' => 'tpl_templates/template-index.php',
 					'order_no' => 0,
 					'group_no' => 0,
 				),

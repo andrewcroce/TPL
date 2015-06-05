@@ -17,8 +17,6 @@ extract( get_paged_vars( $wp_query ) ); ?>
 
 <?php get_header(); ?>
 
-<?php tpl('wrapper','12col-start'); ?>
-
 	<?php if( have_posts() ) : ?>
 		
 		<?php while( have_posts() ) : the_post(); 
@@ -92,7 +90,5 @@ extract( get_paged_vars( $wp_query ) ); ?>
 		<?php endwhile; ?>
 
 	<?php endif; ?>
-
-<?php tpl('wrapper','12col-end'); ?>
 
 <?php get_footer(); ?>
