@@ -4,7 +4,7 @@
  * 
  */ ?>
 
-<div class="tab-bar show-for-small-only" aria-hidden="true">
+<div class="tab-bar hide-for-large-up" aria-hidden="true">
 				
 	<section class="left tab-bar-section">
 		<span class="site-title"><a href="<?php echo home_url(); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></span>

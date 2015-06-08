@@ -4,7 +4,7 @@
  * 
  */ ?>
 
-<div class="top-bar hide-for-small" data-topbar>
+<div class="top-bar show-for-large-up" data-topbar>
 			
 	<div role="banner" class="title-area">
 		
