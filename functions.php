@@ -6,6 +6,8 @@
 include( 'plugins/plugins.php' );
 include( 'includes/helpers.php' );
 include( 'includes/settings.php' );
+include( 'includes/topbar-walker.class.php' );
+include( 'includes/offcanvas-walker.class.php' );
 include( 'theme.class.php' );
 
 /**

@@ -4,7 +4,7 @@
  * 
  */ ?>
 
-<div class="top-bar" data-topbar>
+<div class="top-bar hide-for-small" data-topbar>
 			
 	<div role="banner" class="title-area">
 		
@@ -23,7 +23,7 @@
 	</section>
 
 	<section class="top-bar-section">
-		<?php tpl_nav( 'main_menu', 'main-navigation', 'right' ); ?>
+		<?php tpl_nav_topbar( 'main_menu', 'main-navigation' ); ?>
 	</section>
 	
 

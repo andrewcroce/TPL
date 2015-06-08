@@ -6353,6 +6353,9 @@ th.hide-for-touch {
     line-height: 1.75rem;
     padding-top: 0;
     padding-bottom: 0; } }
+.tab-bar a {
+  color: #FFFFFF; }
+
 /**
  * Styles for shared HTML wrappers
  * @see tpl_wrappers/wrapper_function.php, or any wrapper files in tpl_wrappers/

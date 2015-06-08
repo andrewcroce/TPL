@@ -39,14 +39,22 @@
 <body <?php body_class(); ?>>
 
 	<?php tpl('nav','skiplinks'); ?>
+
 	
-	<main id="main-container" role="main">
+
+	<div class="off-canvas-wrap" data-offcanvas>
+		<div class="inner-wrap">
+
+			<main id="main-container" role="main">
+
 		
-		<header id="main-header">
+				<header id="main-header">
 
-			<?php tpl('block','topbar-header'); ?>
-			
-		</header>
+					<?php tpl('block','topbar-header'); ?>
 
-		<div id="main-content">
+					<?php tpl('block','offcanvas-header'); ?>
+					
+				</header>
+
+				<div id="main-content">
 			

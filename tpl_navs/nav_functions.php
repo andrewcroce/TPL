@@ -18,6 +18,45 @@ function tpl_nav( $menu_location = 'main_menu', $id = '', $classes = '' ) {
 
 }
 
+
+
+/**
+ * Include topbar nav menu template
+ * @param  string $menu_location A registered WP menu location. Default: 'main_menu'
+ * @param  string $id            ID to add to the <nav> element. Default: value of $menu_location
+ */
+function tpl_nav_topbar( $menu_location = 'main_menu', $id = '' ) {
+
+	if( empty( $id ) ) $id = $menu_location;
+
+	tpl('nav','topbar',array(
+		'menu_location' => $menu_location,
+		'id' => $id
+	));
+
+}
+
+
+
+/**
+ * Include offcanvas nav menu template
+ * @param  string $menu_location A registered WP menu location. Default: 'main_menu'
+ * @param  string $id            ID to add to the <nav> element. Default: value of $menu_location
+ */
+function tpl_nav_offcanvas( $menu_location = 'main_menu', $id = '' ) {
+
+	if( empty( $id ) ) $id = $menu_location;
+
+	tpl('nav','offcanvas',array(
+		'menu_location' => $menu_location,
+		'id' => $id
+	));
+
+}
+
+
+
+
 /**
  * Include the taxonomy filters template
  * Used on the index page template

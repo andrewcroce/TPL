@@ -1,16 +1,27 @@
-		</div><!-- end #main-content -->
+				</div><!-- end #main-content -->
 
-		<footer id="main-footer">
+				<footer id="main-footer">
 
-			<?php tpl('wrapper','12col-start'); ?>
-			
-				<small>©<?php echo date('Y'); ?> <?php bloginfo( 'name' ); ?></small>
+					<div class="row">
+						
+						<div class="large-12 columns">
 
-			<?php tpl('wrapper','12col-end'); ?>
+							<small>©<?php echo date('Y'); ?> <?php bloginfo( 'name' ); ?></small>
+							
+						</div>
 
-		</footer>
+					</div>
 
-	</main>
+				</footer>
+
+				<a class="exit-off-canvas"></a>
+
+			</main>
+
+		</div><!-- end .inner-wrap -->
+	</div><!-- end .off-canvas-wrap -->
+
+	
 
 	<?php wp_footer(); ?>
 
