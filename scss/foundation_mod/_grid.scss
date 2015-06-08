@@ -1,0 +1,44 @@
+// For creating container, nested, collapsed, and full-width rows.
+// 
+//
+// $behavior - Any special behavior for this row? Default: false. Options: nest, collapse, nest-collapse, false.
+@mixin grid-row($behavior: false) {
+
+  // use @include grid-row(nest); to include a nested row
+  @if $behavior == nest {
+    margin: 0 (-($column-gutter/2));
+    max-width: none;
+    width: auto;
+  }
+
+  // use @include grid-row(collapse); to collapsed a container row margins
+  @else if $behavior == collapse {
+    margin: 0;
+    max-width: $row-width;
+    width: 100%;
+  }
+
+  // use @include grid-row(nest-collapse); to collapse outer margins on a nested row
+  @else if $behavior == nest-collapse {
+    margin: 0;
+    max-width: none;
+    width: auto;
+  }
+  
+  // use @include grid-row(full-width); to remove the max-width restriction
+  @else if $behavior == full-width {
+  	margin: 0;
+    max-width: none;
+    width: auto;
+  }
+
+  // use @include grid-row; to use a container row
+  @else {
+    margin: 0 auto;
+    max-width: $row-width;
+    width: 100%;
+  }
+
+  // Clearfix for all rows
+  @include clearfix();
+}

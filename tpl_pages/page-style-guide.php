@@ -10,6 +10,20 @@ get_header(); ?>
 <article class="style-guide">
 
 
+	<?php tpl_wrapper_header_open(); ?>
+
+		<header>
+		
+			<h1>Style Guide</h1>
+		
+		</header>
+
+	<?php tpl_wrapper_header_close(); ?>
+
+
+	
+	<?php tpl_wrapper_content_open(); ?>
+
 	<div class="row">
 		<div class="large-12 columns">
 			<h2 class="guide-section-heading">Typography</h2>
@@ -389,6 +403,8 @@ get_header(); ?>
 			</div>
 		</div>
 	</section>
+
+	<?php tpl_wrapper_content_close(); ?>
 
 </article>
 

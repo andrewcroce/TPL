@@ -33,62 +33,76 @@ extract( get_paged_vars( $wp_query ) ); ?>
 			 * @var array $taxonomies 	List of taxonomy objects that we can filter by
 			 */
 			extract( get_index_vars( $page, $paged ) ); ?>
-
-
-			<header>
-
-				<h1><?php echo $page->post_title; ?></h1>
-
-				<?php tpl_block_current_taxonomy_filters( $index ); ?>
-				
-			</header>
 			
 
-			<?php if( $page_number == 1 ) echo $page->filterContent('post_content'); // Presumably we should only display the content on the first page ?>
-						
-			
-			<?php if( !empty( $taxonomies ) ) : ?>
-				
-				<?php tpl_nav_taxonomy_filters( $taxonomies, $post_type, $index ); ?>
+			<?php tpl_wrapper_header_open(); ?>
+
+				<header>
+
+					<h1><?php echo $page->post_title; ?></h1>
+
+					<?php tpl_block_current_taxonomy_filters( $index ); ?>	
+
+					<?php if( !empty( $taxonomies ) ) : ?>
 					
-			<?php endif; ?>
-
-
-			<?php if( $index->have_posts() ) : // If our subquery has posts... ?>
-
-				<ol class="item-list page-<?php echo $page_number; ?>" start="<?php echo $start_number; ?>">
-
-					<?php while( $index->have_posts() ) : $index->the_post(); // Sub loop... ?>
+						<?php tpl_nav_taxonomy_filters( $taxonomies, $post_type, $index ); ?>
 						
-						<li><?php
+					<?php endif; ?>
+					
+				</header>
+			
+			<?php tpl_wrapper_header_close(); ?>
+			
 
-							// If theres an item template function for this post type
-							// i.e tpl_item_{post_type}()
-							if( function_exists( 'tpl_item_' . $post->post_type ) ) {
 
-								// Call that template function
-								call_user_func( 'tpl_item_' . $post->post_type, new ACFPost($post) );
+			<?php tpl_wrapper_content_open(); ?>
+
+
+
+				<?php if( $page_number == 1 ) echo $page->filterContent('post_content'); // Presumably we should only display the content on the first page ?>
+
+				
+
+				<?php if( $index->have_posts() ) : // If our subquery has posts... ?>
+
+					<ol class="item-list page-<?php echo $page_number; ?>" start="<?php echo $start_number; ?>">
+
+						<?php while( $index->have_posts() ) : $index->the_post(); // Sub loop... ?>
 							
-							} else {
+							<li><?php
+
+								// If theres an item template function for this post type
+								// i.e tpl_item_{post_type}()
+								if( function_exists( 'tpl_item_' . $post->post_type ) ) {
+
+									// Call that template function
+									call_user_func( 'tpl_item_' . $post->post_type, new ACFPost($post) );
 								
-								// Otherwise use the default
-								tpl_item( new ACFPost($post) );
-							
-							} ?>
+								} else {
+									
+									// Otherwise use the default
+									tpl_item( new ACFPost($post) );
+								
+								} ?>
 
-						</li>
-					
-					<?php endwhile; wp_reset_postdata(); // Reset our loop back to the original page post ?>
+							</li>
+						
+						<?php endwhile; wp_reset_postdata(); // Reset our loop back to the original page post ?>
 
-				</ol>
+					</ol>
 
-				<?php tpl_nav_pagination( $index ); ?>
 
-			<?php else : ?>
+					<?php tpl_nav_pagination( $index ); ?>
 
-				<?php echo wpautop( sprintf(__('Sorry there are no matching %s, please try changing your selected filters.'), strtolower( $post_type->label )) ); ?>
 
-			<?php endif; ?>
+				<?php else : ?>
+
+					<?php echo wpautop( sprintf(__('Sorry there are no matching %s, please try changing your selected filters.'), strtolower( $post_type->label )) ); ?>
+
+				<?php endif; ?>
+
+
+			<?php tpl_wrapper_content_close(); ?>
 
 		<?php endwhile; ?>
 

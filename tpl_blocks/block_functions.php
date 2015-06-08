@@ -1,13 +1,5 @@
 <?php
 
-
-function tpl_block_page_header( $title, $meta_items ){
-	tpl('block','page-header',array(
-		'title' => $title,
-		'meta_items' => $meta_items
-	));
-}
-
 /**
  * Include the template to display a query's currently applied taxonomy filters
  *

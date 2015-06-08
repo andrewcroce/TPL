@@ -16,21 +16,32 @@ extract( get_paged_vars( $wp_query ) ); ?>
 
 <?php get_header(); ?>
 
+
+<?php if( is_search() ) : ?>
+
+
+	<?php tpl_wrapper_header_open(); ?>
+
+		<header>
+
+			<h1><?php echo sprintf(__('Search results for "%s"'), get_query_var('s')); ?></h1>
+			
+			<?php if( have_posts() ) : ?>
+				<span class="meta"><?php echo sprintf(__('Showing %s - %s of %s results'), $start_number, $end_number, $total_number); ?></span>		
+			<?php endif ?>
+			
+		</header>
+
+	<?php tpl_wrapper_header_close(); ?>
+	
+	
+<?php endif; ?>
+
+
 <?php if( have_posts() ) : ?>
 
-	<?php tpl('wrapper','12col-start'); ?>
-		
-		<?php if( is_search() ) : ?>
 
-			<header>
-
-				<h1><?php echo sprintf(__('Search results for "%s"'), get_query_var('s')); ?></h1>
-
-				<p><?php echo sprintf(__('Showing %s - %s of %s results'), $start_number, $end_number, $total_number); ?></p>
-				
-			</header>
-			
-		<?php endif; ?>
+	<?php tpl_wrapper_content_open(); ?>
 
 		<ol class="item-list page-<?php echo $page_number; ?>" start="<?php echo $start_number; ?>">
 
@@ -44,7 +55,18 @@ extract( get_paged_vars( $wp_query ) ); ?>
 
 		<?php tpl_nav_pagination( $wp_query ); ?>
 
-	<?php tpl('wrapper','12col-end'); ?>
+	<?php tpl_wrapper_content_close(); ?>
+
+
+<?php else: ?>
+
+
+	<?php tpl_wrapper_content_open(); ?>
+
+		<?php echo wpautop( sprintf(__('Sorry, your search for "%s" returned no results.'), get_query_var('s')) ); ?>
+
+	<?php tpl_wrapper_content_close(); ?>
+
 
 <?php endif; ?>
 

@@ -1,0 +1,29 @@
+/**
+ * Styles for shared HTML wrappers
+ * @see tpl_wrappers/wrapper_function.php, or any wrapper files in tpl_wrappers/
+ */
+
+[class*="-wrapper"] {
+	padding: $column-gutter 0;
+	margin: 0 0 $column-gutter 0;
+}
+
+
+/**
+ * Header Wrapper
+ */
+.header-wrapper {
+	background: $primary-color;
+
+	h1, .meta {
+		color: $white;
+	}
+}
+
+
+/**
+ * Secondary Wrapper
+ */
+.secondary-wrapper {
+	background: $secondary-color;
+}

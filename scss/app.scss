@@ -1,6 +1,8 @@
 @import "settings";
 @import "../bower_components/bourbon/app/assets/stylesheets/bourbon";
 @import "../bower_components/foundation/scss/foundation";
+
+@import "foundation_mod/grid";
 @import "foundation_mod/pagination";
 @import "foundation_mod/top-bar";
 
@@ -42,6 +44,7 @@
 //   "../bower_components/foundation/components/offcanvas",
 //   "../bower_components/foundation/components/visibility";
 
+@import "wrappers";
 @import "style_guide";
 @import "theme";
 @import "templates";
