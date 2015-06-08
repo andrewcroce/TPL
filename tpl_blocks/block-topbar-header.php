@@ -4,7 +4,7 @@
  * 
  */ ?>
 
-<div class="tab-bar">
+<div class="top-bar" data-topbar>
 			
 	<div role="banner" class="title-area">
 		
@@ -12,18 +12,19 @@
 			<span id="site-title"><a href="<?php echo home_url(); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></span>
 		</div>
 
-		<a class="right-off-canvas-toggle" href="#" >Menu</a>
-
+		<span class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></span>
 
 	</div>
 
-</div>
+	<section class="top-bar-section">
+		<div class="right has-form">
+			<?php get_search_form(); ?>
+		</div>
+	</section>
 
-
-<div class="right-off-canvas-menu">
-		
-	<?php get_search_form(); ?>
-
-	<?php tpl_nav( 'main_menu', 'main-navigation', 'off-canvas-list' ); ?>
+	<section class="top-bar-section">
+		<?php tpl_nav( 'main_menu', 'main-navigation', 'right' ); ?>
+	</section>
+	
 
 </div>
