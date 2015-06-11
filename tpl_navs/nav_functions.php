@@ -101,7 +101,11 @@ function tpl_nav_pagination( $query, $prev_text = '', $next_text = '' ) {
 
 
 
-function tpl_page_tree_nav( $page ){
+/**
+ * Include the page tree navigation
+ * @param  int/WP_Post $page Post ID or object
+ */
+function tpl_nav_page_tree( $page ){
 
 	$tree = get_page_tree( $page );
 

@@ -13,7 +13,7 @@ get_header(); ?>
 			
 			<?php tpl_content_page( $page ); ?>
 			
-			<?php if( page_has_family_tree() ) tpl_page_tree_nav( $page ); ?>
+			<?php if( page_has_family_tree() ) tpl_nav_page_tree( $page ); ?>
 
 		<?php endwhile; ?>
 
