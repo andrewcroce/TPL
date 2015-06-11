@@ -98,3 +98,17 @@ function tpl_nav_pagination( $query, $prev_text = '', $next_text = '' ) {
 		'next_text' => $next_text
 	));
 }
+
+
+
+function tpl_page_tree_nav( $page ){
+
+	$tree = get_page_tree( $page );
+
+	if( !empty( $tree ) ){
+		tpl('nav','page-tree', array(
+			'tree' => $tree
+		));
+	}
+
+}
