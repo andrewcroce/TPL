@@ -7,9 +7,13 @@ get_header(); ?>
 
 	<?php if( have_posts() ) : ?>
 		
-		<?php while( have_posts() ) : the_post(); ?>
+		<?php while( have_posts() ) : the_post(); 
+
+			$page = new ACFPost($post); ?>
 			
-			<?php tpl_content_page( new ACFPost($post) ); ?>
+			<?php tpl_content_page( $page ); ?>
+			
+			<?php if( page_has_family_tree() ) tpl_page_tree_nav( $page ); ?>
 
 		<?php endwhile; ?>
 
