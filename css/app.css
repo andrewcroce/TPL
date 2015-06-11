@@ -6541,3 +6541,6 @@ th.hide-for-touch {
 
 .current-taxonomies .current-terms:last-child {
   margin-bottom: 1.875rem; }
+
+#main-footer {
+  padding: 0.9375rem 0; }
