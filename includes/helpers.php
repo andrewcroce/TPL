@@ -1,5 +1,34 @@
 <?php
 
+/**
+ * Recursive function to add an array of child posts to any post object
+ * as a property called "children".
+ * @param WP_Post &$post A post object
+ */
+function add_descendents( &$post ) {
+
+    // Get any immediate children of this post
+    $children = get_posts(array(
+        'post_type' => $post->post_type,
+        'post_parent' => $post->ID,
+        'child_of' => $post->ID
+    ));
+
+    // If there are children, add them to the object
+    if( !empty( $children ) ){
+        
+        $post->children = $children;
+
+        // Loop through each child and recursively call this function again to add their children
+        foreach( $children as $child ){
+            add_descendents( $child );
+        }
+    }
+
+    return;
+}
+
+
 
 /**
  * Get a truncated snippet/excerpt from any content
