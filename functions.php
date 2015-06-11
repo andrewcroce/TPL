@@ -164,3 +164,41 @@ function get_paged_vars( $query ) {
         'total_number' => $query->found_posts
     );
 }
+
+
+
+/**
+ * Check if a page has a family tree, i.e. it has children or ancestors
+ * @param  int/WP_Post $post A page ID or WP Post object
+ * @return boolean       
+ */
+function page_has_family_tree( $post = null ){
+	
+	if( is_null( $post ) ) {
+		global $post;
+	} else {
+		if( is_int( $post ) )
+			$post = get_post( $post );
+	}
+
+	$cached = wp_cache_get( 'page_has_family_tree_' . $post->ID );
+
+	if( $cached ) return $cached;
+
+	$ancestors = get_ancestors( $post->ID, 'page' );
+
+	if( !empty( $ancestors ) ) return true;
+
+	$children = get_posts(array(
+		'post_type' => 'page',
+		'post_parent' => $post->ID,
+		'child_of' => $post->ID
+	));
+
+	if( !empty( $children ) ) return true;
+
+	return false;
+}
+
+
+}
