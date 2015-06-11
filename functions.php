@@ -201,4 +201,53 @@ function page_has_family_tree( $post = null ){
 }
 
 
+
+
+/**
+ * Get the page hierarchy associated with a page
+ * @param  int/WP_Post/ACF_Post $page 	Page ID or post object
+ * @return array       					Hierarchical array of pages and their descendants
+ *
+ * @see includes/helpers.php for the recursive add_descendants() function
+ */
+function get_page_tree( $page ) {
+
+	// If its an ID, get the post object
+	if( is_int( $page ) )
+		$page = get_post( $page );
+
+	// Get the linear array of the page's ancestors.
+	// The last item in the array will always be a top level page
+	$ancestors = get_ancestors( $page->ID, 'page' );
+
+	$tree = array();
+
+	// If there are no ancestors, this is a top level page
+	if( empty( $ancestors ) ){
+		$root_ancestor = $page->ID;
+
+	// The ancestral post is the last one
+	} else {
+		$root_ancestor = $ancestors[ count( $ancestors ) - 1 ];
+	}
+
+	// See if theres a cached copy
+	$cached_tree = wp_cache_get( 'page_tree_' . $root_ancestor );
+
+	// If so, return it
+	if( $cached_tree ) {
+		return $cached_tree;
+	}
+
+	// Add the root ancestor as the root item in our tree
+	$tree[0] = get_post( $root_ancestor );
+
+	// Add any descendants recursively
+	add_descendents( $tree[0] );
+
+	// Cache the results
+	wp_cache_set( 'page_tree_' . $root_ancestor, $tree );
+
+	return $tree;
+
 }
