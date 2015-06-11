@@ -367,6 +367,16 @@ if(!class_exists('StarterTheme')){
 
 			// If this is a page, try to locate a template file with a matching name
 			if( is_page() && !is_page_template() ) {
+
+				// If this is the front page, try to load the home page template
+				if( is_front_page() ){
+					if( file_exists( dirname(__FILE__) . '/tpl_pages/page-home.php' ) ){
+						return locate_template( 'tpl_pages/page-home.php' );
+					} else {
+						return locate_template( 'tpl_pages/page-default.php' );
+					}
+				}
+
 				if( file_exists( dirname(__FILE__) . '/tpl_pages/page-' . $post->post_name . '.php' ) ){
 					return locate_template( 'tpl_pages/page-' . $post->post_name . '.php' );
 				} else {
