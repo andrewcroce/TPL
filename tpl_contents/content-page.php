@@ -6,7 +6,8 @@
  *      
  *      Parameters passed into the template from tpl_content_page()
  *
- * 		@var ACFPost $page Post object wrapped in ACF object
+ * 		@var ACFPost $page 					Post object wrapped in ACF object
+ * 		@var boolean $has_sidebar_content	Does the page have anything to go in a sidebar?
  * }	
  * 
  */ 
@@ -37,8 +38,22 @@ extract( $params ); ?>
 
 
 	<?php tpl_wrapper_content_open(); ?>
+		
+		<div class="row">
+			
+			<div class="large-<?php if( $has_sidebar_content ){ echo '8'; } else { echo '12'; } ?> columns">
+				<div itemprop="text"><?php echo $page->filterContent('post_content'); ?></div>
+			</div>
+			
+			<?php if( $has_sidebar_content ) : ?>
+				
+				<div class="large-4 columns">
+					<div class="sidebar desktop-dump-container"></div>
+				</div>
 
-		<div itemprop="text"><?php echo $page->filterContent('post_content'); ?></div>
+			<?php endif; ?>
+
+		</div>
 
 	<?php tpl_wrapper_content_close(); ?>
 

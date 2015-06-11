@@ -17,8 +17,11 @@ function tpl_content( $post ) {
  */
 function tpl_content_page( $page ) {
 
+	$has_sidebar_content = page_has_family_tree( $page );
+
 	tpl( 'content' , 'page' , array(
 		'page' => $page,
+		'has_sidebar_content' => $has_sidebar_content
 	) );
 
 }
