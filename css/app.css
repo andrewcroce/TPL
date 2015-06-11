@@ -6356,6 +6356,11 @@ th.hide-for-touch {
 .tab-bar a {
   color: #FFFFFF; }
 
+.side-nav > li > .side-nav {
+  padding-left: 0.9375rem;
+  padding-top: 0;
+  padding-bottom: 0; }
+
 /**
  * Styles for shared HTML wrappers
  * @see tpl_wrappers/wrapper_function.php, or any wrapper files in tpl_wrappers/
