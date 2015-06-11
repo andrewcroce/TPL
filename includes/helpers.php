@@ -31,6 +31,85 @@ function add_descendents( &$post ) {
 
 
 /**
+ * Generic recursive function to generate a nested list of posts or taxonomy terms
+ * @param  array &$items Array of posts or terms
+ * @param  array  $params Parameters array
+ * @return string         HTML
+ */
+function nested_list( &$items, $params = array() ) {
+
+    // We need the global post object, so we can identify the active item
+    global $post;
+
+    // Default parameters
+    $defaults = array(
+        'items_wrap' => '<ul class="side-nav">%s</ul>',
+        'item_wrap' => '<li class="%3$s">%1$s%2$s</li>',
+        'item_class' => '',
+        'link_items' => 1,
+        'object_type' => 'post', // or 'term'
+        'child_key' => 'children'
+    );
+    $params = array_merge( $defaults, $params );
+    extract( $params );
+
+    // Prepare empty HTML string
+    $html = '';
+
+    // Loop through each item
+    foreach( $items as $item ){
+
+        // Empty string for child elements
+        $children = '';
+
+        // Empty string for item's HTML
+        $item_html = '';
+
+        $this_item_class = $item_class;
+
+        if( $post->ID == $item->ID )
+            $this_item_class .= ' active';
+        
+        // If its a post object (any post type)
+        if( $object_type == 'post' ) {
+
+            // If its an ID, get the post object
+            if( is_int( $item ) )
+                $item = get_post( $item );
+
+            // Wrap title in permalink by default
+            if( $link_items ) {
+                $item_html .= '<a href="' . get_permalink( $item->ID ) . '">' . $item->post_title . '</a>';
+            
+            // Otherwise just output the title
+            } else {
+                $item_html .= $item->post_title;
+            }
+
+            // If there are child items, recursively run this function again to generate a nested list
+            if( isset( $item->{$child_key} ) ){
+                $children = nested_list( $item->{$child_key}, $params );
+            }
+
+
+        // If its a taxonomy term
+        } elseif( $object_type == 'term' ) {
+            // TO DO: make this work for taxonomy terms too
+        }
+
+        // Wrap item HTML in our item wrap
+        $html .= sprintf( $item_wrap, $item_html, $children, $this_item_class );
+    }
+
+    // Wrap HTML in our items wrap
+    $html = sprintf( $items_wrap, $html );
+
+    return $html;
+}
+
+
+
+/**
  * Get a truncated snippet/excerpt from any content
  * This is a much more robust replacement for WP's excerpt field. This will generate a snippet from any text string,
  * taking into account HTML tags that might be cut off in the middle.
