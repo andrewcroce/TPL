@@ -21,6 +21,7 @@ if(!class_exists('StarterTheme')){
 		function __construct() {
 			
 			add_action('init', array(&$this, '_init'));
+			add_action('after_switch_theme', array(&$this, '_theme_activated'));
 			add_action('wp_print_styles', array(&$this,'_add_styles'));
 			add_action('wp_print_scripts', array(&$this,'_add_scripts'));
 			add_action('after_setup_theme', array(&$this,'_setup_theme'));
@@ -39,12 +40,62 @@ if(!class_exists('StarterTheme')){
 		}
 
 
+		/**
+		 * Theme activation
+		 * This runs when the theme is activated
+		 */
+		function _theme_activated() {
 
-		/* 
-		* 
-		* Init
-		* Hook into Wordpress initialization
-		*/
+			/**
+			* Generate Home Page
+			**/
+			$home_page = get_page_by_path('home-page');
+			if( is_null( $home_page ) ){
+				$home_page = wp_insert_post(array(
+					'post_content' => __('<p>This is the home page. Add ACF fields and customize as needed.</p>'),
+					'post_name' => 'home-page',
+					'post_title' => 'Home Page',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+
+				if( $home_page ){
+					if( $home_page instanceof WP_Error ){
+						trigger_error('Error generating home page');
+					} else {
+						update_option( 'page_on_front', $home_page );
+    					update_option( 'show_on_front', 'page' );
+					}
+				}
+			}
+
+
+
+			/**
+			* Generate Style Guide Page
+			**/
+			$style_guide = get_page_by_path('style-guide');
+			if( is_null( $style_guide ) ){
+				$style_guide = wp_insert_post(array(
+					'post_content' => __('<p>This page is require to display the style guide, please do not delete it.</p>'),
+					'post_name' => 'style-guide',
+					'post_title' => 'Style Guide',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+				if( $style_guide instanceof WP_Error )
+					trigger_error('Error generating style guide page');
+			}
+
+		}
+
+
+
+
+		/**
+		 * Init
+		 * Hook into Wordpress initialization
+		 */
 		function _init() {
 
 			/* Set the permalink structure to use postname
@@ -215,22 +266,6 @@ if(!class_exists('StarterTheme')){
 			* refer to http://codex.wordpress.org/Function_Reference/add_image_size
 			**/
 			// add_image_size('my-image-size', 500,500,false);
-
-
-
-			/**
-			* Generate Style Guide Page
-			**/
-			$style_guide = get_page_by_path('style-guide');
-			if( is_null( $style_guide ) ){
-				wp_insert_post(array(
-					'post_content' => __('<p>This page is require to display the style guide, please do not delete it.</p>'),
-					'post_name' => 'style-guide',
-					'post_title' => 'Style Guide',
-					'post_status' => 'publish',
-					'post_type' => 'page'
-				));
-			}
 			
 			
 		}
