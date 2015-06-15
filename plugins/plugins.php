@@ -115,6 +115,11 @@ function _tgmpa_register_plugins(){
 			'name' => 'Relevanssi',
 			'slug' => 'relevanssi',
 			'required' => false
+		),
+		array(
+			'name' => 'Wordpress SEO by Yoast',
+			'slug' => 'wordpress-seo',
+			'required' => false
 		)
 		
 	);
