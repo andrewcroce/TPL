@@ -7,8 +7,7 @@ It is packaged as a submodule of [WordPress-Skeleton, Fork](https://bitbucket.or
 ## Requirements
 
   * [bower](http://bower.io): `npm install bower -g` Manage your libraries.
-  * A SASS compiler. I recommend [Codekit](https://incident57.com/codekit/).
-  * A Javascript compiler. I also recommend [Codekit](https://incident57.com/codekit/).
+  * A SASS and Javascript compiler. I recommend you use Gulp with the provided gulpfile.js, or [Codekit](https://incident57.com/codekit/).
 
 ## Required/Recommended Plugins
 
@@ -30,6 +29,7 @@ The theme will prompt you to install these plugins automatically. Thanks to Thom
   * [W3 Total Cache](https://wordpress.org/plugins/w3-total-cache/). I mainly use this for managing a generic mirror CDN on my local site copies. But it provides some powerful caching too.
   * [Manual Image Crop](https://wordpress.org/plugins/manual-image-crop/). This should be part of the core media library functionality. Lets you crop your images individually for each defined image size.
   * [Force Regenerate Thumbnails](https://wordpress.org/plugins/force-regenerate-thumbnails/). Like it says, regenerates all your image sizes.
+  * [Relevanssi](https://wordpress.org/plugins/relevanssi/) Replaces the standard WordPress search with a better search engine, with lots of features and configurable options.
 
 ## Installation
 

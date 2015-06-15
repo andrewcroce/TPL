@@ -110,6 +110,11 @@ function _tgmpa_register_plugins(){
 			'required' => false,
 			'external_url' => 'http://www.gravityforms.com/',
 			'source' => get_stylesheet_directory().'/plugins/packages/gravityforms.zip'
+		),
+		array(
+			'name' => 'Relevanssi',
+			'slug' => 'relevanssi',
+			'required' => false
 		)
 		
 	);
