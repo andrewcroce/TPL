@@ -1,0 +1,12 @@
+
+
+
+/**
+ * Include the {{name}} {{prefix}} template
+ {{param_docs}}
+ */
+function tpl_{{prefix}}_{{name}}({{params_in}}) {
+	tpl( '{{prefix}}' , '{{name}}' , array(
+		{{params_out}}
+	) );
+}

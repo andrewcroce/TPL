@@ -1,0 +1,35 @@
+{
+  "name": "wp-starter",
+  "version": "1.0.0",
+  "description": "A Wordpress theme framework, built for use with Advanced Custom Fields and other supporting plugins, and Foundation front-end framework.",
+  "main": "gulpfile-sample.js",
+  "dependencies": {
+    "browser-sync": "~2.7.10",
+    "gulp-param": "~0.6.3",
+    "fs": "~0.0.2",
+    "gulp": "~3.9.0",
+    "gulp-include": "~1.1.1",
+    "gulp-rename": "~1.2.2",
+    "gulp-bower": "~0.0.10",
+    "gulp-sass": "~2.0.1",
+    "gulp-sourcemaps": "~1.5.2",
+    "gulp-uglify": "~1.2.0",
+    "mkdirp": "~0.5.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://viusllc@bitbucket.org/viusllc/wordpress-foundation-starter-theme.git"
+  },
+  "keywords": [
+    "wordpress",
+    "foundation",
+    "acf",
+    "theme"
+  ],
+  "author": "Andrew Croce",
+  "license": "MIT"
+}

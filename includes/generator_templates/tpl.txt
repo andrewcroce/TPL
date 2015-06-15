@@ -1,0 +1,17 @@
+<?php 
+/**
+ * {{display-name}} template - tpl_{{prefix}}_{{name}}()
+ * 
+ * @var array $params {
+ *      
+ *      Parameters passed into the template from tpl_{{prefix}}_{{name}}()
+ {{param_docs}}
+ * }	
+ * 
+ */ 
+extract( $params ); ?>
+
+<h4>
+	{{display-name}} template
+	<small>tpl_{{prefix}}_{{name}}()</small>
+</h4>
