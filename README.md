@@ -46,6 +46,7 @@ This theme presumes you have a working knowledge of how to create Wordpress them
   * [Handy cheat sheet for template hierarchy and file naming](http://codex.wordpress.org/images/1/18/Template_Hierarchy.png)
 
 If you are using Gulp...
+
   * Rename gulpfile-sample.js to gulpfile.js, and replace `%%YOUR LOCAL URL HERE%%` with your localhost development URL.
   * Run `gulp server` task to start the BrowserSync server and start watching files for changes.
   * SCSS and Javascript files will automatically be compiled, and changes will appear immediately.
