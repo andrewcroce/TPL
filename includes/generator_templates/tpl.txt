@@ -4,8 +4,8 @@
  * 
  * @var array $params {
  *      
- *      Parameters passed into the template from tpl_{{prefix}}_{{name}}()
- {{param_docs}}
+ *      Parameters passed into the template from tpl_{{prefix}}_{{name}}() 
+ *      {{param_docs}}
  * }	
  * 
  */ 

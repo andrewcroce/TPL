@@ -8,6 +8,7 @@ var localurl	= '%%YOUR LOCAL URL HERE%%',
 	uglify 		= require('gulp-uglify'),
 	rename		= require('gulp-rename'),
 	sourcemaps	= require('gulp-sourcemaps'),
+	markdown	= require('gulp-markdown'),
 	sync		= require('browser-sync');
 
 
@@ -45,6 +46,14 @@ gulp.task('scripts', function(){
 		.pipe( rename('app-min.js') )
 		.pipe( gulp.dest('js/min') )
 		.pipe(sync.stream());
+});
+
+
+// Compile README.md into README.html
+gulp.task('readme', function(){
+	gulp.src('README.md')
+		.pipe( markdown() )
+		.pipe( gulp.dest('./') );
 });
 
 
@@ -90,8 +99,9 @@ gulp.task('tpl', function( n, p ){
 		fn_filepath = directory + '/' + fn_filename;
 
 	if( p ){
+
 		var params = p.split(',');
-		console.log(params);
+	
 	}
 
 
@@ -120,7 +130,23 @@ gulp.task('tpl', function( n, p ){
 								.replace( /\{\{prefix\}\}/g, prefix )
 								.replace( /\{\{display\-name\}\}/g, displayName.charAt(0).toUpperCase() + displayName.slice(1) );
 
-							
+							if( params ){
+
+								var param_docs 	= '';
+
+								for( var i = 0; i < params.length; i++ ){
+
+									var param_parts = params[i].split(':'),
+										variable 	= param_parts[0],
+										datatype 	= param_parts[1] && ( param_parts[1].replace(/ /g,'') !== '' ) ? param_parts[1] : 'mixed',
+										quote		= datatype == 'string' ? '\'' : '',
+										description = param_parts[3] && ( param_parts[3].replace(/ /g,'') !== '' ) ? param_parts[3] : '[description]';
+									
+
+									param_docs += '\n *\t\t @var ' + datatype + ' $' + variable + ' ' + description;
+								}
+								text = text.replace( /\{\{param_docs\}\}/g, param_docs );
+							}
 								
 
 							fs.writeFile( filepath, text, function(){
@@ -151,21 +177,34 @@ gulp.task('tpl', function( n, p ){
 						.replace( /\{\{prefix\}\}/g, prefix );
 
 					if( params ){
+
 						var params_in 	= '',
 							params_out 	= '',
 							param_docs 	= '';
 
 						for( var i = 0; i < params.length; i++ ){
+
+							var param_parts = params[i].split(':'),
+								variable 	= param_parts[0],
+								datatype 	= param_parts[1] && ( param_parts[1].replace(/ /g,'') !== '' ) ? param_parts[1] : 'mixed',
+								quote		= datatype == 'string' ? '\'' : '',
+								defaultval 	= param_parts[2] && ( param_parts[2].replace(/ /g,'') !== '' ) ? ' = ' + quote + param_parts[2] + quote : '',
+								description = param_parts[3] && ( param_parts[3].replace(/ /g,'') !== '' ) ? param_parts[3] : '[description]';
+								
+
 							if( i > 0 ){
 								params_in += ', ';
 								params_out += '\n\t\t';
 							}
-							params_in += '$' + params[i];
-							params_out += '\'' + params[i] + '\' => $' + params[i] + ',';
+
+							params_in += '$' + variable + defaultval;
+							params_out += '\'' + variable + '\' => $' + variable + ',';
+							param_docs += '\n * @param ' + datatype + ' $' + variable + ' ' + description;
 						}
 						text = text
 							.replace( /\{\{params_in\}\}/g, params_in )
-							.replace( /\{\{params_out\}\}/g, params_out );
+							.replace( /\{\{params_out\}\}/g, params_out )
+							.replace( /\{\{param_docs\}\}/g, param_docs );
 					}
 
 					fs.open( fn_filepath, 'r', function( error, fd ){
