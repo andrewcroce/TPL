@@ -2,8 +2,8 @@
   "name": "wp-starter",
   "version": "1.0.0",
   "description": "A Wordpress theme framework, built for use with Advanced Custom Fields and other supporting plugins, and Foundation front-end framework.",
-  "main": "gulpfile-sample.js",
-  "dependencies": {
+  "main": "gulpfile.js",
+  "devDependencies": {
     "browser-sync": "~2.7.10",
     "gulp-param": "~0.6.3",
     "fs": "~0.0.2",
@@ -14,9 +14,9 @@
     "gulp-sass": "~2.0.1",
     "gulp-sourcemaps": "~1.5.2",
     "gulp-uglify": "~1.2.0",
-    "mkdirp": "~0.5.1"
+    "mkdirp": "~0.5.1",
+    "gulp-markdown": "^1.0.0"
   },
-  "devDependencies": {},
   "scripts": {
     "start": "server"
   },
