@@ -1,5 +1,7 @@
 /bower_components/*
+/node_modules/*
 /.sass-cache/*
 /scss/.sass-cache
 *.DS_Store
 /.wpinstall
+gulpfile.js
