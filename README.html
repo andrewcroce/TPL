@@ -1,109 +1,82 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8"/>
-</head>
-<body>
-<h1>Wordpress Foundation Starter Theme</h1>
-
+<h1 id="wordpress-foundation-starter-theme">Wordpress Foundation Starter Theme</h1>
 <p>A starting point for Wordpress Themes, built with <a href="http://foundation.zurb.com/">Foundation</a> and Bourbon mixin library.</p>
-
 <p>It is packaged as a submodule of <a href="https://bitbucket.org/andrewcroce/wordpress-skeleton">WordPress-Skeleton, Fork</a></p>
-
-<h2>Requirements</h2>
-
+<h2 id="requirements">Requirements</h2>
 <ul>
 <li><a href="http://bower.io">bower</a>: <code>npm install bower -g</code> Manage your libraries.</li>
 <li>A SASS compiler. I recommend <a href="https://incident57.com/codekit/">Codekit</a>.</li>
 <li>A Javascript compiler. I also recommend <a href="https://incident57.com/codekit/">Codekit</a>.</li>
 </ul>
-
-<h2>Required/Recommended Plugins</h2>
-
-<p>The theme will prompt you to install these plugins automatically. Thanks to Thomas Griffen&#8217;s <a href="https://github.com/thomasgriffin/TGM-Plugin-Activation">Plugin Activation Class</a>.</p>
-
-<h3>Required</h3>
-
+<h2 id="required-recommended-plugins">Required/Recommended Plugins</h2>
+<p>The theme will prompt you to install these plugins automatically. Thanks to Thomas Griffen&#39;s <a href="https://github.com/thomasgriffin/TGM-Plugin-Activation">Plugin Activation Class</a>.</p>
+<h3 id="required">Required</h3>
 <ul>
-<li><a href="http://www.advancedcustomfields.com/">Advanced Custom Fields</a>. Fantastic plugin for creating custom fields. I never leave home without it. Some built in theme functionality will not work without it, but it won&#8217;t fail catastrophically without it, however.</li>
+<li><a href="http://www.advancedcustomfields.com/">Advanced Custom Fields</a>. Fantastic plugin for creating custom fields. I never leave home without it. Some built in theme functionality will not work without it, but it won&#39;t fail catastrophically without it, however.</li>
 <li><a href="https://bitbucket.org/bneff84/advanced-custom-fields-objects">Advanced Custom Fields Objects</a>. A powerful OOP library for using ACF custom fields. Requires ACF, naturally. Thanks to <a href="https://bitbucket.org/bneff84">Brian Neff</a> for this.</li>
 <li><a href="https://wordpress.org/plugins/custom-post-type-ui/">Custom Post Type UI</a>. Not strictly necessary, but I deem it required! It makes creating custom post types and taxonomies a breeze.</li>
 </ul>
-
-<h3>Recommended</h3>
-
+<h3 id="recommended">Recommended</h3>
 <ul>
 <li><a href="http://www.advancedcustomfields.com/resources/flexible-content/">ACF Flexible Content</a>. Add multiple layouts with unique subfields (paid ACF add-on).</li>
 <li><a href="http://www.advancedcustomfields.com/add-ons/options-page/">ACF Options Page</a>. Add custom global site options (paid ACF add-on).</li>
 <li><a href="http://www.advancedcustomfields.com/add-ons/repeater-field/">ACF Repeater Field</a>. Add repeatable fields with subfields.</li>
 <li><a href="http://www.nsp-code.com/premium-plugins/wordpress-plugins/advanced-post-types-order/">(Advanced) Post Types Order</a>. Re-order your posts/custom post types. Pro version requires a license.</li>
 <li><a href="http://www.gravityforms.com/">Gravity Forms</a>. Probably the best form plugin for WP. Probably. Requires license.</li>
-<li><a href="http://adminmenueditor.com/">Admin Menu Editor (Pro)</a>. Edit the WP Admin menus to your heart&#8217;s content. Pro version requires a license.</li>
+<li><a href="http://adminmenueditor.com/">Admin Menu Editor (Pro)</a>. Edit the WP Admin menus to your heart&#39;s content. Pro version requires a license.</li>
 <li><a href="https://wordpress.org/plugins/better-wp-security/">iThemes Security</a>. Formerly Better WP Security. A good idea, in general. Unless you want hackers.</li>
 <li><a href="https://wordpress.org/plugins/w3-total-cache/">W3 Total Cache</a>. I mainly use this for managing a generic mirror CDN on my local site copies. But it provides some powerful caching too.</li>
 <li><a href="https://wordpress.org/plugins/manual-image-crop/">Manual Image Crop</a>. This should be part of the core media library functionality. Lets you crop your images individually for each defined image size.</li>
 <li><a href="https://wordpress.org/plugins/force-regenerate-thumbnails/">Force Regenerate Thumbnails</a>. Like it says, regenerates all your image sizes.</li>
 </ul>
-
-<h2>Installation</h2>
-
+<h2 id="installation">Installation</h2>
 <ul>
-<li>Run <code>bower install</code> to install the latest version of Foundation and its dependencies, and Bourbon mixin library.</li>
-<li>Or, preferably, install Foundation and Bourbon bower components through Codekit</li>
+<li>Make sure you have Node, NPM and Bower installed on your system. Gulp is also recommended for building, but you could use Codekit or some other build tool your grandma made.</li>
+<li>Run <code>bower install</code> to install the latest version of Foundation and its dependencies, Bourbon mixin library, and other JS dependencies.</li>
+<li>If you&#39;re using Gulp, run <code>npm install</code> to install node module dependencies for build processes.</li>
 </ul>
-
-<h2>Use It</h2>
-
+<h2 id="use-it">Use It</h2>
 <p>This theme presumes you have a working knowledge of how to create Wordpress themes.</p>
-
 <ul>
 <li><a href="http://codex.wordpress.org/Theme_Development">Learn about theme development</a></li>
 <li><a href="http://codex.wordpress.org/images/1/18/Template_Hierarchy.png">Handy cheat sheet for template hierarchy and file naming</a></li>
 </ul>
-
-<h3>Theme Class File</h3>
-
+<p>If you are using Gulp...</p>
+<ul>
+<li>Rename gulpfile-sample.js to gulpfile.js, and replace <code>%%YOUR LOCAL URL HERE%%</code> with your localhost development URL.</li>
+<li>Run <code>gulp server</code> task to start the BrowserSync server and start watching files for changes.</li>
+<li>SCSS and Javascript files will automatically be compiled, and changes will appear immediately.</li>
+<li>See gulpfile.js for additional tasks you may want to run manually.</li>
+<li>Do your thing.</li>
+</ul>
+<h3 id="theme-class-file">Theme Class File</h3>
 <p><em>theme.class.php</em></p>
-
 <p>This file contains and initializes our main theme class. All theme setup and customizations should go here.</p>
-
-<h3>Theme Functions File</h3>
-
+<h3 id="theme-functions-file">Theme Functions File</h3>
 <p><em>functions.php</em></p>
-
 <p>This file is loaded by Wordpress when the theme is loaded, so we bootstrap here.</p>
-
 <p>It is also used as the name suggests, to create <em>theme functions</em> to be used in template files.</p>
-
-<h3>The tpl() Function</h3>
-
+<h3 id="the-tpl-function">The tpl() Function</h3>
 <p><em>Located in functions.php</em></p>
-
-<p>This is a general purpose template include function. It will look for a PHP file matching the naming stucture <code>{$prefix}-{$name}.php</code> within a directory <code>tpl_{$prefix}s</code> <em>(note the &#8216;s&#8217; at the end, the pluralization of the $prefix)</em>.</p>
-
-<p>So calling <code>tpl('foo','bar');</code> will look for <code>tpl_foos/foo_bar.php</code>. </p>
-
-<h3>The index template</h3>
-
+<p>This is a general purpose template include function. It will look for a PHP file matching the naming stucture <code>{$prefix}-{$name}.php</code> within a directory <code>tpl_{$prefix}s</code> <em>(note the &#39;s&#39; at the end, the pluralization of the $prefix)</em>.</p>
+<p>So calling <code>tpl(&#39;foo&#39;,&#39;bar&#39;);</code> will look for <code>tpl_foos/foo_bar.php</code>.</p>
+<p>The function also has an optional <code>$params</code> array, so you can pass any custom parameters to that function. It is recommended that you <code>extract($params)</code> at the beginning of each template file, so the parameters will be available as variables in the template, but you can reference them directly from the <code>params</code> array if you really want to.</p>
+<h3 id="tpl_-name-functions">tpl_{name}() Functions</h3>
+<p><em>Located in tpl_{prefix}s/{prefix}_functions.php</em></p>
+<p>Individual templates may (or may not) have more specific template functions that make use of the tpl() function. Each template type may have its own functions file with functions for one or more templates within that directory. This allows you to create custom template functions with unique parameters that follow the same conventions.</p>
+<p><em>It is highly recommended that you mark up the template functions and files with detailed comments that explain the available variables.</em></p>
+<h3 id="the-index-template">The index template</h3>
 <p><em>tpl_templates/tpl_index.php</em></p>
-
-<p>This is an admin-selectable page template which allows any page to be used as a post type &#8220;index&#8221; page. It is meant as a replacement for WP&#8217;s standard index and archive templates, which are just shy of useless.</p>
-
+<p>This is an admin-selectable page template which allows any page to be used as a post type &quot;index&quot; page. It is meant as a replacement for WP&#39;s standard index and archive templates, which are just shy of useless.</p>
 <p>By selecting this template for a page, an additional select-box is displayed allowing the user to select a public post type. This page will then display a paginated list of posts from that post type below its main content.</p>
-
 <p>The ACF field group for this is automatically registered in <em>includes/acf_index_post_type_fields.php</em>. The select box is populated with post types in the <code>_acf_load_index_post_type()</code> function in <em>functions.php</em>.</p>
-
-<h3>Helper functions file</h3>
-
-<p><em>includes/helpers.php</em></p>
-
-<p>This file contains a few helpful functions to use in your theme</p>
-
+<h3 id="theme-helper-functions">Theme Helper functions</h3>
+<p><em>functions.php</em></p>
+<p>A few helpful functions to use in your theme</p>
+<p><code>get_index_vars()</code> Used on the index page template to get several variables related to the index.</p>
 <p><code>get_paged_vars()</code> Get an array of useful variables associated to the current page number.</p>
-
+<p><code>page_has_family_tree()</code> Check if a page has a family tree, i.e. it has children or ancestors</p>
+<p><code>get_page_tree()</code> Get the page hierarchy associated with a page</p>
+<p><code>add_descendents()</code> Recursive function to add an array of child posts to any post object</p>
+<p><code>nested_list()</code> Generic recursive function to generate a nested list of posts or taxonomy terms</p>
 <p><code>truncate()</code> Truncate any string of HTML. The function is aware of HTML tags, and will auto-close any broken elements. Thanks to <a href="https://bitbucket.org/bneff84">Brian Neff</a> for this.</p>
-
 <p><code>dump()</code> Echo some preformatted data for dev/debug.</p>
-
-</body>
-</html>

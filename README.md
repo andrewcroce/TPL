@@ -33,8 +33,9 @@ The theme will prompt you to install these plugins automatically. Thanks to Thom
 
 ## Installation
 
-  * Run `bower install` to install the latest version of Foundation and its dependencies, and Bourbon mixin library.
-  * Or, preferably, install Foundation and Bourbon bower components through Codekit
+  * Make sure you have Node, NPM and Bower installed on your system. Gulp is also recommended for building, but you could use Codekit or some other build tool your grandma made.
+  * Run `bower install` to install the latest version of Foundation and its dependencies, Bourbon mixin library, and other JS dependencies.
+  * If you're using Gulp, run `npm install` to install node module dependencies for build processes.
 
 
 ## Use It
@@ -43,6 +44,13 @@ This theme presumes you have a working knowledge of how to create Wordpress them
 
   * [Learn about theme development](http://codex.wordpress.org/Theme_Development)
   * [Handy cheat sheet for template hierarchy and file naming](http://codex.wordpress.org/images/1/18/Template_Hierarchy.png)
+
+If you are using Gulp...
+  * Rename gulpfile-sample.js to gulpfile.js, and replace `%%YOUR LOCAL URL HERE%%` with your localhost development URL.
+  * Run `gulp server` task to start the BrowserSync server and start watching files for changes.
+  * SCSS and Javascript files will automatically be compiled, and changes will appear immediately.
+  * See gulpfile.js for additional tasks you may want to run manually.
+  * Do your thing.
 
 ### Theme Class File
 
@@ -58,13 +66,24 @@ This file is loaded by Wordpress when the theme is loaded, so we bootstrap here.
 
 It is also used as the name suggests, to create *theme functions* to be used in template files.
 
+
 ### The tpl() Function
 
 *Located in functions.php*
 
 This is a general purpose template include function. It will look for a PHP file matching the naming stucture `{$prefix}-{$name}.php` within a directory `tpl_{$prefix}s` *(note the 's' at the end, the pluralization of the $prefix)*.
 
-So calling `tpl('foo','bar');` will look for `tpl_foos/foo_bar.php`. 
+So calling `tpl('foo','bar');` will look for `tpl_foos/foo_bar.php`.
+
+The function also has an optional `$params` array, so you can pass any custom parameters to that function. It is recommended that you `extract($params)` at the beginning of each template file, so the parameters will be available as variables in the template, but you can reference them directly from the `params` array if you really want to.
+
+### tpl_{name}() Functions
+
+*Located in tpl_{prefix}s/{prefix}_functions.php*
+
+Individual templates may (or may not) have more specific template functions that make use of the tpl() function. Each template type may have its own functions file with functions for one or more templates within that directory. This allows you to create custom template functions with unique parameters that follow the same conventions.
+
+*It is highly recommended that you mark up the template functions and files with detailed comments that explain the available variables.*
 
 ### The index template
 
@@ -76,13 +95,23 @@ By selecting this template for a page, an additional select-box is displayed all
 
 The ACF field group for this is automatically registered in *includes/acf_index_post_type_fields.php*. The select box is populated with post types in the `_acf_load_index_post_type()` function in *functions.php*.
 
-### Helper functions file
+### Theme Helper functions
 
-*includes/helpers.php*
+*functions.php*
 
-This file contains a few helpful functions to use in your theme
+A few helpful functions to use in your theme
+
+`get_index_vars()` Used on the index page template to get several variables related to the index.
 
 `get_paged_vars()` Get an array of useful variables associated to the current page number.
+
+`page_has_family_tree()` Check if a page has a family tree, i.e. it has children or ancestors
+
+`get_page_tree()` Get the page hierarchy associated with a page
+
+`add_descendents()` Recursive function to add an array of child posts to any post object
+
+`nested_list()` Generic recursive function to generate a nested list of posts or taxonomy terms
 
 `truncate()` Truncate any string of HTML. The function is aware of HTML tags, and will auto-close any broken elements. Thanks to [Brian Neff](https://bitbucket.org/bneff84) for this.
 
