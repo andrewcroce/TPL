@@ -65,10 +65,13 @@ gulp.task('server', ['scss','scripts'], function(){
 	sync.init({
 		files: ['./*.php'],
 		proxy : localurl
+	}, function(){
+
+		gulp.watch('scss/**/*.scss', ['scss']);
+		gulp.watch(['js/**/*.js','!js/min/**/*.js'], ['scripts']);
+		
 	});
 
-	gulp.watch('scss/**/*.scss', ['scss']);
-	gulp.watch(['js/**/*.js','!js/min/**/*.js'], ['scripts']);
 });
 
 
