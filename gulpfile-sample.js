@@ -7,6 +7,7 @@ var localurl	= '%%YOUR LOCAL URL HERE%%',
 	include 	= require('gulp-include'),
 	uglify 		= require('gulp-uglify'),
 	rename		= require('gulp-rename'),
+	filter		= require('gulp-filter'),
 	sourcemaps	= require('gulp-sourcemaps'),
 	markdown	= require('gulp-markdown'),
 	sync		= require('browser-sync');
@@ -34,6 +35,7 @@ gulp.task('scss', function(){
 			.pipe( sass.sync({ outputStyle : 'compressed' }).on('error', sass.logError) )
 		.pipe( sourcemaps.write('../css') )
 		.pipe( gulp.dest('css') )
+		.pipe( filter('**/*.css') )
 		.pipe(sync.stream());
 });
 
