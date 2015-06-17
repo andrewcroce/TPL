@@ -18,7 +18,7 @@ var localurl	= '%%YOUR LOCAL URL HERE%%',
 // 		bower
 // 		sass
 // 		scripts
-gulp.task('default', ['bower','sass','scripts']);
+gulp.task('default', ['bower','scss','scripts']);
 
 
 // Install required bower components
