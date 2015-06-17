@@ -10,7 +10,7 @@ var localurl	= '%%YOUR LOCAL URL HERE%%',
 	filter		= require('gulp-filter'),
 	sourcemaps	= require('gulp-sourcemaps'),
 	markdown	= require('gulp-markdown'),
-	sync		= require('browser-sync');
+	sync		= require('browser-sync').create();
 
 
 // Default gulp task 'gulp'
