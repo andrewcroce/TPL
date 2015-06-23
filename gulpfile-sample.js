@@ -63,7 +63,7 @@ gulp.task('readme', function(){
 gulp.task('server', ['scss','scripts'], function(){
 
 	sync.init({
-		files: ['./*.php'],
+		files: ['./**/*.php'],
 		proxy : localurl
 	}, function(){
 
