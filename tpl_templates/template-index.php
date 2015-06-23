@@ -4,6 +4,11 @@
 * By assigning it to a page, you can select a post type for which to list a paginated index.
 * It gives you the flexibility of a standard page, with the pagination features of an archive.
 *
+* To create a page-specific version of this template, simply duplicate this file
+* and append the slug of the page to the file name. This gives you the functionality of the template,
+* but also the customizability of a specific page template.
+* Note: be sure to remove the "Template Name:" comment line above, so WP doesn't make the page-specific template available to other pages.
+*
 **/
 
 /**

@@ -393,6 +393,18 @@ if(!class_exists('StarterTheme')){
 				}
 			}
 
+			// If this page is using an admin-selectable page template
+			// check if a page-specific version exists, and return that instead.
+			// This is useful especially for the index template, but may be used for any admin-selectable temple,
+			// where the admin-template pages need to share options, but may have other unique fields or layout.
+			if( is_page_template() ) {
+
+				$specific_template_path = str_replace( '.php', '-' . $post->post_name . '.php', get_page_template() );
+
+				if( file_exists( $specific_template_path ) )
+					return $specific_template_path;
+			}
+
 			return $template;
 		}
 
