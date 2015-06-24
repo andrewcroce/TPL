@@ -32,7 +32,7 @@ if(!class_exists('StarterTheme')){
 			add_filter('body_class', array(&$this,'_body_class'));
 			add_filter('query_vars', array(&$this,'_query_vars'));
 			add_filter('rewrite_rules_array', array(&$this,'_rewrite_rules_array'));
-			//add_filter('acf/load_field/name=index_post_type', array(&$this,'_acf_load_index_post_type') );
+			add_filter('get_search_form', array(&$this,'_get_search_form'));
 			add_filter('the_content', array(&$this,'_the_content'));
 
 			
@@ -218,6 +218,15 @@ if(!class_exists('StarterTheme')){
 		* 
 		**/
 		function _setup_theme() {
+
+			/**
+			 * Create a global counter variable to use in multiple search forms,
+			 * which prevents duplicate IDs
+			 */
+			global $search_form_counter;
+			$search_form_counter = 0;
+
+
 			
 			load_theme_textdomain( 'theme', get_template_directory() . '/languages' );
 			
@@ -432,6 +441,22 @@ if(!class_exists('StarterTheme')){
 			return $field;
 		}
 
+
+
+		function _get_search_form( $form ){
+
+			global $search_form_counter;
+			$search_form_counter += 1;
+
+			if( file_exists( dirname(__FILE__) . '/searchform.php' ) ) {
+
+				include 'searchform.php';
+				return false;
+
+			}
+
+			return $form;
+		}
 
 
 		/**
