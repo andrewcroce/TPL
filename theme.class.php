@@ -26,6 +26,7 @@ if(!class_exists('StarterTheme')){
 			add_action('wp_print_scripts', array(&$this,'_add_scripts'));
 			add_action('after_setup_theme', array(&$this,'_setup_theme'));
 			add_action('template_redirect', array(&$this,'_template_redirect'));
+			add_action('wp_logout', array(&$this,'_wp_logout'));
 
 			add_filter('wp_starter_skiplinks', array(&$this,'_add_skiplinks'));
 			add_filter('template_include', array(&$this,'_template_include'));
@@ -484,6 +485,39 @@ if(!class_exists('StarterTheme')){
 			$content = '<div class="wysiwyg">' . $content . '</div>';
 
 			return $content;
+		}
+
+
+
+		/**
+		 * If logging out from the front end, redirect to the home page
+		 */
+		function _wp_logout(){
+			if( ! is_admin() ){
+				wp_redirect( home_url( wp_logout_url() ) );
+				exit();
+			}
+		}
+
+
+
+
+
+		/**
+		 * =============
+		 * FORM HANDLERS
+		 * =============
+		 */
+		
+		function _handle_member_login( $params ){
+
+			if( ! isset( $_POST['member_login_nonce'] ) || ! wp_verify_nonce( $_POST['member_login_nonce'], 'handle_member_login' ) ) {
+				print 'Begone, fiend!';
+   				exit;
+			}
+
+			MemberTools::try_login( $params );
+
 		}
 		
 	}

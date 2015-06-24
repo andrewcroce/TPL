@@ -1,5 +1,9 @@
 				</div><!-- end #main-content -->
 
+				
+				<?php tpl_form_login( 'footer-login' ); ?>
+
+
 				<footer id="main-footer">
 
 					<div class="row">
