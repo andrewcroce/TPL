@@ -234,6 +234,11 @@ if(!class_exists('StarterTheme')){
 			add_theme_support( 'title-tag' );
 
 			
+			/**
+			 * Theme text domain, by default just called "theme"
+			 * So you can use i10n/i18n string functions __( $string, 'theme' ); and _e( $string, 'theme' );
+			 * For language translations, create a '/languages' directory, and add your .mo files there
+			 */
 			load_theme_textdomain( 'theme', get_template_directory() . '/languages' );
 			
 			/**
