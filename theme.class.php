@@ -227,6 +227,12 @@ if(!class_exists('StarterTheme')){
 			$search_form_counter = 0;
 
 
+			/**
+			 * Add support for automatic title tag output by wp_head();
+			 * Requires WP 4.1 or higher
+			 */
+			add_theme_support( 'title-tag' );
+
 			
 			load_theme_textdomain( 'theme', get_template_directory() . '/languages' );
 			
