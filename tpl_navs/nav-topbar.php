@@ -15,7 +15,7 @@ extract( $params ); ?>
 <nav id="<?php echo $id; ?>" role="navigation">
 	<?php wp_nav_menu( array( 
 		'theme_location' => $menu_location,
-		'items_wrap' => '<ul id="%1$s" class="right %2$s">%3$s</ul>',
+		'items_wrap' => '<ul id="%1$s-topbar" class="right %2$s">%3$s</ul>',
 		'container' => false,
 		'walker' => new Topbar_Walker_Nav_Menu()
 	));?>

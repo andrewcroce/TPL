@@ -23,7 +23,7 @@
 	</div>
 
 	<div class="top-bar-section">
-		<?php tpl_nav_topbar( 'main_menu', 'main-navigation' ); ?>
+		<?php tpl_nav_topbar( 'main_menu', 'main-navigation-topbar' ); ?>
 	</div>
 	
 

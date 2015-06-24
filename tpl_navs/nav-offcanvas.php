@@ -16,7 +16,7 @@ extract( $params ); ?>
 
 	<?php wp_nav_menu( array( 
 		'theme_location' => $menu_location,
-		'items_wrap' => '<ul id="%1$s" class="off-canvas-list %2$s">%3$s</ul>',
+		'items_wrap' => '<ul id="%1$s-offcanvas" class="off-canvas-list %2$s">%3$s</ul>',
 		'container' => false,
 		'walker' => new Offcanvas_Walker_Nav_Menu()
 	));?>

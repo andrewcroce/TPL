@@ -21,6 +21,6 @@
 	
 	<?php get_search_form(); ?>
 
-	<?php tpl_nav_offcanvas( 'main_menu', 'main-navigation' ); ?>
+	<?php tpl_nav_offcanvas( 'main_menu', 'main-navigation-offcanvas' ); ?>
 
 </div>
