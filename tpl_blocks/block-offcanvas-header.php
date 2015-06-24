@@ -6,13 +6,13 @@
 
 <div class="tab-bar hide-for-large-up" aria-hidden="true">
 				
-	<section class="left tab-bar-section">
+	<div class="left tab-bar-section">
 		<span class="site-title"><a href="<?php echo home_url(); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></span>
-	</section>
+	</div>
 
-	<section class="right-small">
+	<div class="right-small">
     	<a class="right-off-canvas-toggle menu-icon" ><span><span class="screenreader">Menu</span></span></a>
-    </section>
+    </div>
 
 </div>
 

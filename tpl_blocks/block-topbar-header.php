@@ -16,15 +16,15 @@
 
 	</div>
 
-	<section class="top-bar-section">
+	<div class="top-bar-section">
 		<div class="right has-form">
 			<?php get_search_form(); ?>
 		</div>
-	</section>
+	</div>
 
-	<section class="top-bar-section">
+	<div class="top-bar-section">
 		<?php tpl_nav_topbar( 'main_menu', 'main-navigation' ); ?>
-	</section>
+	</div>
 	
 
 </div>
