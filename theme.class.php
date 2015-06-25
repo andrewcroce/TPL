@@ -621,20 +621,18 @@ if(!class_exists('StarterTheme')){
 
 
 
+		/**
+		 * Intercept our search form output so we can increment an ID counter.
+		 * Since the searchform can be output multiple times on a given page, this could lead to invalid duplicate HTML IDs.
+		 * We increment this counter, and append it to the field IDs, so each one is unique.
+		 */
 		function _get_search_form( $form ){
 
 			global $search_form_counter;
 			$search_form_counter += 1;
 
-			if( file_exists( dirname(__FILE__) . '/searchform.php' ) ) {
-
-				include 'searchform.php';
-				return false;
-
-			}
-
-			return $form;
 		}
+
 
 
 		/**
