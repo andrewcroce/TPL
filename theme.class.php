@@ -97,6 +97,57 @@ if(!class_exists('StarterTheme')){
 					trigger_error('Error generating style guide page');
 			}
 
+
+			/**
+			* Generate Login Page
+			**/
+			$login_page = get_page_by_path('login');
+			if( is_null( $login_page ) ){
+				$login_page = wp_insert_post(array(
+					'post_content' => __('<p>This page is require to display the front end login form, please do not delete it.</p>'),
+					'post_name' => 'login',
+					'post_title' => 'Login',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+				if( $login_page instanceof WP_Error )
+					trigger_error('Error generating login page');
+			}
+
+
+			/**
+			* Generate Forgot Password Page
+			**/
+			$forgot_password_page = get_page_by_path('forgot-password');
+			if( is_null( $forgot_password_page ) ){
+				$forgot_password_page = wp_insert_post(array(
+					'post_content' => __('<p>This page is require to display the forgot-password form, please do not delete it.</p>'),
+					'post_name' => 'forgot-password',
+					'post_title' => 'Forgot Password',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+				if( $forgot_password_page instanceof WP_Error )
+					trigger_error('Error generating forgot password page');
+			}
+
+
+			/**
+			* Generate Profile Page
+			**/
+			$profile_page = get_page_by_path('profile');
+			if( is_null( $profile_page ) ){
+				$profile_page = wp_insert_post(array(
+					'post_content' => __('<p>This page is require to display the profile page, please do not delete it.</p>'),
+					'post_name' => 'profile',
+					'post_title' => 'Member Profile',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+				if( $profile_page instanceof WP_Error )
+					trigger_error('Error generating profile page');
+			}
+
 		}
 
 
