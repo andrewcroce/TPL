@@ -653,17 +653,6 @@ if(!class_exists('StarterTheme')){
 
 
 
-		/**
-		 * If logging out from the front end, redirect to the home page
-		 */
-		function _wp_logout(){
-			if( ! is_admin() ){
-				wp_redirect( home_url( wp_logout_url() ) );
-				exit();
-			}
-		}
-
-
 
 
 
