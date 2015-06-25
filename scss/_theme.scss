@@ -82,6 +82,22 @@
 
 
 
+// ===============
+// Buttons & Links
+// ===============
+
+
+
+// =====
+// Forms
+// =====
+
+input[type="submit"] {
+	@extend .button;
+}
+
+
+
 // =======
 // Utility
 // =======
