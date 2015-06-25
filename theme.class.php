@@ -35,7 +35,6 @@ if(!class_exists('StarterTheme')){
 			add_action('wp_print_scripts', array(&$this,'_add_scripts'));
 			add_action('after_setup_theme', array(&$this,'_setup_theme'));
 			add_action('template_redirect', array(&$this,'_template_redirect'));
-			add_action('wp_logout', array(&$this,'_wp_logout'));
 
 			add_filter('wp_starter_skiplinks', array(&$this,'_add_skiplinks'));
 			add_filter('template_include', array(&$this,'_template_include'));
@@ -44,6 +43,13 @@ if(!class_exists('StarterTheme')){
 			add_filter('rewrite_rules_array', array(&$this,'_rewrite_rules_array'));
 			add_filter('get_search_form', array(&$this,'_get_search_form'));
 			add_filter('the_content', array(&$this,'_the_content'));
+
+			// User/account related hooks
+			
+			add_action('wp_logout', array(&$this,'_wp_logout'));
+			add_filter('authenticate', array(&$this, '_authenticate'), 10, 3);
+			add_filter('lostpassword_url', array(&$this,'_lostpassword_url'), 10, 2);
+			add_filter('register', array(&$this,'_register'));
 
 			
 			// Add any additional action or filter hooks here.
