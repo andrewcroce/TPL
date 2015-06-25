@@ -398,7 +398,9 @@ if(!class_exists('StarterTheme')){
 		function _query_vars( $query_vars ) {
 
 			$new_vars = array(
-				// Add vars
+				'restricted',
+				'redirect',
+				'login_error'
 			);
 			return array_merge( $new_vars, $query_vars );
 		}
@@ -417,7 +419,13 @@ if(!class_exists('StarterTheme')){
 		function _rewrite_rules_array( $rules ) {
 			
 			$new_rules = array(
-				// 'some-slug/([^/]+)/?$' => 'index.php?pagename=some-slug&some_query_var=$matches[1]'
+
+				// Login error page
+				'login/error/([^/]+)/?$' => 'index.php?pagename=login&login_error=$matches[1]',
+
+				// Login page from restricted page, with redirect slug/ID
+				'login/restricted/([^/]+)/?$' => 'index.php?pagename=login&restricted=1&redirect=$matches[1]'
+
 			);
 			$rules = $new_rules + $rules;
 			return $rules;
