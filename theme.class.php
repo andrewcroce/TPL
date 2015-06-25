@@ -440,6 +440,35 @@ if(!class_exists('StarterTheme')){
 		**/
 		function _template_redirect() {
 			
+			/**
+			 * If the user is not logged into WP
+			 */
+			if( ! is_user_logged_in() ) {
+
+				/**
+				 * If a non logged-in user is trying to access the profile page
+				 * redirect them to login
+				 */
+				if( is_page('profile') ){
+					wp_redirect( home_url('login/restricted/profile') );
+					exit();
+				}
+
+			}
+
+		}
+
+
+
+		/**
+		 * If logging out from the front end, redirect to the home page
+		 */
+		function _wp_logout(){
+			if( ! is_admin() ){
+				wp_redirect( home_url() );
+				exit();
+			}
+		}
 		}
 		
 
