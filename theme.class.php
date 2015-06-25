@@ -8,6 +8,15 @@
  */
 
 
+
+/**
+ * Include some stuff
+ */
+include( 'plugins/plugins.php' );
+include( 'includes/topbar-walker.class.php' );
+include( 'includes/offcanvas-walker.class.php' );
+
+
 if(!class_exists('StarterTheme')){
 	
 	class StarterTheme {
