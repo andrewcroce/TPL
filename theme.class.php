@@ -668,16 +668,6 @@ if(!class_exists('StarterTheme')){
 		 * =============
 		 */
 		
-		function _handle_member_login( $params ){
-
-			if( ! isset( $_POST['member_login_nonce'] ) || ! wp_verify_nonce( $_POST['member_login_nonce'], 'handle_member_login' ) ) {
-				print 'Begone, fiend!';
-   				exit;
-			}
-
-			MemberTools::try_login( $params );
-
-		}
 		
 	}
 	
