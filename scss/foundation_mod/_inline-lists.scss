@@ -1,0 +1,9 @@
+.inline-list {
+
+  // Shorthand margin in 5.5.2 is overriding the left-margin.
+  // Moved it before the -left and -right to fix it
+  margin: $inline-list-top-margin auto $inline-list-bottom-margin auto;
+  margin-#{$default-float}: $inline-list-default-float-margin;
+  margin-#{$opposite-direction}: $inline-list-opposite-margin;
+
+}

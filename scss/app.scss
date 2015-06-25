@@ -1,50 +1,53 @@
 @import "settings";
-@import "../bower_components/bourbon/app/assets/stylesheets/bourbon";
-@import "../bower_components/foundation/scss/foundation";
 
+// Bourbon mixins
+@import "../bower_components/bourbon/app/assets/stylesheets/bourbon";
+
+// Foundation Components
+@import '../bower_components/foundation/scss/foundation/components/grid';
+//@import '../bower_components/foundation/scss/foundation/components/accordion';
+@import '../bower_components/foundation/scss/foundation/components/alert-boxes';
+@import '../bower_components/foundation/scss/foundation/components/block-grid';
+@import '../bower_components/foundation/scss/foundation/components/breadcrumbs';
+@import '../bower_components/foundation/scss/foundation/components/button-groups';
+@import '../bower_components/foundation/scss/foundation/components/buttons';
+@import '../bower_components/foundation/scss/foundation/components/clearing';
+@import '../bower_components/foundation/scss/foundation/components/dropdown';
+@import '../bower_components/foundation/scss/foundation/components/dropdown-buttons';
+//@import '../bower_components/foundation/scss/foundation/components/flex-video';
+@import '../bower_components/foundation/scss/foundation/components/forms';
+//@import '../bower_components/foundation/scss/foundation/components/icon-bar';
+@import '../bower_components/foundation/scss/foundation/components/inline-lists';
+//@import '../bower_components/foundation/scss/foundation/components/joyride';
+//@import '../bower_components/foundation/scss/foundation/components/keystrokes';
+@import '../bower_components/foundation/scss/foundation/components/labels';
+//@import '../bower_components/foundation/scss/foundation/components/magellan';
+//@import '../bower_components/foundation/scss/foundation/components/orbit';
+@import '../bower_components/foundation/scss/foundation/components/pagination';
+@import '../bower_components/foundation/scss/foundation/components/panels';
+//@import '../bower_components/foundation/scss/foundation/components/pricing-tables';
+//@import '../bower_components/foundation/scss/foundation/components/progress-bars';
+//@import '../bower_components/foundation/scss/foundation/components/range-slider';
+//@import '../bower_components/foundation/scss/foundation/components/reveal';
+//@import '../bower_components/foundation/scss/foundation/components/side-nav';
+//@import '../bower_components/foundation/scss/foundation/components/split-buttons';
+@import '../bower_components/foundation/scss/foundation/components/sub-nav';
+//@import '../bower_components/foundation/scss/foundation/components/switches';
+@import '../bower_components/foundation/scss/foundation/components/tables';
+//@import '../bower_components/foundation/scss/foundation/components/tabs';
+//@import '../bower_components/foundation/scss/foundation/components/thumbs';
+//@import '../bower_components/foundation/scss/foundation/components/tooltips';
+@import '../bower_components/foundation/scss/foundation/components/top-bar';
+@import '../bower_components/foundation/scss/foundation/components/offcanvas';
+@import '../bower_components/foundation/scss/foundation/components/visibility';
+
+// Foundation Modifications
 @import "foundation_mod/grid";
+@import "foundation_mod/inline-lists";
 @import "foundation_mod/pagination";
 @import "foundation_mod/top-bar";
 @import "foundation_mod/offcanvas";
 @import "foundation_mod/side-nav";
-
-// Or selectively include components
-// @import
-//   "../bower_components/foundation/components/accordion",
-//   "../bower_components/foundation/components/alert-boxes",
-//   "../bower_components/foundation/components/block-grid",
-//   "../bower_components/foundation/components/breadcrumbs",
-//   "../bower_components/foundation/components/button-groups",
-//   "../bower_components/foundation/components/buttons",
-//   "../bower_components/foundation/components/clearing",
-//   "../bower_components/foundation/components/dropdown",
-//   "../bower_components/foundation/components/dropdown-buttons",
-//   "../bower_components/foundation/components/flex-video",
-//   "../bower_components/foundation/components/forms",
-//   "../bower_components/foundation/components/grid",
-//   "../bower_components/foundation/components/inline-lists",
-//   "../bower_components/foundation/components/joyride",
-//   "../bower_components/foundation/components/keystrokes",
-//   "../bower_components/foundation/components/labels",
-//   "../bower_components/foundation/components/magellan",
-//   "../bower_components/foundation/components/orbit",
-//   "../bower_components/foundation/components/pagination",
-//   "../bower_components/foundation/components/panels",
-//   "../bower_components/foundation/components/pricing-tables",
-//   "../bower_components/foundation/components/progress-bars",
-//   "../bower_components/foundation/components/reveal",
-//   "../bower_components/foundation/components/side-nav",
-//   "../bower_components/foundation/components/split-buttons",
-//   "../bower_components/foundation/components/sub-nav",
-//   "../bower_components/foundation/components/switch",
-//   "../bower_components/foundation/components/tables",
-//   "../bower_components/foundation/components/tabs",
-//   "../bower_components/foundation/components/thumbs",
-//   "../bower_components/foundation/components/tooltips",
-//   "../bower_components/foundation/components/top-bar",
-//   "../bower_components/foundation/components/type",
-//   "../bower_components/foundation/components/offcanvas",
-//   "../bower_components/foundation/components/visibility";
 
 @import "wrappers";
 @import "style_guide";
