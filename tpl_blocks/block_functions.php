@@ -35,3 +35,17 @@ function tpl_block_comments( $post, $status = 'approve' ) {
 
 	));
 }
+
+
+/**
+ * Include the alert block template 
+ * @param string $message Alert message to display
+ * @param string $class alert-box class name.
+ * @see http://foundation.zurb.com/docs/components/alert_boxes.html
+ */
+function tpl_block_alert( $message, $class = '' ) {
+	tpl( 'block' , 'alert' , array(
+		'message' => $message,
+		'class' => $class,
+	) );
+}
