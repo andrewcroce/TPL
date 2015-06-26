@@ -47,7 +47,7 @@ if(!class_exists('StarterTheme')){
 			// User/account related hooks
 			
 			add_action('wp_logout', array(&$this,'_wp_logout'));
-			add_filter('authenticate', array(&$this, '_authenticate'), 10, 3);
+			add_filter('authenticate', array(&$this, '_authenticate'), 100, 3);
 			add_filter('lostpassword_url', array(&$this,'_lostpassword_url'), 10, 2);
 			add_filter('register', array(&$this,'_register'));
 
@@ -486,63 +486,65 @@ if(!class_exists('StarterTheme')){
 		 */
 		function _authenticate( $user, $username_email, $password ){
 
-			// If $user isn't null, some other process has either failed or succeeded at authenticating the user.
-			// Not sure how this would ever happen, but who know.
-			if( ! is_null( $user ) ) {
+			// Only do our custom authentication if 'login' is the referring page
+			if( isset( $_SERVER['HTTP_REFERER'] ) && strstr( $_SERVER['HTTP_REFERER'] ,'login' ) ) {
 
-				// An authentication error came from some other process
-				if( is_wp_error( $user ) ) {
+				// If $user isn't null, some other process has either failed or succeeded at authenticating the user.
+				// Not sure how this would ever happen, but who knows.
+				if( ! is_null( $user ) ) {
+
+					// An authentication error came from some other process
+					if( is_wp_error( $user ) ) {
+						wp_redirect( home_url('login/error/failed') );
+						exit();
+					}
+
+					// This means $user is an authenticated WP_User, so return it
+					return $user;
+				}
+
+
+				// If username/email is blank
+				if( empty( $username_email ) ){
+					wp_redirect( home_url('login/error/username_email') );
+					exit();
+				}
+
+				// If password is blank
+				if( empty( $password ) ){
+					wp_redirect( home_url('login/error/password') );
+					exit();
+				}
+
+				// First attempt to get the user data by email
+				// It might not be an email address, but we'll start with that since its more likely/user-friendly
+				$user = get_user_by( 'email', $username_email );
+
+				// If that didn't work...
+				if( ! $user ){
+
+					// Maybe its a username, try that
+					$user = get_user_by( 'login', $username_email );
+
+					// If that didn't work then its a failure
+					if( ! $user ) {
+						wp_redirect( home_url('login/error/failed') );
+						exit();
+
+					}
+				}
+
+				// Now check their password
+				if( ! wp_check_password( $password, $user->user_pass, $user->ID ) ) {
 					wp_redirect( home_url('login/error/failed') );
 					exit();
 				}
 
-				// This means $user is an authenticated WP_User, so return it
+				// Success
 				return $user;
+
 			}
-
-
-			// If username/email is blank
-			if( empty( $username_email ) ){
-
-				wp_redirect( home_url('login/error/username_email') );
-				exit();
-			}
-
-			// If password is blank
-			if( empty( $password ) ){
-
-				wp_redirect( home_url('login/error/password') );
-				exit();
-			}
-
-			// First attempt to get the user data by email
-			// It might not be an email address, but we'll start with that since its more likely/user-friendly
-			$user = get_user_by( 'email', $username_email );
-
-			// If that didn't work...
-			if( ! $user ){
-
-				// Maybe its a username, try that
-				$user = get_user_by( 'login', $username_email );
-
-				// If that didn't work then its a failure
-				if( ! $user ) {
-
-					wp_redirect( home_url('login/error/failed') );
-					exit();
-
-				}
-			}
-
-			// Now check their password
-			if( ! wp_check_password( $password, $user->user_pass, $user->ID ) ) {
-				
-				wp_redirect( home_url('login/error/failed') );
-				exit();
-			}
-
-			// Success
-			return $user;
+			
 		}
 		
 
