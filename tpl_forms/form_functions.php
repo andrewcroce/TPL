@@ -33,10 +33,13 @@ function tpl_form_profile( $user = null ) {
 	if( is_null( $user ) )
 		$user = get_userdata( get_current_user_id() );
 
+	$user_meta = array_map( function( $a ){ return $a[0]; }, get_user_meta( $user->ID ) );
+
 	if( $user ){
 
 		tpl( 'form' , 'profile' , array(
-			'user' => $user
+			'user' => $user,
+			'user_meta' => (object) $user_meta
 		));
 
 	}
