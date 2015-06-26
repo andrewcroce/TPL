@@ -5,6 +5,7 @@
 // @codekit-prepend "../bower_components/jquery-throttle-debounce/jquery.ba-throttle-debounce.js"
 // @codekit-prepend "../bower_components/jquery-transporter/src/transporter.js"
 // @codekit-prepend "_taxonomy_filters.js"
+// @codekit-prepend "_password.js"
 
 
 
@@ -15,6 +16,7 @@
 //= include ../bower_components/jquery-throttle-debounce/jquery.ba-throttle-debounce.js
 //= include ../bower_components/jquery-transporter/src/transporter.js
 //= include _taxonomy_filters.js
+//= include _password.js
 
 
 
@@ -25,6 +27,10 @@ jQuery(document).foundation();
 	$(document).ready(function(){
 		
 		$.initTaxonomyFilters();
+
+		if( $('.check-pass-strength').length ) {
+			$.password.init();
+		}
 
 	});
 	

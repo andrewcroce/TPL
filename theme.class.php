@@ -62,6 +62,8 @@ if(!class_exists('StarterTheme')){
 		 */
 		function _theme_activated() {
 
+			PC::debug('theme activated');
+
 			/**
 			* Generate Home Page
 			**/
@@ -491,13 +493,7 @@ if(!class_exists('StarterTheme')){
 
 				// If $user isn't null, some other process has either failed or succeeded at authenticating the user.
 				// Not sure how this would ever happen, but who knows.
-				if( ! is_null( $user ) ) {
-
-					// An authentication error came from some other process
-					if( is_wp_error( $user ) ) {
-						wp_redirect( home_url('login/error/failed') );
-						exit();
-					}
+				if( ! is_null( $user ) && ! is_wp_error( $user ) ) {
 
 					// This means $user is an authenticated WP_User, so return it
 					return $user;
@@ -523,11 +519,16 @@ if(!class_exists('StarterTheme')){
 				// If that didn't work...
 				if( ! $user ){
 
+					PC::debug('not an email');
+
 					// Maybe its a username, try that
 					$user = get_user_by( 'login', $username_email );
 
 					// If that didn't work then its a failure
 					if( ! $user ) {
+
+						PC::debug('not a username');
+
 						wp_redirect( home_url('login/error/failed') );
 						exit();
 
@@ -536,6 +537,8 @@ if(!class_exists('StarterTheme')){
 
 				// Now check their password
 				if( ! wp_check_password( $password, $user->user_pass, $user->ID ) ) {
+
+					PC::debug('bad password');
 					wp_redirect( home_url('login/error/failed') );
 					exit();
 				}

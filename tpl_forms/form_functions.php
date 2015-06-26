@@ -37,6 +37,8 @@ function tpl_form_profile( $user = null ) {
 
 	if( $user ){
 
+		wp_enqueue_script( 'password-strength-meter' );
+
 		tpl( 'form' , 'profile' , array(
 			'user' => $user,
 			'user_meta' => (object) $user_meta
