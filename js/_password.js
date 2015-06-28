@@ -2,17 +2,15 @@
 
 	$.password = {
 
-		// Empty object to store our password sets
-		sets : {},
-
 		// Status texts
-		statuses : {
-			'mismatch' 	: 'Passwords don\'t match',
-			'short'		: 'Password too short',
-			'bad'		: 'Weak password',
-			'good'		: 'Good password',
-			'strong'	: 'Strong password'
-		},
+		statuses : [
+			'Bad password',
+			'Weak password',
+			'OK password',
+			'Good password',
+			'Strong password',
+			'Passwords don\'t match'
+		],
 
 		// Initialize
 		init : function(){
@@ -21,12 +19,13 @@
 			$('.check-pass-strength').each(function(){
 
 				// Get all the elements
-				var pass 		= $(this),
-					pass_id 	= pass.data('pass-id'),
+				var pass_id		= $(this).data('pass-id'),
+					pass 		= $('.check-pass-strength[data-pass-id="'+pass_id+'"]'),
 					confirm 	= $('.check-pass-strength-confirm[data-pass-id="'+pass_id+'"]'),
 					username	= $('.check-pass-strength-username[data-pass-id="'+pass_id+'"]'),
 					email		= $('.check-pass-strength-email[data-pass-id="'+pass_id+'"]'),
 					meter 		= $('.check-pass-strength-meter[data-pass-id="'+pass_id+'"]'),
+					allow		= $('check-pass-strength-allow[data-pass-id="'+pass_id+'"]');
 
 					// Package them up in an object
 					set 		= {
@@ -34,22 +33,20 @@
 						'confirm'	: confirm,
 						'username'	: username,
 						'email'		: email,
-						'meter'		: meter
+						'meter'		: meter,
+						'allow'		: allow,
 					};
-
-				// Add the set to our collection of sets
-				$.password.sets[pass_id] = set;
 
 				// Bind the keyup events for the password and confirmation fields
 				// Debounce them, so they don't trigger more than once every 500ms
 				// @see http://foundation.zurb.com/docs/javascript-utilities.html#delay
-				$( pass ).bind('keyup', Foundation.utils.debounce(function(){
-					$.password.checkStrength( set );
-				},500));
+				$( pass ).on( 'keyup', Foundation.utils.debounce( function(){
+					$.password.checkStrength( set ); 
+				}, 500 ));
 
-				$( confirm ).bind('keyup',Foundation.utils.debounce(function(){
-					$.password.checkStrength( set );
-				},500));
+				$( confirm ).on( 'keyup', Foundation.utils.debounce( function(){
+					$.password.checkStrength( set ); 
+				}, 500 ));
 
 			});
 
@@ -58,16 +55,41 @@
 
 		checkStrength : function( set ) {
 
-			if( $(set.email).val() == $(set.pass).val() )
-				return 0;
+			// Get all our values
+			var pass 		= $(set.pass).val().trim(),
+				confirm 	= $(set.confirm).val().trim(),
+				username 	= $(set.username).val().trim(),
+				email 		= $(set.email).val().trim(),
+				meter 		= $(set.meter),
+				allow 		= $(set.allow);
 
-			// Built in WP Function
-			// @see https://core.trac.wordpress.org/browser/trunk/wp-admin/js/password-strength-meter.dev.js?rev=15998
-			return passwordStrength(
-				$(set.pass).val(),
-				$(set.username).val(),
-				$(set.confirm).val()
+			// If the password and confirmation fields are empty, don't bother checking.
+			// Clear the meter and allow normal form submission
+			if( !pass && !confirm ) {
+				meter.val('').attr('class','check-pass-strength-meter');
+				allow.val(1).trigger('change');
+				return;
+			}
+
+			// Check strength using the built-in WP password strength function
+			var strength = wp.passwordStrength.meter(
+				pass, [ username, email ], confirm
 			);
+
+			// Set the strength meter status
+			$(set.meter)
+				.val( $.password.statuses[strength] )
+				.attr('class','check-pass-strength-meter strength-'+strength);
+
+			// If the strength is bad or weak, or they don't match
+			// don't allow submission
+			if( strength == 0 || strength == 1 || strength == 5 ) {
+				allow.val(0).trigger('change');
+				return;
+			}
+
+			// I'll allow it
+			allow.val(1).trigger('change');
 
 		}
 
