@@ -1,15 +1,3 @@
-// ===========================================================
-// Variables
-// See _settings.scss to override Foundation default SCSS vars
-// ===========================================================
-
-// Fonts 
-
-// Colors
-
-// Sizes
-
-
 
 // ==========
 // Typography
@@ -96,6 +84,14 @@ input[type="submit"] {
 	@extend .button;
 }
 
+input.check-pass-strength-meter {
+	&.strength-0 { @include bad-color(); }
+	&.strength-1 { @include bad-color(); }
+	&.strength-2 { @include weak-color(); }
+	&.strength-3 { @include ok-color(); }
+	&.strength-4 { @include good-color(); }
+	&.strength-5 { @include bad-color(); }
+}
 
 
 // =======

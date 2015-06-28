@@ -1,10 +1,44 @@
-// 
+// ==============
 // THEME SETTINGS
-//
+// ==============
+
 
 // Colors
 
-// Fonts
+$red: #AF0008;
+$orange: #ED670A;
+$yellow: #F3D608;
+$green: #25B409;
+
+@mixin bad-color {
+	background-color: $red;
+	color: $white;
+	* {
+		color: $white;
+	}
+}
+
+@mixin weak-color {
+	background-color: $orange;
+	color: $white;
+	* {
+		color: $white;
+	}
+}
+
+@mixin ok-color {
+	background-color: $yellow;
+}
+
+@mixin good-color {
+	background-color: $green;
+	color: $white;
+	* {
+		color: $white;
+	}
+}
+
+// Sizes
 
 
 
@@ -65,7 +99,9 @@
 // $primary-color: #008CBA;
 // $secondary-color: #e7e7e7;
 // $alert-color: #f04124;
+$alert-color: $red;
 // $success-color: #43AC6A;
+$success-color: $green;
 // $warning-color: #f08a24;
 // $info-color: #a0d3e8;
 
