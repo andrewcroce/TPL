@@ -12,6 +12,16 @@
 			'Passwords don\'t match'
 		],
 
+		allowedStatusesRegex : function(){
+			var string = '^(';
+			for( var i = 2; i < 5; i++ ) {
+				if( i !== 2 ) string += '|';
+				string += $.password.statuses[i];
+			}
+			string += ')$';
+			return new RegExp(string);
+		},
+
 		// Initialize
 		init : function(){
 
@@ -25,7 +35,7 @@
 					username	= $('.check-pass-strength-username[data-pass-id="'+pass_id+'"]'),
 					email		= $('.check-pass-strength-email[data-pass-id="'+pass_id+'"]'),
 					meter 		= $('.check-pass-strength-meter[data-pass-id="'+pass_id+'"]'),
-					allow		= $('check-pass-strength-allow[data-pass-id="'+pass_id+'"]');
+					allow		= $('.check-pass-strength-allow[data-pass-id="'+pass_id+'"]');
 
 					// Package them up in an object
 					set 		= {
@@ -83,7 +93,7 @@
 
 			// If the strength is bad or weak, or they don't match
 			// don't allow submission
-			if( strength == 0 || strength == 1 || strength == 5 ) {
+			if( strength === 0 || strength === 1 || strength === 5 ) {
 				allow.val(0).trigger('change');
 				return;
 			}
