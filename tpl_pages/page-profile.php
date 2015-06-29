@@ -53,8 +53,6 @@ get_header(); ?>
 
 			</article>
 
-			<?php tpl_form_profile(); ?>
-
 		<?php endwhile; ?>
 
 	<?php endif; ?>
