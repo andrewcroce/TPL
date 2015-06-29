@@ -408,7 +408,9 @@ if(!class_exists('StarterTheme')){
 			$new_vars = array(
 				'restricted',
 				'redirect',
-				'login_error'
+				'login_error',
+				'profile_error',
+				'update'
 			);
 			return array_merge( $new_vars, $query_vars );
 		}
@@ -432,7 +434,13 @@ if(!class_exists('StarterTheme')){
 				'login/error/([^/]+)/?$' => 'index.php?pagename=login&login_error=$matches[1]',
 
 				// Login page from restricted page, with redirect slug/ID
-				'login/restricted/([^/]+)/?$' => 'index.php?pagename=login&restricted=1&redirect=$matches[1]'
+				'login/restricted/([^/]+)/?$' => 'index.php?pagename=login&restricted=1&redirect=$matches[1]',
+
+				// Profile update page
+				'profile/update/?$' => 'index.php?pagename=profile&update=1',
+	
+				// Profile error page
+				'profile/error/?$' => 'index.php?pagename=profile&profile_error=1'
 
 			);
 			$rules = $new_rules + $rules;
@@ -672,6 +680,65 @@ if(!class_exists('StarterTheme')){
 		 * FORM HANDLERS
 		 * =============
 		 */
+		
+
+		function _user_save_profile( $params ) {
+
+			if( ! isset( $_POST['user_save_profile_nonce'] ) || ! wp_verify_nonce( $_POST['user_save_profile_nonce'], 'user_save_profile' ) ) {
+				print('Invalid form submission');
+				exit;
+			}
+
+			$error = false;
+
+
+			if( isset( $params['user_id'] ) ) {
+
+				$user_data = array( 'ID' => $params['user_id'] );
+
+				foreach( $params['data'] as $key => $data ){
+					$user_data[$key] = esc_attr( $data );
+				}
+
+				foreach( $params['meta'] as $key => $meta ){
+					$user_data[$key] = esc_attr( $meta );
+				}
+
+			} else {
+
+				$error = true;
+			}
+
+
+			if( !empty( $params['password'] ) && !empty( $params['confirm_password'] ) ) {
+
+				if( $params['password'] == $params['confirm_password'] ){
+
+					$user_data['user_pass'] = esc_attr( $params['password'] );
+
+				} else {
+					
+					PC::debug('pass error');
+					$error = true;
+				}
+
+			}
+
+			if( $error ){
+
+				wp_redirect( home_url('profile/error') );
+				exit;
+			}
+
+			if( count( $user_data ) > 1 ){
+				wp_update_user( $user_data );
+			}
+
+			wp_redirect( home_url('profile/update') );
+			exit;
+		
+
+		}
 		
 		
 	}
