@@ -1,3 +1,5 @@
+/* global jQuery.foundationConfig */
+
 // Include scripts with Codekit <https://incident57.com/codekit/help.html#javascript>
 // 
 // @codekit-prepend "../bower_components/foundation/js/foundation.js"
@@ -6,6 +8,7 @@
 // @codekit-prepend "../bower_components/jquery-transporter/src/transporter.js"
 // @codekit-prepend "_taxonomy_filters.js"
 // @codekit-prepend "_password.js"
+// @codekit-prepend "_foundation_config.js"
 
 
 
@@ -17,10 +20,11 @@
 //= include ../bower_components/jquery-transporter/src/transporter.js
 //= include _taxonomy_filters.js
 //= include _password.js
+//= include _foundation_config.js
 
 
 
-jQuery(document).foundation();
+jQuery(document).foundation( jQuery.foundationConfig );
 
 (function($){
 	
