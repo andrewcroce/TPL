@@ -93,6 +93,10 @@ input.check-pass-strength-meter {
 	&.strength-5 { @include bad-color(); }
 }
 
+input[data-invalid] {
+	border-color: $red;
+}
+
 
 // =======
 // Utility
