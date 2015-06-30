@@ -141,15 +141,9 @@ if(isset($_GET['key']) && $_GET['action'] == "reset_pwd") {
         $message .= sprintf(__('Username: %s'), $user_email) . "\r\n\r\n" . '<br>';
         $message .= sprintf(__('Password: %s'), $new_password) . "\r\n\r\n" . '<br>';
         $message .= __('You can now login with your new password at: ') . get_option('siteurl')."/login" . "\r\n\r\n" . '<br>';
-        $message .= '<br><br><hr /><br><br>
+        $message .= '<br><hr /><br>';
 
-                    <center>
-                        <a href="http://www.distinguishedcounsel.org/"><img src="http://www.distinguishedcounsel.org/content/uploads/2015/02/NADC_logo_200.png" alt="" width="100" height="100" /></a><br>
-                        <a style="font-variant: small-caps; font-family: serif; color: #888; line-height: 1; text-decoration: none;" href="http://www.distinguishedcounsel.org/">National Association of <br>Distinguished Counsel</a>
-                    </center>';
-
-
-        $headers[] = 'From: Admin <admin@distinguishedcounsel.org>';
+        $headers[] = 'From: Admin';
         $headers[] = 'Content-Type: text/html; charset=UTF-8';
         if ( $message && !wp_mail($user_email, 'Password Reset Request', $message, $headers) ) {
             //get_header();
@@ -217,14 +211,9 @@ if($_POST['action'] == "tg_pwd_reset"){
     $message .= __('If this was a mistake, just ignore this email and nothing will happen.') . "\r\n\r\n" . '<br>';
     $message .= __('To reset your password, visit the following address:') . "\r\n\r\n" . '<br>';
     $message .= tg_validate_url() . "action=reset_pwd&key=$key&login=" . rawurlencode($user_login) . "\r\n" . '<br>';
-    $message .= '<br><br><hr /><br><br>
+    $message .= '<br><hr /><br>';
 
-                <center>
-                    <a href="http://www.distinguishedcounsel.org/"><img src="http://www.distinguishedcounsel.org/content/uploads/2015/02/NADC_logo_200.png" alt="" width="100" height="100" /></a><br>
-                    <a style="font-variant: small-caps; font-family: serif; color: #888; line-height: 1; text-decoration: none;" href="http://www.distinguishedcounsel.org/">National Association of <br>Distinguished Counsel</a>
-                </center>';
-
-    $headers[] = 'From: Admin <admin@distinguishedcounsel.org>';
+    $headers[] = 'From: Admin';
     $headers[] = 'Content-Type: text/html; charset=UTF-8';
 
     if ( $message && !wp_mail($user_email, 'Password Reset Request', $message, $headers) ) {
