@@ -499,14 +499,13 @@ if(!class_exists('StarterTheme')){
 			// Only do our custom authentication if 'login' is the referring page
 			if( isset( $_SERVER['HTTP_REFERER'] ) && strstr( $_SERVER['HTTP_REFERER'] ,'login' ) ) {
 
-				// If $user isn't null, some other process has either failed or succeeded at authenticating the user.
-				// Not sure how this would ever happen, but who knows.
+				// If $user isn't null, and its not an error, that means they logged in successfully.
+				// Just return the $user and be done.
 				if( ! is_null( $user ) && ! is_wp_error( $user ) ) {
 
 					// This means $user is an authenticated WP_User, so return it
 					return $user;
 				}
-
 
 				// If username/email is blank
 				if( empty( $username_email ) ){
@@ -527,15 +526,11 @@ if(!class_exists('StarterTheme')){
 				// If that didn't work...
 				if( ! $user ){
 
-					PC::debug('not an email');
-
 					// Maybe its a username, try that
 					$user = get_user_by( 'login', $username_email );
 
 					// If that didn't work then its a failure
 					if( ! $user ) {
-
-						PC::debug('not a username');
 
 						wp_redirect( home_url('login/error/failed') );
 						exit();
@@ -546,7 +541,6 @@ if(!class_exists('StarterTheme')){
 				// Now check their password
 				if( ! wp_check_password( $password, $user->user_pass, $user->ID ) ) {
 
-					PC::debug('bad password');
 					wp_redirect( home_url('login/error/failed') );
 					exit();
 				}
