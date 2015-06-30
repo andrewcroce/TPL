@@ -33,6 +33,7 @@ if(!class_exists('StarterTheme')){
 			add_action('after_switch_theme', array(&$this, '_theme_activated'));
 			add_action('wp_print_styles', array(&$this,'_add_styles'));
 			add_action('wp_print_scripts', array(&$this,'_add_scripts'));
+			add_action('admin_menu',array(&$this,'_admin_menu'));
 			add_action('after_setup_theme', array(&$this,'_setup_theme'));
 			add_action('template_redirect', array(&$this,'_template_redirect'));
 
@@ -201,6 +202,13 @@ if(!class_exists('StarterTheme')){
 			wp_enqueue_style('theme', get_stylesheet_directory_uri() .'/css/app.css', array(), '1.0.0', 'screen');
 		}
 		
+
+		function _admin_menu() {
+			add_options_page( __('Functionality Settings','theme'), __('Functionality','theme'), 'manage_options', 'theme-functionality.php', array(&$this,'_functionality_settings_page') );
+		}
+		function _functionality_settings_page(){ 
+			include 'includes/admin/theme-functionality-settings.php';
+		}
 
 
 		/**
