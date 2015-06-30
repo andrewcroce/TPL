@@ -126,17 +126,17 @@ if(!class_exists('StarterTheme')){
 			/**
 			* Generate Forgot Password Page
 			**/
-			$forgot_password_page = get_page_by_path('forgot-password');
-			if( is_null( $forgot_password_page ) ){
-				$forgot_password_page = wp_insert_post(array(
-					'post_content' => __('<p>This page is require to display the forgot-password form, please do not delete it.</p>'),
-					'post_name' => 'forgot-password',
-					'post_title' => 'Forgot Password',
+			$reset_password_page = get_page_by_path('reset-password');
+			if( is_null( $reset_password_page ) ){
+				$reset_password_page = wp_insert_post(array(
+					'post_content' => __('<p>This page is require to display the reset-password form, please do not delete it.</p>'),
+					'post_name' => 'reset-password',
+					'post_title' => 'Reset Password',
 					'post_status' => 'publish',
 					'post_type' => 'page'
 				));
-				if( $forgot_password_page instanceof WP_Error )
-					trigger_error('Error generating forgot password page');
+				if( $reset_password_page instanceof WP_Error )
+					trigger_error('Error generating reset password page');
 			}
 
 
