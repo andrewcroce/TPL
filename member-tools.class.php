@@ -44,7 +44,119 @@ if(!class_exists('StarterMemberTools')){
 		 * Hook into Wordpress initialization
 		 */
 		function _init() {
+			global $wpdb;
 
+			// Code to handle various states of the password reset process
+
+			// state one, this is the action for the inital password set
+			if($_POST['action'] == "tg_pwd_reset"){
+
+
+			    if ( !wp_verify_nonce( $_POST['tg_pwd_nonce'], "tg_pwd_nonce")) {
+			        self::$status_message = 'No Tricks Please!';
+			        //exit();
+			    }
+			    if(empty($_POST['user_input'])) {
+			        self::$status_message = 'Please Enter Your Email Address';
+			        //exit();
+			    }
+			    $user_input = trim($_POST['user_input']);
+
+			    if ( strpos($user_input, '@') ) {
+			        //$user_data = get_user_by_email($user_input);
+			       $user_data = get_user_by( 'email', $user_input );
+			        if( empty($user_data) ) { //delete the condition $user_data->caps[administrator] == 1, if you want to allow password reset for admins also
+			            self::$status_message = 'Invalid Email Address';
+			            //exit();
+			        }
+			    } else {
+			        $user_data = get_userdatabylogin($user_input);
+			        if( empty($user_data) ) { //delete the condition $user_data->caps[administrator] == 1, if you want to allow password reset for admins also
+			            self::$status_message = 'Invalid Username';
+			            //exit();
+			        }
+			    }
+
+			    $user_login = $user_data->user_login;
+			    $user_email = $user_data->user_email;
+
+			    $key = $wpdb->get_var($wpdb->prepare("SELECT user_activation_key FROM $wpdb->users WHERE user_login = %s", $user_login));
+			    if(empty($key)) {
+			        //generate reset key
+			        $key = wp_generate_password(20, false);
+			        $wpdb->update($wpdb->users, array('user_activation_key' => $key), array('user_login' => $user_login));
+			    }
+
+			    //mailing reset details to the user
+			    $message = __('Someone requested that the password be reset for the following account:') . "\r\n\r\n" . '<br>';
+			    $message .= get_home_url() . "\r\n\r\n" . '<br>';
+			    $message .= sprintf(__('Username: %s'), $user_email) . "\r\n\r\n" . '<br>';
+			    $message .= __('If this was a mistake, just ignore this email and nothing will happen.') . "\r\n\r\n" . '<br>';
+			    $message .= __('To reset your password, visit the following address:') . "\r\n\r\n" . '<br>';
+			    $message .= self::tg_validate_url() . "action=reset_pwd&key=$key&login=" . rawurlencode($user_login) . "\r\n" . '<br>';
+			    $message .= '<br><hr /><br>';
+
+			    $headers[] = 'From: Admin';
+			    $headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+			    if ( $message && !wp_mail($user_email, 'Password Reset Request', $message, $headers) ) {
+			        self::$status_message = "Email failed to send, please contact the site Admin";
+			       // exit();
+			    } else {
+			        self::$status_message = "We have just sent you an email with Password reset instructions";
+			        //exit();
+			    }
+
+			}
+			// end state one
+
+			// state 2 if a user has a key and the request action is reset password
+			// add a new password to the DB and send the user the email with the information in it.
+			if(isset($_GET['key']) && $_GET['action'] == "reset_pwd") {
+				$reset_key = $_GET['key'];
+				$user_login = $_GET['login'];
+				$user_data = $wpdb->get_row($wpdb->prepare("SELECT ID, user_login, user_email FROM $wpdb->users WHERE user_activation_key = %s AND user_login = %s", $reset_key, $user_login));
+
+				$user_login = $user_data->user_login;
+				$user_email = $user_data->user_email;
+
+			    if(!empty($reset_key) && !empty($user_data)) {
+					$new_password = wp_generate_password(7, false);
+					//echo $new_password; exit();
+					wp_set_password( $new_password, $user_data->ID );
+					//mailing reset details to the user
+					$message = __('Your new password for the account at:') . "\r\n\r\n" . '<br>';
+					$message .= get_home_url() . "\r\n\r\n" . '<br>';
+					$message .= sprintf(__('Username: %s'), $user_email) . "\r\n\r\n" . '<br>';
+					$message .= sprintf(__('Password: %s'), $new_password) . "\r\n\r\n" . '<br>';
+					$message .= __('You can now login with your new password at: ') . get_option('siteurl')."/login" . "\r\n\r\n" . '<br>';
+					$message .= '<br><hr /><br>';
+
+					$headers[] = 'From: Admin';
+					$headers[] = 'Content-Type: text/html; charset=UTF-8';
+			        if ( $message && !wp_mail($user_email, 'Password Reset Request', $message, $headers) ) {
+						//get_header();
+						self::$status_message = 'Email failed to send for some unknown reason';
+						
+						//get_footer();
+						//exit();
+			        } else {
+						$redirect_to = get_bloginfo('url')."/reset-password?action=reset_success";
+						wp_safe_redirect($redirect_to);
+						//exit();
+					}
+				}else{
+					exit('Not a Valid Key.');
+				}
+
+			} // end state 2
+
+			// state 3, the user has their new password
+			if ($_GET['action'] == 'reset_success'){
+				self::$status_message = "You will receive an email with your new password shortly.";
+			}
+
+			// End code to handle various states of the password reset process
 		}
 		
 				
@@ -276,7 +388,34 @@ if(!class_exists('StarterMemberTools')){
 		
 
 		}
+
+		/**
+		 *	Helper functions
+		 */
 		
+		public static $status_message = '';
+
+		/**
+		 * Get the status message
+		 */
+		public static function get_status(){
+			return self::$status_message;
+		}
+
+		/**
+		 * modify a url's get string appropriately
+		 */
+		public static function tg_validate_url() {
+			global $post;
+			$page_url = esc_url(get_permalink( $post->ID ));
+			$urlget = strpos($page_url, "?");
+			if ($urlget === false) {
+				$concate = "?";
+			} else {
+				$concate = "&";
+			}
+			return $page_url.$concate;
+		}
 		
 	}
 	
