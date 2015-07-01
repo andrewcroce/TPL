@@ -2,7 +2,7 @@
 	
 	<h2><?php echo __('Functionality Settings','theme'); ?></h2>
 
-	<form action='options.php' method="post">
+	<form action='options.php' method="post" class="repeater">
 
 	<?php
 	    settings_fields('functionality-settings');
