@@ -1,6 +1,5 @@
 <?php
 
-<<<<<<< HEAD
 /**
  * Include the login form template
  * @param string 		$form_id 			Text to use for the HTML form ID
@@ -46,13 +45,11 @@ function tpl_form_profile( $user = null ) {
 		));
 
 	}
-	
-=======
+}
 
 /**
  * Include the search form template
  */
 function tpl_form_search() {
 	tpl( 'form' , 'search' );
->>>>>>> 516fee06307c024b58224afb7ee1369b7c5b396e
 }

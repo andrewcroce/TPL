@@ -8,20 +8,7 @@
  */
 
 
-<<<<<<< HEAD:theme.class.php
-
-/**
- * Include some stuff
- */
-include( 'plugins/plugins.php' );
-include( 'includes/topbar-walker.class.php' );
-include( 'includes/offcanvas-walker.class.php' );
-
-
-if(!class_exists('StarterTheme')){
-=======
 if(!class_exists('Theme')){
->>>>>>> 516fee06307c024b58224afb7ee1369b7c5b396e:classes/theme.class.php
 	
 	class Theme {
 		
@@ -32,25 +19,7 @@ if(!class_exists('Theme')){
 		 */
 		public static function load() {
 			
-<<<<<<< HEAD:theme.class.php
-			add_action('init', array(&$this, '_init'));
-			add_action('after_switch_theme', array(&$this, '_theme_activated'));
-			add_action('wp_print_styles', array(&$this,'_add_styles'));
-			add_action('wp_print_scripts', array(&$this,'_add_scripts'));
-			add_action('admin_menu',array(&$this,'_admin_menu'));
-			add_action('after_setup_theme', array(&$this,'_setup_theme'));
-			add_action('template_redirect', array(&$this,'_template_redirect'));
 
-			add_filter('wp_starter_skiplinks', array(&$this,'_add_skiplinks'));
-			add_filter('template_include', array(&$this,'_template_include'));
-			add_filter('body_class', array(&$this,'_body_class'));
-			add_filter('query_vars', array(&$this,'_query_vars'));
-			add_filter('rewrite_rules_array', array(&$this,'_rewrite_rules_array'));
-			add_filter('get_search_form', array(&$this,'_get_search_form'));
-			add_filter('the_content', array(&$this,'_the_content'));
-			
-			// Add any additional action or filter hooks here.
-=======
 			add_action('init', 					array(__CLASS__,'_init'));
 			add_action('after_switch_theme', 	array(__CLASS__,'_theme_activated'));
 			add_action('wp_print_styles', 		array(__CLASS__,'_add_styles'));
@@ -65,8 +34,6 @@ if(!class_exists('Theme')){
 			add_filter('rewrite_rules_array', 	array(__CLASS__,'_rewrite_rules_array'));
 			add_filter('get_search_form', 		array(__CLASS__,'_get_search_form'));
 			add_filter('the_content', 			array(__CLASS__,'_the_content'));
-
->>>>>>> 516fee06307c024b58224afb7ee1369b7c5b396e:classes/theme.class.php
 		}
 
 
@@ -503,39 +470,12 @@ if(!class_exists('Theme')){
 		}
 
 
-
-		/**
-		 * We have a custom search form located in our tpl_forms folder,
-		 * so override the normal searchform.php
-		 */
-<<<<<<< HEAD:theme.class.php
-		function _acf_load_index_post_type( $field ){
-
-			// Get all public post types
-			$post_types = get_post_types(array(
-				'public' => true
-			), 'objects');
-			
-			// Add them to the field's choices
-			foreach( $post_types as $key => $post_type ){
-				$field['choices'][$key] = $post_type->label;
-			}
-
-			return $field;
-		}
-
-
-
 		/**
 		 * Intercept our search form output so we can increment an ID counter.
 		 * Since the searchform can be output multiple times on a given page, this could lead to invalid duplicate HTML IDs.
 		 * We increment this counter, and append it to the field IDs, so each one is unique.
 		 */
-		function _get_search_form( $form ){
-=======
 		static function _get_search_form(){
->>>>>>> 516fee06307c024b58224afb7ee1369b7c5b396e:classes/theme.class.php
-
 			/**
 			 * Since we might have more than one search form on a page, incrememnt a global counter
 			 * which will be used to create unique HTML ids for each form's fields
@@ -543,15 +483,13 @@ if(!class_exists('Theme')){
 			global $search_form_counter;
 			$search_form_counter += 1;
 
-<<<<<<< HEAD:theme.class.php
-=======
+
 			if( is_readable( get_template_directory() . '/tpl_forms/form-search.php' ) ) {
 
 				include get_template_directory() . '/tpl_forms/form-search.php';
 				return false;
 
 			}
->>>>>>> 516fee06307c024b58224afb7ee1369b7c5b396e:classes/theme.class.php
 		}
 
 
@@ -571,77 +509,6 @@ if(!class_exists('Theme')){
 
 			return $content;
 		}
-
-
-
-
-
-
-		/**
-		 * =============
-		 * FORM HANDLERS
-		 * =============
-		 */
-		
-
-		function _user_save_profile( $params ) {
-
-			if( ! isset( $_POST['user_save_profile_nonce'] ) || ! wp_verify_nonce( $_POST['user_save_profile_nonce'], 'user_save_profile' ) ) {
-				print('Invalid form submission');
-				exit;
-			}
-
-			$error = false;
-
-
-			if( isset( $params['user_id'] ) ) {
-
-				$user_data = array( 'ID' => $params['user_id'] );
-
-				foreach( $params['data'] as $key => $data ){
-					$user_data[$key] = esc_attr( $data );
-				}
-
-				foreach( $params['meta'] as $key => $meta ){
-					$user_data[$key] = esc_attr( $meta );
-				}
-
-			} else {
-
-				$error = true;
-			}
-
-
-			if( !empty( $params['password'] ) && !empty( $params['confirm_password'] ) ) {
-
-				if( $params['password'] == $params['confirm_password'] ){
-
-					$user_data['user_pass'] = esc_attr( $params['password'] );
-
-				} else {
-					
-					PC::debug('pass error');
-					$error = true;
-				}
-
-			}
-
-			if( $error ){
-
-				wp_redirect( home_url('profile/error') );
-				exit;
-			}
-
-			if( count( $user_data ) > 1 ){
-				wp_update_user( $user_data );
-			}
-
-			wp_redirect( home_url('profile/update') );
-			exit;
-		
-
-		}
-		
 		
 	}
 	

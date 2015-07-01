@@ -4,7 +4,6 @@
  * Bootstrap our theme class
  */
 include( 'bootstrap.php' );
-include_once( 'theme.class.php' );
 include_once( 'member-tools.class.php');
 
 
