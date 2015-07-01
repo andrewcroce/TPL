@@ -1,15 +1,20 @@
 <?php
 
 /**
- * Include some stuff
+ * Bootstrap our theme components and settings
  */
+include( 'bootstrap.php' );
 
-include( get_template_directory() . '/theme.class.php' );
+
+
 
 /**
+ * ==========================
+ * Include tpl function files
+ * 
  * This little snippet automatically includes any function files in tpl_ folders according to the naming structure.
  * So, a file at path tpl_foos/foo_functions.php will be included here
- * 
+ * ===================================================================
  */
 
 $folders = glob( dirname(__FILE__).'/tpl_*' ); // Get all our tpl_ folders
