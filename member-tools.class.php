@@ -31,9 +31,7 @@ if(!class_exists('StarterMemberTools')){
 			add_action('wp_logout', array(&$this,'_wp_logout'));
 			add_filter('authenticate', array(&$this, '_authenticate'), 100, 3);
 			add_filter('lostpassword_url', array(&$this,'_lostpassword_url'), 10, 2);
-			add_filter('register', array(&$this,'_register'));
-
-			
+			add_filter('register', array(&$this,'_register'));			
 			// Add any additional action or filter hooks here.
 		}
 
@@ -44,120 +42,141 @@ if(!class_exists('StarterMemberTools')){
 		 * Hook into Wordpress initialization
 		 */
 		function _init() {
-			global $wpdb;
 
-			// Code to handle various states of the password reset process
+			// handle all of the password reset requests.
+			self::pw_reset_router();			
+			//
+		}
+		// end init
+		
 
-			// state one, this is the action for the inital password set
+
+
+		/**
+		 * route the pw reset behavior to the correct method
+		 */
+		public static function pw_reset_router(){
+			
+			// this is from the regular reset password form
+			// load in the first state
 			if($_POST['action'] == "tg_pwd_reset"){
-
-
-			    if ( !wp_verify_nonce( $_POST['tg_pwd_nonce'], "tg_pwd_nonce")) {
-			        self::$status_message = 'No Tricks Please!';
-			        //exit();
-			    }
-			    if(empty($_POST['user_input'])) {
-			        self::$status_message = 'Please Enter Your Email Address';
-			        //exit();
-			    }
-			    $user_input = trim($_POST['user_input']);
-
-			    if ( strpos($user_input, '@') ) {
-			        //$user_data = get_user_by_email($user_input);
-			       $user_data = get_user_by( 'email', $user_input );
-			        if( empty($user_data) ) { //delete the condition $user_data->caps[administrator] == 1, if you want to allow password reset for admins also
-			            self::$status_message = 'Invalid Email Address';
-			            //exit();
-			        }
-			    } else {
-			        $user_data = get_userdatabylogin($user_input);
-			        if( empty($user_data) ) { //delete the condition $user_data->caps[administrator] == 1, if you want to allow password reset for admins also
-			            self::$status_message = 'Invalid Username';
-			            //exit();
-			        }
-			    }
-
-			    $user_login = $user_data->user_login;
-			    $user_email = $user_data->user_email;
-
-			    $key = $wpdb->get_var($wpdb->prepare("SELECT user_activation_key FROM $wpdb->users WHERE user_login = %s", $user_login));
-			    if(empty($key)) {
-			        //generate reset key
-			        $key = wp_generate_password(20, false);
-			        $wpdb->update($wpdb->users, array('user_activation_key' => $key), array('user_login' => $user_login));
-			    }
-
-			    //mailing reset details to the user
-			    $message = __('Someone requested that the password be reset for the following account:') . "\r\n\r\n" . '<br>';
-			    $message .= get_home_url() . "\r\n\r\n" . '<br>';
-			    $message .= sprintf(__('Username: %s'), $user_email) . "\r\n\r\n" . '<br>';
-			    $message .= __('If this was a mistake, just ignore this email and nothing will happen.') . "\r\n\r\n" . '<br>';
-			    $message .= __('To reset your password, visit the following address:') . "\r\n\r\n" . '<br>';
-			    $message .= home_url("/reset-password/?action=reset_pwd_state_two&key=$key&login=" . rawurlencode($user_login)) . "\r\n" . '<br>';
-			    $message .= '<br><hr /><br>';
-
-			    $headers[] = 'From: Admin';
-			    $headers[] = 'Content-Type: text/html; charset=UTF-8';
-
-			    if ( $message && !wp_mail($user_email, 'Password Reset Request', $message, $headers) ) {
-			        self::$status_message = "Email failed to send, please contact the site Admin";
-			       // exit();
-			    } else {
-			        self::$status_message = "You will receive and email with password reset instructions within the next few minutes.";
-			        //exit();
-			    }
-
+				self::pw_reset_load_state_one();
 			}
-			// end state one
 
-			// state 2 if a user has a key and the request action is reset password
-			// add a new password to the DB and send the user the email with the information in it.
-			
-			if(isset($_GET['key']) && $_GET['action'] == "reset_pwd_state_two") {
-				//die('no');
-				$reset_key = $_GET['key'];
-				$user_login = $_GET['login'];
-				$user_data = $wpdb->get_row($wpdb->prepare("SELECT ID, user_login, user_email FROM $wpdb->users WHERE user_activation_key = %s AND user_login = %s", $reset_key, $user_login));
+			// this is from the link in the first email
+			// load in the second state
+			if(isset($_GET['key']) && $_GET['action'] == "reset_pwd_state_two"){
+				self::pw_reset_load_state_two();
+			}
 
-				$user_login = $user_data->user_login;
-				$user_email = $user_data->user_email;
-			
-			    if(!empty($reset_key) && !empty($user_data)) {
-					$new_password = wp_generate_password(7, false);
-					//echo $new_password; exit();
-					wp_set_password( $new_password, $user_data->ID );
-					//mailing reset details to the user
-					$message = __('Your new password for the account at:') . "\r\n\r\n" . '<br>';
-					$message .= get_home_url() . "\r\n\r\n" . '<br>';
-					$message .= sprintf(__('Username: %s'), $user_email) . "\r\n\r\n" . '<br>';
-					$message .= sprintf(__('Password: %s'), $new_password) . "\r\n\r\n" . '<br>';
-					$message .= __('You can now login with your new password at: ') . get_option('siteurl')."/login" . "\r\n\r\n" . '<br>';
-					$message .= '<br><hr /><br>';
-
-					$headers[] = 'From: Admin';
-					$headers[] = 'Content-Type: text/html; charset=UTF-8';
-			        if ( $message && !wp_mail($user_email, 'Password Reset Request', $message, $headers) ) {
-						self::$status_message = 'Email failed to send for some unknown reason';
-			        } else {
-			        	self::$status_message = 'Another email containing a temporary password has been sent!';
-					}
-				
-
-				}else{
-					exit('No Not a Valid Key.');
-				}
-
-			} // end state 2
-
-			// state 3, the user has their new password
+			// reset success yay
 			if ($_GET['action'] == 'reset_success'){
 				self::$status_message = "You will receive an email with your new password shortly.";
 			}
-
-			// End code to handle various states of the password reset process
 		}
+		//
+
+		/**
+		 * this is the initial response from a reset password request.
+		 * it creates a key and emails the user with that key which will allow them
+		 * to generate a new password.
+		 */
+		public static function pw_reset_load_state_one(){
+			global $wpdb;
+			if ( !wp_verify_nonce( $_POST['tg_pwd_nonce'], "tg_pwd_nonce")) {
+				self::$status_message = 'No Tricks Please';
+			}
+			if(empty($_POST['user_input'])) {
+				self::$status_message = 'Please Enter Your Email Address';
+			}
+			$user_input = trim($_POST['user_input']);
+
+			if ( strpos($user_input, '@') ) {
+				$user_data = get_user_by( 'email', $user_input );
+				if( empty($user_data) ) {
+					self::$status_message = 'Invalid Email Address';
+				}
+			} else {
+				$user_data = get_userdatabylogin($user_input);
+				if( empty($user_data) ) {
+					self::$status_message = 'Invalid Username';
+				}
+			}
+
+			$user_login = $user_data->user_login;
+			$user_email = $user_data->user_email;
+
+			$key = $wpdb->get_var($wpdb->prepare("SELECT user_activation_key FROM $wpdb->users WHERE user_login = %s", $user_login));
+			if(empty($key)) {
+				//generate reset key
+				$key = wp_generate_password(20, false);
+				$wpdb->update($wpdb->users, array('user_activation_key' => $key), array('user_login' => $user_login));
+			}
+
+			//mailing reset details to the user
+			$message = __('Someone requested that the password be reset for the following account:') . "\r\n\r\n" . '<br>';
+			$message .= get_home_url() . "\r\n\r\n" . '<br>';
+			$message .= sprintf(__('Username: %s'), $user_email) . "\r\n\r\n" . '<br>';
+			$message .= __('If this was a mistake, just ignore this email and nothing will happen.') . "\r\n\r\n" . '<br>';
+			$message .= __('To reset your password, visit the following address:') . "\r\n\r\n" . '<br>';
+			$message .= home_url("/reset-password/?action=reset_pwd_state_two&key=$key&login=" . rawurlencode($user_login)) . "\r\n" . '<br>';
+			$message .= '<br><hr /><br>';
+
+			$headers[] = 'From: Admin';
+			$headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+			if ( $message && !wp_mail($user_email, 'Password Reset Request', $message, $headers) ) {
+				self::$status_message = "Email failed to send, please contact the site Admin";
+			} else {
+				self::$status_message = "You will receive and email with password reset instructions within the next few minutes.";
+			}
+		}
+		// end load state 1
+
+
+
+		/**
+		 * load the second state of the password reset
+		 * the user arrives here by clicking the link in the first email they were sent
+		 * this checks if the key is correct, then generates a new password
+		 * and emails it to the user with a link to the login page.
+		 */
+		public static function pw_reset_load_state_two(){
+			global $wpdb;
+			$reset_key = $_GET['key'];
+			$user_login = $_GET['login'];
+			$user_data = $wpdb->get_row($wpdb->prepare("SELECT ID, user_login, user_email FROM $wpdb->users WHERE user_activation_key = %s AND user_login = %s", $reset_key, $user_login));
+
+			$user_login = $user_data->user_login;
+			$user_email = $user_data->user_email;
 		
+			if(!empty($reset_key) && !empty($user_data)) {
+				$new_password = wp_generate_password(7, false);
+				//echo $new_password; exit();
+				wp_set_password( $new_password, $user_data->ID );
+				//mailing reset details to the user
+				$message = __('Your new password for the account at:') . "\r\n\r\n" . '<br>';
+				$message .= get_home_url() . "\r\n\r\n" . '<br>';
+				$message .= sprintf(__('Username: %s'), $user_email) . "\r\n\r\n" . '<br>';
+				$message .= sprintf(__('Password: %s'), $new_password) . "\r\n\r\n" . '<br>';
+				$message .= __('You can now login with your new password at: ') . get_option('siteurl')."/login" . "\r\n\r\n" . '<br>';
+				$message .= '<br><hr /><br>';
+
+				$headers[] = 'From: Admin';
+				$headers[] = 'Content-Type: text/html; charset=UTF-8';
+				if ( $message && !wp_mail($user_email, 'Password Reset Request', $message, $headers) ) {
+					self::$status_message = 'Email failed to send for some unknown reason';
+				} else {
+					self::$status_message = 'Another email containing a temporary password has been sent!';
+				}
+			}else{
+				exit('No Not a Valid Key.');
+			}
+		}
+		// end state two
 				
+
+
 		/**
 		 * Add Custom WP Query Variables
 		 *
