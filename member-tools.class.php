@@ -44,9 +44,7 @@ if(!class_exists('StarterMemberTools')){
 		 * Hook into Wordpress initialization
 		 */
 		function _init() {
-			// add reset info here...
-			// !!!
-			echo "XXXX";
+
 		}
 		
 				
@@ -61,7 +59,6 @@ if(!class_exists('StarterMemberTools')){
 		 * @return array 				Modified query vars array
 		 **/
 		function _query_vars( $query_vars ) {
-			echo "Q var"; // !!!
 			$new_vars = array(
 				'restricted',
 				'redirect',
@@ -84,7 +81,6 @@ if(!class_exists('StarterMemberTools')){
 		* @return array 			Modified rewrite rules array
 		**/
 		function _rewrite_rules_array( $rules ) {
-			echo "new rules"; // !!!
 			$new_rules = array(
 
 				// Login error page
@@ -112,7 +108,6 @@ if(!class_exists('StarterMemberTools')){
 		* Generic hook for handling various redirections. Do what you will... carefully
 		**/
 		function _template_redirect() {
-			echo "redir"; // !!!
 			/**
 			 * If the user is not logged into WP
 			 */
