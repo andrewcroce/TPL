@@ -3,8 +3,9 @@
 /**
  * Hooks
  */
-add_action('after_switch_theme', 'tpl_activated');
+add_action('after_switch_theme', 'tpl_after_switch_theme');
 add_action('init', 'tpl_init');
+add_action('admin_enqueue_scripts', 'tpl_admin_enqueue_scripts' );
 
 
 
@@ -28,6 +29,9 @@ if( isset( $_POST['form_action'] ) ) {
 // Plugin activation class
 require get_template_directory() . '/includes/plugins/plugins.php';
 
+// Settings class
+require get_template_directory() . '/classes/settings.class.php';
+
 // Main theme class
 require get_template_directory() . '/classes/theme.class.php';
 
@@ -40,7 +44,7 @@ require get_template_directory() . '/classes/walkers/offcanvas-walker.class.php'
 /**
  * Theme has been activated
  */
-function tpl_activated(){
+function tpl_after_switch_theme(){
 
 	/**
 	 *  Set the permalink structure to use postname
@@ -61,5 +65,12 @@ function tpl_init(){
 	 * Require our custom ACF Fieldset for the post type index page template
 	 */
 	require get_template_directory() . '/includes/acf_fieldsets/index_post_type_fields.php';
+
+}
+
+
+function tpl_admin_enqueue_scripts(){
+
+	wp_enqueue_script( 'tpl_admin_script', get_stylesheet_directory_uri() . '/js/min/admin-min.js' );
 
 }
