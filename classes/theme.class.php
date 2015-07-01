@@ -248,12 +248,21 @@ if(!class_exists('Theme')){
 			/**
 			* Register Menus
 			**/
-			
-			register_nav_menus( array(
-				'main_menu' => __('Main Menu','theme')
-				// Add additional menus, ie.
-				// 'secondary_menu' => __('Secondary Menu','theme')
-			) );
+			$menu_options = get_option('menu_settings');
+
+			PC::debug($menu_options);
+
+			if( isset( $menu_options['menu_locations'] ) && count( $menu_options['menu_locations']['location'] ) ){
+				foreach( $menu_options['menu_locations']['location'] as $location ) {
+					$menu_locations[] = array(
+						$location['slug'] => $location['description']
+					);
+				}
+			}
+
+			PC::debug($menu_locations);
+
+			register_nav_menus( $menu_locations );
 			
 
 

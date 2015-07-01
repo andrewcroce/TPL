@@ -135,29 +135,27 @@ if( !class_exists( 'Settings' ) ) {
 			$options = get_option('menu_settings');
 			$value = isset( $options['menu_locations'] ) ? $options['menu_locations'] : 0;
 
-			PC::debug($value);
-
-			echo '<div data-repeater-list="menu_locations">';
+			echo '<div data-repeater-list="menu_settings[menu_locations][location]">';
 
 			if( $value ){
 
 				foreach( $value['location'] as $key => $location ) {
 					echo '<div data-repeater-item>';
-						echo '<label for="menu_location_slug_'.$key.'">'.__('Slug','theme').'</label> <input type="text" id="menu_location_slug_'.$key.'" name="menu_settings[menu_locations][location]['.$key.'][slug]" value="'.$location['slug'].'"> ';
+						echo '<label for="menu_location_slug_'.$key.'">'.__('Slug','theme').'</label> <input type="text" id="menu_location_slug_'.$key.'" name="menu_settings[menu_locations][location]['.$key.'][slug]" value="'.$location['slug'].'"> &nbsp;&nbsp;&nbsp;';
 						echo '<label for="menu_location_desc_'.$key.'">'.__('Description','theme').'</label> <input type="text" id="menu_location_desc_'.$key.'" name="menu_settings[menu_locations][location]['.$key.'][description]" value="'.$location['description'].'">';
-						echo '<input data-repeater-delete type="button" value="Delete"/>';
+						echo '<input data-repeater-delete type="button" class="button-secondary" value="Delete"/>';
 					echo '</div>';
 				}
 
 			} else {
 				echo '<div data-repeater-item>';
-					echo '<label for="menu_location_slug_0">'.__('Slug','theme').'</label> <input type="text" id="menu_location_slug_0" name="menu_settings[menu_locations][location][0][slug]" value="" > ';
-					echo '<label for="menu_location_desc_0">'.__('Description','theme').'</label> <input type="text" id="menu_location_desc_0" name="menu_settings[menu_locations][location][0][description]" value="">';
-					echo '<input data-repeater-delete type="button" value="Delete"/>';
+					echo '<label for="menu_location_slug">'.__('Slug','theme').'</label> <input type="text" id="menu_location_slug" name="menu_settings[menu_locations][location][][slug]" value="" > &nbsp;&nbsp;&nbsp;';
+					echo '<label for="menu_location_desc">'.__('Description','theme').'</label> <input type="text" id="menu_location_desc" name="menu_settings[menu_locations][location][][description]" value="">';
+					echo '<input data-repeater-delete type="button" class="button-secondary" value="Delete"/>';
 				echo '</div>';
 			}
 			echo '</div>';
-			echo '<input data-repeater-create type="button" value="Add"/>';
+			echo '<p><input data-repeater-create class="button-secondary" type="button" value="Add Menu Location"/></p>';
 		
 		}
 

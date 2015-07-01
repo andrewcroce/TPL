@@ -12,7 +12,9 @@
 	
 	$(document).ready(function(){
 		
-		$('.repeater').repeater();
+		$('.repeater').repeater({
+			isFirstItemUndeletable : true
+		});
 
 	});
 	
