@@ -1,17 +1,20 @@
 <?php
 
 /**
- * Include some stuff
+ * Bootstrap our theme components and settings
  */
-include( 'plugins/plugins.php' );
-include( 'includes/topbar-walker.class.php' );
-include( 'includes/offcanvas-walker.class.php' );
-include( 'theme.class.php' );
+include( 'bootstrap.php' );
+
+
+
 
 /**
+ * ==========================
+ * Include tpl function files
+ * 
  * This little snippet automatically includes any function files in tpl_ folders according to the naming structure.
  * So, a file at path tpl_foos/foo_functions.php will be included here
- * 
+ * ===================================================================
  */
 
 $folders = glob( dirname(__FILE__).'/tpl_*' ); // Get all our tpl_ folders

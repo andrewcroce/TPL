@@ -1,42 +1,39 @@
 <?php
 
 /**
- * Starter Theme
+ * Theme
  *
  * @package WordPress
  * @subpackage WP_Starter_Theme
  */
 
 
-if(!class_exists('StarterTheme')){
+if(!class_exists('Theme')){
 	
-	class StarterTheme {
+	class Theme {
 		
 		
 		/**
-		*
-		* Constructor
-		* Primarily used to set up action and filter hooks.
-		**/
-		function __construct() {
+		 * Load
+		 * Primarily used to set up action and filter hooks.
+		 */
+		public static function load() {
 			
-			add_action('init', array(&$this, '_init'));
-			add_action('after_switch_theme', array(&$this, '_theme_activated'));
-			add_action('wp_print_styles', array(&$this,'_add_styles'));
-			add_action('wp_print_scripts', array(&$this,'_add_scripts'));
-			add_action('after_setup_theme', array(&$this,'_setup_theme'));
-			add_action('template_redirect', array(&$this,'_template_redirect'));
+			add_action('init', 					array(__CLASS__,'_init'));
+			add_action('after_switch_theme', 	array(__CLASS__,'_theme_activated'));
+			add_action('wp_print_styles', 		array(__CLASS__,'_add_styles'));
+			add_action('wp_print_scripts', 		array(__CLASS__,'_add_scripts'));
+			add_action('after_setup_theme', 	array(__CLASS__,'_setup_theme'));
+			add_action('template_redirect', 	array(__CLASS__,'_template_redirect'));
 
-			add_filter('wp_starter_skiplinks', array(&$this,'_add_skiplinks'));
-			add_filter('template_include', array(&$this,'_template_include'));
-			add_filter('body_class', array(&$this,'_body_class'));
-			add_filter('query_vars', array(&$this,'_query_vars'));
-			add_filter('rewrite_rules_array', array(&$this,'_rewrite_rules_array'));
-			add_filter('get_search_form', array(&$this,'_get_search_form'));
-			add_filter('the_content', array(&$this,'_the_content'));
+			add_filter('skiplinks', 			array(__CLASS__,'_add_skiplinks'));
+			add_filter('template_include', 		array(__CLASS__,'_template_include'));
+			add_filter('body_class', 			array(__CLASS__,'_body_class'));
+			add_filter('query_vars', 			array(__CLASS__,'_query_vars'));
+			add_filter('rewrite_rules_array', 	array(__CLASS__,'_rewrite_rules_array'));
+			add_filter('get_search_form', 		array(__CLASS__,'_get_search_form'));
+			add_filter('the_content', 			array(__CLASS__,'_the_content'));
 
-			
-			// Add any additional action or filter hooks here.
 		}
 
 
@@ -44,7 +41,7 @@ if(!class_exists('StarterTheme')){
 		 * Theme activation
 		 * This runs when the theme is activated
 		 */
-		function _theme_activated() {
+		static function _theme_activated() {
 
 			/**
 			* Generate Home Page
@@ -96,13 +93,7 @@ if(!class_exists('StarterTheme')){
 		 * Init
 		 * Hook into Wordpress initialization
 		 */
-		function _init() {
-
-			/* Set the permalink structure to use postname
-			*/
-			global $wp_rewrite;
-			$wp_rewrite->set_permalink_structure( '/%postname%/' );
-
+		static function  _init() {
 
 			/* We use a generalized init function to intercept any custom form submissions
 			* For example, if a form is submitted where $_POST['form_action'] == 'some_action',
@@ -114,10 +105,6 @@ if(!class_exists('StarterTheme')){
 				$this->$action($params);
 			}
 
-			/**
-			 * Include our custom ACF Fieldset for the post type index page template
-			 */
-			include( 'includes/acf_index_post_type_fields.php' );
 		}
 		
 		
@@ -127,7 +114,7 @@ if(!class_exists('StarterTheme')){
 		* Add Styles
 		* This adds CSS files to the theme. You shouldn't need to add files, since app.css is compiled from SASS.
 		**/
-		function _add_styles() {
+		static function _add_styles() {
 			if (is_admin()) return;
 			wp_enqueue_style('theme', get_stylesheet_directory_uri() .'/css/app.css', array(), '1.0.0', 'screen');
 		}
@@ -146,7 +133,7 @@ if(!class_exists('StarterTheme')){
 		* It is recommended that all JS libraries you use are prepended to app-min.js using a JS compiler, such as Codekit.
 		* This will keep the number of individual HTTP requests to a minimum.
 		**/
-		function _add_scripts() {
+		static function _add_scripts() {
 			
 			// Don't mess with admin scripts
 			if (is_admin()) return;
@@ -160,7 +147,7 @@ if(!class_exists('StarterTheme')){
 			wp_enqueue_script('modernizr', get_stylesheet_directory_uri() .'/bower_components/modernizr/modernizr.js', array(), '2.8.3');
 			wp_enqueue_script('jquery', site_url('/wp-includes/js/jquery/jquery.js?ver='.$wp_jquery_ver), array(), $wp_jquery_ver, true );
 			wp_enqueue_script('theme.app', get_stylesheet_directory_uri() .'/js/min/app-min.js', array('modernizr','jquery'), '0.1.0', true);
-			wp_localize_script('theme.app', 'theme', $this->_add_js_vars()); // Call _add_js_vars() to add PHP variables to frontend 
+			wp_localize_script('theme.app', 'theme', self::_add_js_vars()); // Call _add_js_vars() to add PHP variables to frontend 
 
 			if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 				wp_enqueue_script( 'comment-reply' );
@@ -178,7 +165,7 @@ if(!class_exists('StarterTheme')){
 		* @return  array Array of variables to be added to the front end window.theme
 		* 
 		**/
-		function _add_js_vars() {
+		static function _add_js_vars() {
 			return array(
 				'ajax_url' => admin_url('admin-ajax.php'),
 				'site_url' => get_site_url(),
@@ -194,7 +181,7 @@ if(!class_exists('StarterTheme')){
 		 * @return array List of anchor links to add
 		 *    {anchor} => {label} 
 		 */
-		function _add_skiplinks() {
+		static function _add_skiplinks() {
 
 			$links =  array(
 				'#main-navigation' => __('Skip to main navigation'),
@@ -217,7 +204,7 @@ if(!class_exists('StarterTheme')){
 		* Add various functionality, such as sidebars, menus, image sizes, and whatnot
 		* 
 		**/
-		function _setup_theme() {
+		static function _setup_theme() {
 
 			/**
 			 * Create a global counter variable to use in multiple search forms,
@@ -297,7 +284,7 @@ if(!class_exists('StarterTheme')){
 		 * @param  array $classes Array of default body classes
 		 * @return array          Modified array of body classes
 		 */
-		function _body_class( $classes ){
+		static function _body_class( $classes ){
 
 			global $post;
 			
@@ -334,7 +321,7 @@ if(!class_exists('StarterTheme')){
 		 * @param  array $query_vars  	Query vars array to be modified
 		 * @return array 				Modified query vars array
 		 **/
-		function _query_vars( $query_vars ) {
+		static function _query_vars( $query_vars ) {
 
 			$new_vars = array(
 				// Add vars
@@ -353,7 +340,7 @@ if(!class_exists('StarterTheme')){
 		* @param  array $rules  	Rewrite rules array to be modified
 		* @return array 			Modified rewrite rules array
 		**/
-		function _rewrite_rules_array( $rules ) {
+		static function _rewrite_rules_array( $rules ) {
 			
 			$new_rules = array(
 				// 'some-slug/([^/]+)/?$' => 'index.php?pagename=some-slug&some_query_var=$matches[1]'
@@ -369,7 +356,7 @@ if(!class_exists('StarterTheme')){
 		* Template Redirection
 		* Generic hook for handling various redirections. Do what you will... carefully
 		**/
-		function _template_redirect() {
+		static function _template_redirect() {
 			
 		}
 		
@@ -381,7 +368,7 @@ if(!class_exists('StarterTheme')){
 		 * @param string $template 	Path to template file
 		 * @return string 			Path to (different) template file
 		 **/
-		function _template_include( $template ){
+		static function _template_include( $template ){
 
 			global $post;
 
@@ -390,14 +377,14 @@ if(!class_exists('StarterTheme')){
 
 				// If this is the front page, try to load the home page template
 				if( is_front_page() ){
-					if( file_exists( dirname(__FILE__) . '/tpl_pages/page-home.php' ) ){
+					if( is_readable( get_template_directory() . '/tpl_pages/page-home.php' ) ){
 						return locate_template( 'tpl_pages/page-home.php' );
 					} else {
 						return locate_template( 'tpl_pages/page-default.php' );
 					}
 				}
 
-				if( file_exists( dirname(__FILE__) . '/tpl_pages/page-' . $post->post_name . '.php' ) ){
+				if( is_readable( get_template_directory() . '/tpl_pages/page-' . $post->post_name . '.php' ) ){
 					return locate_template( 'tpl_pages/page-' . $post->post_name . '.php' );
 				} else {
 					return locate_template( 'tpl_pages/page-default.php' );
@@ -406,7 +393,7 @@ if(!class_exists('StarterTheme')){
 
 			// If this is a single post type (other than a page), try to locate a template file with a matching name
 			if( is_single() ) {
-				if( file_exists( dirname(__FILE__) . '/tpl_singles/single-' . $post->post_type . '.php' ) ){
+				if( is_readable( get_template_directory() . '/tpl_singles/single-' . $post->post_type . '.php' ) ){
 					return locate_template( 'tpl_singles/single-' . $post->post_type . '.php' );
 				} else {
 					return locate_template( 'tpl_singles/single-default.php' );
@@ -421,7 +408,7 @@ if(!class_exists('StarterTheme')){
 
 				$specific_template_path = str_replace( '.php', '-' . $post->post_name . '.php', get_page_template() );
 
-				if( file_exists( $specific_template_path ) )
+				if( is_readable( $specific_template_path ) )
 					return $specific_template_path;
 			}
 
@@ -431,43 +418,26 @@ if(!class_exists('StarterTheme')){
 
 
 		/**
-		 * Hook ACF field for "index_post_type".
-		 * This field is attached to pages with the "index" template, used for custom post type indexes/archives.
-		 * The field group is automatically registered in includes/acf_index_post_type_fields.php
-		 * @param  array $field The field properties
-		 * @return array       Modified field properties
+		 * We have a custom search form located in our tpl_forms folder,
+		 * so override the normal searchform.php
 		 */
-		function _acf_load_index_post_type( $field ){
+		static function _get_search_form(){
 
-			// Get all public post types
-			$post_types = get_post_types(array(
-				'public' => true
-			), 'objects');
-			
-			// Add them to the field's choices
-			foreach( $post_types as $key => $post_type ){
-				$field['choices'][$key] = $post_type->label;
-			}
-
-			return $field;
-		}
-
-
-
-		function _get_search_form( $form ){
-
+			/**
+			 * Since we might have more than one search form on a page, incrememnt a global counter
+			 * which will be used to create unique HTML ids for each form's fields
+			 */
 			global $search_form_counter;
 			$search_form_counter += 1;
 
-			if( file_exists( dirname(__FILE__) . '/searchform.php' ) ) {
+			if( is_readable( get_template_directory() . '/tpl_forms/form-search.php' ) ) {
 
-				include 'searchform.php';
+				include get_template_directory() . '/tpl_forms/form-search.php';
 				return false;
 
 			}
-
-			return $form;
 		}
+
 
 
 		/**
@@ -475,7 +445,7 @@ if(!class_exists('StarterTheme')){
 		 * @param  string $content HTML content
 		 * @return string          Modified HTML
 		 */
-		function _the_content( $content ){
+		static function _the_content( $content ){
 
 			// Strip <p> tags around images, because images are not paragraphs
 			$content = preg_replace('/<p>\s*(<a .*>)?\s*(<img .* \/>)\s*(<\/a>)?\s*<\/p>/iU', '\1\2\3', $content);
@@ -490,8 +460,8 @@ if(!class_exists('StarterTheme')){
 	
 }
 
-if(class_exists('StarterTheme')){
-	$theme = new StarterTheme();
+if( class_exists('Theme') ){
+	Theme::load();
 }
 
 ?>
