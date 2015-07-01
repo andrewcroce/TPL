@@ -3,10 +3,8 @@
 /**
  * Include some stuff
  */
-include( 'plugins/plugins.php' );
-include( 'includes/topbar-walker.class.php' );
-include( 'includes/offcanvas-walker.class.php' );
-include( 'theme.class.php' );
+
+include( get_template_directory() . '/theme.class.php' );
 
 /**
  * This little snippet automatically includes any function files in tpl_ folders according to the naming structure.

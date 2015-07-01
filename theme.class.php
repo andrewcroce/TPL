@@ -8,9 +8,15 @@
  */
 
 
-if(!class_exists('StarterTheme')){
+include( get_template_directory() . '/plugins/plugins.php' );
+include( get_template_directory() . '/includes/topbar-walker.class.php' );
+include( get_template_directory() . '/includes/offcanvas-walker.class.php' );
+include( get_template_directory() . '/includes/settings.class.php' );
+
+
+if(!class_exists('Theme')){
 	
-	class StarterTheme {
+	class Theme {
 		
 		
 		/**
@@ -197,8 +203,8 @@ if(!class_exists('StarterTheme')){
 		function _add_skiplinks() {
 
 			$links =  array(
-				'#main-navigation' => __('Skip to main navigation'),
-				'#main-content' => __('Skip to main content'),
+				'#main-navigation' => __('Skip to main navigation','theme'),
+				'#main-content' => __('Skip to main content','theme'),
 			);
 
 			// Add any context-specific skiplinks, i.e.
@@ -263,9 +269,9 @@ if(!class_exists('StarterTheme')){
 			**/
 			
 			register_nav_menus( array(
-				'main_menu' => 'Main Menu',
+				'main_menu' => __('Main Menu','theme')
 				// Add additional menus, ie.
-				// 'secondary_menu' => 'Secondary Menu',
+				// 'secondary_menu' => __('Secondary Menu','theme')
 			) );
 			
 
@@ -490,8 +496,8 @@ if(!class_exists('StarterTheme')){
 	
 }
 
-if(class_exists('StarterTheme')){
-	$theme = new StarterTheme();
+if(class_exists('Theme')){
+	$theme = new Theme();
 }
 
 ?>
