@@ -44,14 +44,6 @@ if(!class_exists('StarterTheme')){
 			add_filter('rewrite_rules_array', array(&$this,'_rewrite_rules_array'));
 			add_filter('get_search_form', array(&$this,'_get_search_form'));
 			add_filter('the_content', array(&$this,'_the_content'));
-
-			// User/account related hooks
-			
-			add_action('wp_logout', array(&$this,'_wp_logout'));
-			add_filter('authenticate', array(&$this, '_authenticate'), 100, 3);
-			add_filter('lostpassword_url', array(&$this,'_lostpassword_url'), 10, 2);
-			add_filter('register', array(&$this,'_register'));
-
 			
 			// Add any additional action or filter hooks here.
 		}
@@ -413,13 +405,7 @@ if(!class_exists('StarterTheme')){
 		 **/
 		function _query_vars( $query_vars ) {
 
-			$new_vars = array(
-				'restricted',
-				'redirect',
-				'login_error',
-				'profile_error',
-				'update'
-			);
+			$new_vars = array();
 			return array_merge( $new_vars, $query_vars );
 		}
 		
@@ -436,21 +422,7 @@ if(!class_exists('StarterTheme')){
 		**/
 		function _rewrite_rules_array( $rules ) {
 			
-			$new_rules = array(
-
-				// Login error page
-				'login/error/([^/]+)/?$' => 'index.php?pagename=login&login_error=$matches[1]',
-
-				// Login page from restricted page, with redirect slug/ID
-				'login/restricted/([^/]+)/?$' => 'index.php?pagename=login&restricted=1&redirect=$matches[1]',
-
-				// Profile update page
-				'profile/update/?$' => 'index.php?pagename=profile&update=1',
-	
-				// Profile error page
-				'profile/error/?$' => 'index.php?pagename=profile&profile_error=1'
-
-			);
+			$new_rules = array();
 			$rules = $new_rules + $rules;
 			return $rules;
 		}
@@ -464,104 +436,7 @@ if(!class_exists('StarterTheme')){
 		**/
 		function _template_redirect() {
 			
-			/**
-			 * If the user is not logged into WP
-			 */
-			if( ! is_user_logged_in() ) {
-
-				/**
-				 * If a non logged-in user is trying to access the profile page
-				 * redirect them to login
-				 */
-				if( is_page('profile') ){
-					wp_redirect( home_url('login/restricted/profile') );
-					exit();
-				}
-
-			}
-
 		}
-
-
-
-		/**
-		 * If logging out from the front end, redirect to the home page
-		 */
-		function _wp_logout(){
-			if( ! is_admin() ){
-				wp_redirect( home_url() );
-				exit();
-			}
-		}
-
-
-		/**
-		 * Custom user authentication by email or username
-		 * @param  mixed 	$user				A WP_User, WP_Error, or null
-		 * @param  string 	$username_email		The supplied username or email address
-		 * @param  string 	$password       	The supplied password
-		 * @return WP_User                 		A WP_User object, if it all goes well
-		 */
-		function _authenticate( $user, $username_email, $password ){
-
-			// Only do our custom authentication if 'login' is the referring page
-			if( isset( $_SERVER['HTTP_REFERER'] ) && strstr( $_SERVER['HTTP_REFERER'] ,'login' ) ) {
-
-				// If $user isn't null, and its not an error, that means they logged in successfully.
-				// Just return the $user and be done.
-				if( ! is_null( $user ) && ! is_wp_error( $user ) ) {
-
-					// This means $user is an authenticated WP_User, so return it
-					return $user;
-				}
-
-				// If username/email is blank
-				if( empty( $username_email ) ){
-					wp_redirect( home_url('login/error/username_email') );
-					exit();
-				}
-
-				// If password is blank
-				if( empty( $password ) ){
-					wp_redirect( home_url('login/error/password') );
-					exit();
-				}
-
-				// First attempt to get the user data by email
-				// It might not be an email address, but we'll start with that since its more likely/user-friendly
-				$user = get_user_by( 'email', $username_email );
-
-				// If that didn't work...
-				if( ! $user ){
-
-					// Maybe its a username, try that
-					$user = get_user_by( 'login', $username_email );
-
-					// If that didn't work then its a failure
-					if( ! $user ) {
-
-						wp_redirect( home_url('login/error/failed') );
-						exit();
-
-					}
-				}
-
-				// Now check their password
-				if( ! wp_check_password( $password, $user->user_pass, $user->ID ) ) {
-
-					wp_redirect( home_url('login/error/failed') );
-					exit();
-				}
-
-				// Success
-				return $user;
-
-			}
-			
-		}
-		
-
-
 
 		/**
 		 * Load templates in subdirectories

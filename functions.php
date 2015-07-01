@@ -4,9 +4,7 @@
  * Bootstrap our theme class
  */
 include( 'theme.class.php' );
-
-
-
+include( 'member-tools.class.php');
 
 /**
  * This little snippet automatically includes any function files in tpl_ folders according to the naming structure.
