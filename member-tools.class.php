@@ -93,7 +93,7 @@ if(!class_exists('StarterMemberTools')){
 			    $message .= sprintf(__('Username: %s'), $user_email) . "\r\n\r\n" . '<br>';
 			    $message .= __('If this was a mistake, just ignore this email and nothing will happen.') . "\r\n\r\n" . '<br>';
 			    $message .= __('To reset your password, visit the following address:') . "\r\n\r\n" . '<br>';
-			    $message .= self::tg_validate_url() . "action=reset_pwd&key=$key&login=" . rawurlencode($user_login) . "\r\n" . '<br>';
+			    $message .= home_url("/reset-password/?action=reset_pwd_state_two&key=$key&login=" . rawurlencode($user_login)) . "\r\n" . '<br>';
 			    $message .= '<br><hr /><br>';
 
 			    $headers[] = 'From: Admin';
@@ -103,7 +103,7 @@ if(!class_exists('StarterMemberTools')){
 			        self::$status_message = "Email failed to send, please contact the site Admin";
 			       // exit();
 			    } else {
-			        self::$status_message = "We have just sent you an email with Password reset instructions";
+			        self::$status_message = "You will receive and email with password reset instructions within the next few minutes.";
 			        //exit();
 			    }
 
@@ -112,14 +112,16 @@ if(!class_exists('StarterMemberTools')){
 
 			// state 2 if a user has a key and the request action is reset password
 			// add a new password to the DB and send the user the email with the information in it.
-			if(isset($_GET['key']) && $_GET['action'] == "reset_pwd") {
+			
+			if(isset($_GET['key']) && $_GET['action'] == "reset_pwd_state_two") {
+				//die('no');
 				$reset_key = $_GET['key'];
 				$user_login = $_GET['login'];
 				$user_data = $wpdb->get_row($wpdb->prepare("SELECT ID, user_login, user_email FROM $wpdb->users WHERE user_activation_key = %s AND user_login = %s", $reset_key, $user_login));
 
 				$user_login = $user_data->user_login;
 				$user_email = $user_data->user_email;
-
+			
 			    if(!empty($reset_key) && !empty($user_data)) {
 					$new_password = wp_generate_password(7, false);
 					//echo $new_password; exit();
@@ -135,18 +137,14 @@ if(!class_exists('StarterMemberTools')){
 					$headers[] = 'From: Admin';
 					$headers[] = 'Content-Type: text/html; charset=UTF-8';
 			        if ( $message && !wp_mail($user_email, 'Password Reset Request', $message, $headers) ) {
-						//get_header();
 						self::$status_message = 'Email failed to send for some unknown reason';
-						
-						//get_footer();
-						//exit();
 			        } else {
-						$redirect_to = get_bloginfo('url')."/reset-password?action=reset_success";
-						wp_safe_redirect($redirect_to);
-						//exit();
+			        	self::$status_message = 'Another email containing a temporary password has been sent!';
 					}
+				
+
 				}else{
-					exit('Not a Valid Key.');
+					exit('No Not a Valid Key.');
 				}
 
 			} // end state 2
@@ -400,21 +398,6 @@ if(!class_exists('StarterMemberTools')){
 		 */
 		public static function get_status(){
 			return self::$status_message;
-		}
-
-		/**
-		 * modify a url's get string appropriately
-		 */
-		public static function tg_validate_url() {
-			global $post;
-			$page_url = esc_url(get_permalink( $post->ID ));
-			$urlget = strpos($page_url, "?");
-			if ($urlget === false) {
-				$concate = "?";
-			} else {
-				$concate = "&";
-			}
-			return $page_url.$concate;
 		}
 		
 	}
