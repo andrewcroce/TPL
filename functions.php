@@ -3,13 +3,18 @@
 /**
  * Bootstrap our theme class
  */
-include( 'theme.class.php' );
-include( 'member-tools.class.php');
+include( 'bootstrap.php' );
+include_once( 'theme.class.php' );
+include_once( 'member-tools.class.php');
+
 
 /**
+ * ==========================
+ * Include tpl function files
+ * 
  * This little snippet automatically includes any function files in tpl_ folders according to the naming structure.
  * So, a file at path tpl_foos/foo_functions.php will be included here
- * 
+ * ===================================================================
  */
 
 $folders = glob( dirname(__FILE__).'/tpl_*' ); // Get all our tpl_ folders

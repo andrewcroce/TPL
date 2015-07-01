@@ -1,4 +1,9 @@
-<?php global $search_form_counter; ?>
+<?php 
+/**
+ * Search form template - tpl_form_search() or get_searchform()
+ * 
+ */ 
+global $search_form_counter; ?>
 
 <form class="searchform" role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>">
 

@@ -16,7 +16,7 @@
  */ ?>
 <nav id="skip-links" class="screenreader">
 
-	<?php $links = apply_filters('wp_starter_skiplinks', array() ); ?>
+	<?php $links = apply_filters('skiplinks', array() ); ?>
 
 	<?php foreach( $links as $anchor => $label ) : ?>
 
