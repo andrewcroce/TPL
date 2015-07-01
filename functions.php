@@ -4,7 +4,7 @@
  * Bootstrap our theme class
  */
 include( 'bootstrap.php' );
-include_once( 'member-tools.class.php');
+include_once( get_template_directory() . '/classes/member-tools.class.php');
 
 
 /**
