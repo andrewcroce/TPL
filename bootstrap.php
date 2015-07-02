@@ -5,20 +5,7 @@
  */
 add_action('after_switch_theme', 'tpl_after_switch_theme');
 add_action('init', 'tpl_init');
-add_action('admin_enqueue_scripts', 'tpl_admin_enqueue_scripts' );
-
-
-
-/** 
- * We use a generalized init function to intercept any custom form submissions
- * For example, if a form is submitted where $_POST['form_action'] == 'submit_something',
- * this form can be handled by creating an action hook add_action('form_action_submit_something','my_form_submission_handler');
- */
-if( isset( $_POST['form_action'] ) ) {
-	$action = '_'.$_POST['form_action'];
-	$params = !empty($_POST['params']) ? $_POST['params'] : array();
-	do_action( 'form_action_' . $action, $params );
-}
+//add_action('admin_enqueue_scripts', 'tpl_admin_enqueue_scripts' );
 
 
 
@@ -60,11 +47,24 @@ function tpl_after_switch_theme(){
  * WP Initialized
  */
 function tpl_init(){
+	
+
+	/** 
+	 * We use a generalized init function to intercept any custom form submissions
+	 * For example, if a form is submitted where $_POST['form_action'] == 'submit_something',
+	 * this form can be handled by creating an action hook add_action('form_action_submit_something','my_form_submission_handler');
+	 */
+	if( isset( $_POST['form_action'] ) ) {
+		$action = '_'.$_POST['form_action'];
+		$params = !empty($_POST['params']) ? $_POST['params'] : array();
+		do_action( 'form_action_' . $action, $params );
+	}
 
 	/**
-	 * Require our custom ACF Fieldset for the post type index page template
+	 * Require our custom ACF Fieldset for the post type index page template if the setting is enabled
 	 */
-	require get_template_directory() . '/includes/acf_fieldsets/index_post_type_fields.php';
+	if( Settings::index_template_enabled() )
+		require get_template_directory() . '/includes/acf_fieldsets/index_post_type_fields.php';
 
 }
 

@@ -18,16 +18,19 @@ if(!class_exists('Theme')){
 		 * Primarily used to set up action and filter hooks.
 		 */
 		public static function load() {
+
+
 			
-			add_action('init', 					array(__CLASS__,'_init'));
-			add_action('after_switch_theme', 	array(__CLASS__,'_theme_activated'));
-			add_action('wp_print_styles', 		array(__CLASS__,'_add_styles'));
-			add_action('wp_print_scripts', 		array(__CLASS__,'_add_scripts'));
-			add_action('after_setup_theme', 	array(__CLASS__,'_setup_theme'));
-			add_action('template_redirect', 	array(__CLASS__,'_template_redirect'));
+			add_action('after_switch_theme', 				array(__CLASS__,'_theme_activated'));
+			add_action('wp_print_styles', 					array(__CLASS__,'_add_styles'));
+			add_action('wp_print_scripts', 					array(__CLASS__,'_add_scripts'));
+			add_action('after_setup_theme', 				array(__CLASS__,'_setup_theme'));
+			add_action('update_option_template_settings', 	array(__CLASS__,'_updated_template_settings'), 10, 3);
+
 
 			add_filter('skiplinks', 			array(__CLASS__,'_add_skiplinks'));
 			add_filter('template_include', 		array(__CLASS__,'_template_include'));
+			add_filter('theme_page_templates',	array(__CLASS__,'_theme_page_templates'));
 			add_filter('body_class', 			array(__CLASS__,'_body_class'));
 			add_filter('query_vars', 			array(__CLASS__,'_query_vars'));
 			add_filter('rewrite_rules_array', 	array(__CLASS__,'_rewrite_rules_array'));
@@ -43,70 +46,59 @@ if(!class_exists('Theme')){
 		 */
 		static function _theme_activated() {
 
-			/**
-			* Generate Home Page
-			**/
-			$home_page = get_page_by_path('home-page');
-			if( is_null( $home_page ) ){
-				$home_page = wp_insert_post(array(
-					'post_content' => __('<p>This is the home page. Add ACF fields and customize as needed.</p>'),
-					'post_name' => 'home-page',
-					'post_title' => 'Home Page',
-					'post_status' => 'publish',
-					'post_type' => 'page'
-				));
-
-				if( $home_page ){
-					if( $home_page instanceof WP_Error ){
-						trigger_error('Error generating home page');
-					} else {
-						update_option( 'page_on_front', $home_page );
-    					update_option( 'show_on_front', 'page' );
-					}
-				}
+			// Generate & activate the home page if the setting is enabled
+			if( Settings::generate_home_page_enabled() ){
+				self::_generate_home_page();
+				self::_activate_home_page();
 			}
-
-
-
-			/**
-			* Generate Style Guide Page
-			**/
-			$style_guide = get_page_by_path('style-guide');
-			if( is_null( $style_guide ) ){
-				$style_guide = wp_insert_post(array(
-					'post_content' => __('<p>This page is require to display the style guide, please do not delete it.</p>'),
-					'post_name' => 'style-guide',
-					'post_title' => 'Style Guide',
-					'post_status' => 'publish',
-					'post_type' => 'page'
-				));
-				if( $style_guide instanceof WP_Error )
-					trigger_error('Error generating style guide page');
+			
+			// Generate a style guide if the setting is enabled
+			if( Settings::generate_style_guide_enabled() ){
+				self::_generate_style_guide();
 			}
-
-		}
-
-
-
-
-		/**
-		 * Init
-		 * Hook into Wordpress initialization
-		 */
-		static function  _init() {
-
-			/* We use a generalized init function to intercept any custom form submissions
-			* For example, if a form is submitted where $_POST['form_action'] == 'some_action',
-			* the function $this->_some_action() will process it
-			*/
-			if( isset( $_POST['form_action'] ) ) {
-				$action = '_'.$_POST['form_action'];
-				$params = !empty($_POST['params']) ? $_POST['params'] : array();
-				$this->$action($params);
-			}
+			
 
 		}
 		
+
+
+		/**
+		 * Template Settings have been updated.
+		 * Generate any necessary pages if their settings are enabled.
+		 * @param  array/null $option    Array of template settings, or nothing if they are all disabled
+		 */
+		static function _updated_template_settings( $old_settings, $settings ){
+
+			
+			// Settings are enabled
+			if( !empty( $settings ) ) {
+
+				// Generate home page if its enabled
+				if( isset( $settings['generate_home_page'] ) && $settings['generate_home_page'] == 1 ) {
+
+					self::_generate_home_page();
+					self::_activate_home_page();
+
+				} else {
+
+					self::_activate_home_page( false );
+
+				}
+
+				// Generate style guide if its enabled
+				if( isset( $settings['generate_style_guide'] ) && $settings['generate_style_guide'] == 1 ) {
+					self::_generate_style_guide();
+				}
+
+			// No Template Settings are enabled
+			} else {
+
+				// Deactivate the home page
+				self::_activate_home_page( false );
+
+			}
+		}
+
 		
 		
 		/**
@@ -154,8 +146,8 @@ if(!class_exists('Theme')){
 			}
 
 		}
-		
-		
+
+
 
 		/**
 		*
@@ -173,6 +165,86 @@ if(!class_exists('Theme')){
 				// Add any additional variables you want accessible in Javascript
 			);
 		}
+
+
+
+		/**
+		 * Generate home page
+		 */
+		static function _generate_home_page(){
+
+			$home_page = get_page_by_path('home-page');
+
+			if( is_null( $home_page ) ){
+				$home_page = wp_insert_post(array(
+					'post_content' => __('<p>This is the home page. Add ACF fields and customize as needed.</p>','theme'),
+					'post_name' => 'home-page',
+					'post_title' => 'Home Page',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+			}
+
+		}
+
+
+
+		/**
+		 * Activate or deactivate home page as the front page
+		 * @param  boolean $activate Should we activate or deactivate?
+		 */
+		static function _activate_home_page( $activate = true ){
+
+
+			if( $activate == true ){
+
+				$home_page = get_page_by_path('home-page');
+
+				if( ! $home_page ){
+					self::_generate_home_page();
+				}
+
+				if( $home_page instanceof WP_Error ){
+					trigger_error('Error generating home page');
+				} else {
+					update_option( 'page_on_front', $home_page->ID );
+					update_option( 'show_on_front', 'page' );
+				}
+
+			} else {
+
+				update_option( 'show_on_front', 'posts' );
+
+			}
+
+		}
+
+
+
+		/**
+		 * Generate a style-guide page
+		 * @see tpl_pages/page-style-guide.php
+		 */
+		static function _generate_style_guide(){
+
+			$style_guide = get_page_by_path('style-guide');
+
+			if( is_null( $style_guide ) ){
+				$style_guide = wp_insert_post(array(
+					'post_content' => __('<p>This page is require to display the style guide, please do not delete it.</p>'),
+					'post_name' => 'style-guide',
+					'post_title' => 'Style Guide',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+				if( $style_guide instanceof WP_Error )
+					trigger_error('Error generating style guide page');
+			}
+		}
+
+
+
+
 
 
 
@@ -247,22 +319,24 @@ if(!class_exists('Theme')){
 			
 			/**
 			* Register Menus
+			* Menu locations can be added in the WP Admin -> Settings -> TPL Config
 			**/
 			$menu_options = get_option('menu_settings');
 
-			PC::debug($menu_options);
-
 			if( isset( $menu_options['menu_locations'] ) && count( $menu_options['menu_locations']['location'] ) ){
+
+				$menu_locations = array();
+
 				foreach( $menu_options['menu_locations']['location'] as $location ) {
-					$menu_locations[] = array(
-						$location['slug'] => $location['description']
-					);
+					$menu_locations[$location['slug']] = __( $location['description'], 'theme' );
 				}
+
+				// Add them manually if you must
+				// $menu_locations['some_menu'] = __( 'Some Menu', 'theme' );
+
+				register_nav_menus( $menu_locations );
 			}
 
-			PC::debug($menu_locations);
-
-			register_nav_menus( $menu_locations );
 			
 
 
@@ -358,17 +432,6 @@ if(!class_exists('Theme')){
 			return $rules;
 		}
 		
-		
-		
-		/**
-		*
-		* Template Redirection
-		* Generic hook for handling various redirections. Do what you will... carefully
-		**/
-		static function _template_redirect() {
-			
-		}
-		
 
 
 		/**
@@ -445,6 +508,19 @@ if(!class_exists('Theme')){
 				return false;
 
 			}
+		}
+
+
+
+		/**
+		 * Disable the Index template if the setting isn't enabled
+		 * @param  array $templates List of page templates available for the theme
+		 * @return array            Return the (modified) list of available templates
+		 */
+		static function _theme_page_templates( $templates ){
+			if( isset( $templates['tpl_templates/template-index.php'] ) && ! Settings::index_template_enabled() )
+				unset( $templates['tpl_templates/template-index.php'] );
+			return $templates;
 		}
 
 
