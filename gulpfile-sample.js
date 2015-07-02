@@ -42,10 +42,12 @@ gulp.task('scss', function(){
 
 // Concatenate and minify scripts
 gulp.task('scripts', function(){
-	gulp.src('js/app.js')
+	gulp.src(['js/*.js','!js/**/_*.js'])
 		.pipe( include() )
 		.pipe( uglify() )
-		.pipe( rename('app-min.js') )
+		.pipe( rename( function( path ){
+			path.basename += '-min';
+		}))
 		.pipe( gulp.dest('js/min') )
 		.pipe(sync.stream());
 });

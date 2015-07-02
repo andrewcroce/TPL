@@ -18,22 +18,25 @@ if(!class_exists('Theme')){
 		 * Primarily used to set up action and filter hooks.
 		 */
 		public static function load() {
-			
 
-			add_action('init', 					array(__CLASS__,'_init'));
-			add_action('after_switch_theme', 	array(__CLASS__,'_theme_activated'));
-			add_action('wp_print_styles', 		array(__CLASS__,'_add_styles'));
-			add_action('wp_print_scripts', 		array(__CLASS__,'_add_scripts'));
-			add_action('after_setup_theme', 	array(__CLASS__,'_setup_theme'));
-			add_action('template_redirect', 	array(__CLASS__,'_template_redirect'));
+
+			
+			add_action('after_switch_theme', 				array(__CLASS__,'_theme_activated'));
+			add_action('wp_print_styles', 					array(__CLASS__,'_add_styles'));
+			add_action('wp_print_scripts', 					array(__CLASS__,'_add_scripts'));
+			add_action('after_setup_theme', 				array(__CLASS__,'_setup_theme'));
+			add_action('update_option_template_settings', 	array(__CLASS__,'_updated_template_settings'), 10, 3);
+
 
 			add_filter('skiplinks', 			array(__CLASS__,'_add_skiplinks'));
 			add_filter('template_include', 		array(__CLASS__,'_template_include'));
+			add_filter('theme_page_templates',	array(__CLASS__,'_theme_page_templates'));
 			add_filter('body_class', 			array(__CLASS__,'_body_class'));
 			add_filter('query_vars', 			array(__CLASS__,'_query_vars'));
 			add_filter('rewrite_rules_array', 	array(__CLASS__,'_rewrite_rules_array'));
 			add_filter('get_search_form', 		array(__CLASS__,'_get_search_form'));
 			add_filter('the_content', 			array(__CLASS__,'_the_content'));
+
 		}
 
 
@@ -43,123 +46,59 @@ if(!class_exists('Theme')){
 		 */
 		static function _theme_activated() {
 
-			PC::debug('theme activated');
-
-			/**
-			* Generate Home Page
-			**/
-			$home_page = get_page_by_path('home-page');
-			if( is_null( $home_page ) ){
-				$home_page = wp_insert_post(array(
-					'post_content' => __('<p>This is the home page. Add ACF fields and customize as needed.</p>'),
-					'post_name' => 'home-page',
-					'post_title' => 'Home Page',
-					'post_status' => 'publish',
-					'post_type' => 'page'
-				));
-
-				if( $home_page ){
-					if( $home_page instanceof WP_Error ){
-						trigger_error('Error generating home page');
-					} else {
-						update_option( 'page_on_front', $home_page );
-    					update_option( 'show_on_front', 'page' );
-					}
-				}
+			// Generate & activate the home page if the setting is enabled
+			if( Settings::generate_home_page_enabled() ){
+				self::_generate_home_page();
+				self::_activate_home_page();
 			}
-
-
-
-			/**
-			* Generate Style Guide Page
-			**/
-			$style_guide = get_page_by_path('style-guide');
-			if( is_null( $style_guide ) ){
-				$style_guide = wp_insert_post(array(
-					'post_content' => __('<p>This page is require to display the style guide, please do not delete it.</p>'),
-					'post_name' => 'style-guide',
-					'post_title' => 'Style Guide',
-					'post_status' => 'publish',
-					'post_type' => 'page'
-				));
-				if( $style_guide instanceof WP_Error )
-					trigger_error('Error generating style guide page');
+			
+			// Generate a style guide if the setting is enabled
+			if( Settings::generate_style_guide_enabled() ){
+				self::_generate_style_guide();
 			}
-
-
-			/**
-			* Generate Login Page
-			**/
-			$login_page = get_page_by_path('login');
-			if( is_null( $login_page ) ){
-				$login_page = wp_insert_post(array(
-					'post_content' => __('<p>This page is require to display the front end login form, please do not delete it.</p>'),
-					'post_name' => 'login',
-					'post_title' => 'Login',
-					'post_status' => 'publish',
-					'post_type' => 'page'
-				));
-				if( $login_page instanceof WP_Error )
-					trigger_error('Error generating login page');
-			}
-
-
-			/**
-			* Generate Forgot Password Page
-			**/
-			$reset_password_page = get_page_by_path('reset-password');
-			if( is_null( $reset_password_page ) ){
-				$reset_password_page = wp_insert_post(array(
-					'post_content' => __('<p>This page is require to display the reset-password form, please do not delete it.</p>'),
-					'post_name' => 'reset-password',
-					'post_title' => 'Reset Password',
-					'post_status' => 'publish',
-					'post_type' => 'page'
-				));
-				if( $reset_password_page instanceof WP_Error )
-					trigger_error('Error generating reset password page');
-			}
-
-
-			/**
-			* Generate Profile Page
-			**/
-			$profile_page = get_page_by_path('profile');
-			if( is_null( $profile_page ) ){
-				$profile_page = wp_insert_post(array(
-					'post_content' => __('<p>This page is require to display the profile page, please do not delete it.</p>'),
-					'post_name' => 'profile',
-					'post_title' => 'Member Profile',
-					'post_status' => 'publish',
-					'post_type' => 'page'
-				));
-				if( $profile_page instanceof WP_Error )
-					trigger_error('Error generating profile page');
-			}
-
-		}
-
-
-
-
-		/**
-		 * Init
-		 * Hook into Wordpress initialization
-		 */
-		static function  _init() {
-
-			/* We use a generalized init function to intercept any custom form submissions
-			* For example, if a form is submitted where $_POST['form_action'] == 'some_action',
-			* the function $this->_some_action() will process it
-			*/
-			if( isset( $_POST['form_action'] ) ) {
-				$action = '_'.$_POST['form_action'];
-				$params = !empty($_POST['params']) ? $_POST['params'] : array();
-				$this->$action($params);
-			}
+			
 
 		}
 		
+
+
+		/**
+		 * Template Settings have been updated.
+		 * Generate any necessary pages if their settings are enabled.
+		 * @param  array/null $option    Array of template settings, or nothing if they are all disabled
+		 */
+		static function _updated_template_settings( $old_settings, $settings ){
+
+			
+			// Settings are enabled
+			if( !empty( $settings ) ) {
+
+				// Generate home page if its enabled
+				if( isset( $settings['generate_home_page'] ) && $settings['generate_home_page'] == 1 ) {
+
+					self::_generate_home_page();
+					self::_activate_home_page();
+
+				} else {
+
+					self::_activate_home_page( false );
+
+				}
+
+				// Generate style guide if its enabled
+				if( isset( $settings['generate_style_guide'] ) && $settings['generate_style_guide'] == 1 ) {
+					self::_generate_style_guide();
+				}
+
+			// No Template Settings are enabled
+			} else {
+
+				// Deactivate the home page
+				self::_activate_home_page( false );
+
+			}
+		}
+
 		
 		
 		/**
@@ -172,13 +111,6 @@ if(!class_exists('Theme')){
 			wp_enqueue_style('theme', get_stylesheet_directory_uri() .'/css/app.css', array(), '1.0.0', 'screen');
 		}
 		
-
-		function _admin_menu() {
-			add_options_page( __('Functionality Settings','theme'), __('Functionality','theme'), 'manage_options', 'theme-functionality.php', array(&$this,'_functionality_settings_page') );
-		}
-		function _functionality_settings_page(){ 
-			include 'includes/admin/theme-functionality-settings.php';
-		}
 
 
 		/**
@@ -214,8 +146,8 @@ if(!class_exists('Theme')){
 			}
 
 		}
-		
-		
+
+
 
 		/**
 		*
@@ -237,6 +169,86 @@ if(!class_exists('Theme')){
 
 
 		/**
+		 * Generate home page
+		 */
+		static function _generate_home_page(){
+
+			$home_page = get_page_by_path('home-page');
+
+			if( is_null( $home_page ) ){
+				$home_page = wp_insert_post(array(
+					'post_content' => __('<p>This is the home page. Add ACF fields and customize as needed.</p>','theme'),
+					'post_name' => 'home-page',
+					'post_title' => 'Home Page',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+			}
+
+		}
+
+
+
+		/**
+		 * Activate or deactivate home page as the front page
+		 * @param  boolean $activate Should we activate or deactivate?
+		 */
+		static function _activate_home_page( $activate = true ){
+
+
+			if( $activate == true ){
+
+				$home_page = get_page_by_path('home-page');
+
+				if( ! $home_page ){
+					self::_generate_home_page();
+				}
+
+				if( $home_page instanceof WP_Error ){
+					trigger_error('Error generating home page');
+				} else {
+					update_option( 'page_on_front', $home_page->ID );
+					update_option( 'show_on_front', 'page' );
+				}
+
+			} else {
+
+				update_option( 'show_on_front', 'posts' );
+
+			}
+
+		}
+
+
+
+		/**
+		 * Generate a style-guide page
+		 * @see tpl_pages/page-style-guide.php
+		 */
+		static function _generate_style_guide(){
+
+			$style_guide = get_page_by_path('style-guide');
+
+			if( is_null( $style_guide ) ){
+				$style_guide = wp_insert_post(array(
+					'post_content' => __('<p>This page is require to display the style guide, please do not delete it.</p>'),
+					'post_name' => 'style-guide',
+					'post_title' => 'Style Guide',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+				if( $style_guide instanceof WP_Error )
+					trigger_error('Error generating style guide page');
+			}
+		}
+
+
+
+
+
+
+
+		/**
 		 * Custom filter function that adds skiplinks to tpl_navs/nav-skiplinks.php
 		 * @return array List of anchor links to add
 		 *    {anchor} => {label} 
@@ -244,8 +256,8 @@ if(!class_exists('Theme')){
 		static function _add_skiplinks() {
 
 			$links =  array(
-				'#main-navigation' => __('Skip to main navigation'),
-				'#main-content' => __('Skip to main content'),
+				'#main-navigation' => __('Skip to main navigation','theme'),
+				'#main-content' => __('Skip to main content','theme'),
 			);
 
 			// Add any context-specific skiplinks, i.e.
@@ -307,13 +319,24 @@ if(!class_exists('Theme')){
 			
 			/**
 			* Register Menus
+			* Menu locations can be added in the WP Admin -> Settings -> TPL Config
 			**/
-			
-			register_nav_menus( array(
-				'main_menu' => 'Main Menu',
-				// Add additional menus, ie.
-				// 'secondary_menu' => 'Secondary Menu',
-			) );
+			$menu_options = get_option('menu_settings');
+
+			if( isset( $menu_options['menu_locations'] ) && count( $menu_options['menu_locations']['location'] ) ){
+
+				$menu_locations = array();
+
+				foreach( $menu_options['menu_locations']['location'] as $location ) {
+					$menu_locations[$location['slug']] = __( $location['description'], 'theme' );
+				}
+
+				// Add them manually if you must
+				// $menu_locations['some_menu'] = __( 'Some Menu', 'theme' );
+
+				register_nav_menus( $menu_locations );
+			}
+
 			
 
 
@@ -383,7 +406,9 @@ if(!class_exists('Theme')){
 		 **/
 		static function _query_vars( $query_vars ) {
 
-			$new_vars = array();
+			$new_vars = array(
+				// Add vars
+			);
 			return array_merge( $new_vars, $query_vars );
 		}
 		
@@ -400,21 +425,14 @@ if(!class_exists('Theme')){
 		**/
 		static function _rewrite_rules_array( $rules ) {
 			
-			$new_rules = array();
+			$new_rules = array(
+				// 'some-slug/([^/]+)/?$' => 'index.php?pagename=some-slug&some_query_var=$matches[1]'
+			);
 			$rules = $new_rules + $rules;
 			return $rules;
 		}
 		
-		
-		
-		/**
-		*
-		* Template Redirection
-		* Generic hook for handling various redirections. Do what you will... carefully
-		**/
-		static function _template_redirect() {
-			
-		}
+
 
 		/**
 		 * Load templates in subdirectories
@@ -470,12 +488,13 @@ if(!class_exists('Theme')){
 		}
 
 
+
 		/**
-		 * Intercept our search form output so we can increment an ID counter.
-		 * Since the searchform can be output multiple times on a given page, this could lead to invalid duplicate HTML IDs.
-		 * We increment this counter, and append it to the field IDs, so each one is unique.
+		 * We have a custom search form located in our tpl_forms folder,
+		 * so override the normal searchform.php
 		 */
 		static function _get_search_form(){
+
 			/**
 			 * Since we might have more than one search form on a page, incrememnt a global counter
 			 * which will be used to create unique HTML ids for each form's fields
@@ -483,13 +502,25 @@ if(!class_exists('Theme')){
 			global $search_form_counter;
 			$search_form_counter += 1;
 
-
 			if( is_readable( get_template_directory() . '/tpl_forms/form-search.php' ) ) {
 
 				include get_template_directory() . '/tpl_forms/form-search.php';
 				return false;
 
 			}
+		}
+
+
+
+		/**
+		 * Disable the Index template if the setting isn't enabled
+		 * @param  array $templates List of page templates available for the theme
+		 * @return array            Return the (modified) list of available templates
+		 */
+		static function _theme_page_templates( $templates ){
+			if( isset( $templates['tpl_templates/template-index.php'] ) && ! Settings::index_template_enabled() )
+				unset( $templates['tpl_templates/template-index.php'] );
+			return $templates;
 		}
 
 
@@ -514,8 +545,7 @@ if(!class_exists('Theme')){
 	
 }
 
+
 if( class_exists('Theme') ){
 	Theme::load();
 }
-
-?>

@@ -1,4 +1,4 @@
-<?php /* Template Name: Index 
+<?php /** Template Name: Index
 *
 * This page template is meant as a general purpose replacement for WP's archive template.
 * By assigning it to a page, you can select a post type for which to list a paginated index.
