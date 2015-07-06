@@ -88,7 +88,7 @@ extract( $params ); ?>
 				</div>
 				
 				<div class="form-field">
-					<label for="confirm-password-input"><?php echo __('Confirm your new password') ?></label>
+					<label for="confirm-password-input"><?php echo __('Enter your new password again') ?></label>
 					<input type="password" id="confirm-password-input" class="check-pass-strength-confirm" data-pass-id="profile-form-pass" name="params[confirm_password]" data-equalto="password-input">
 					<span class="secondary-text error"><?php echo __('Password confirmation does not match','theme'); ?></span>
 				</div>

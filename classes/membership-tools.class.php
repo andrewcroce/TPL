@@ -21,159 +21,117 @@ if(!class_exists('MemberTools')){
 		**/
 		public static function load() {
 			
-			add_action('init', 					array(__CLASS__, '_init'));
-			add_action('template_redirect', 	array(__CLASS__,'_template_redirect'));
+			add_action('template_redirect', 					array(__CLASS__,'_template_redirect'));
+			add_action('after_switch_theme', 					array(__CLASS__,'_theme_activated'));
+			add_action('update_option_member_tools_settings',	array(__CLASS__,'_updated_member_tools_settings'), 10, 3);
+			add_action('wp_logout', 							array(__CLASS__,'_wp_logout'));
+			add_action('form_action_user_reset_password', 		array(__CLASS__,'_user_reset_password'));
+			add_action('form_action_user_new_password',  		array(__CLASS__,'_user_new_password'));
+			
 			add_filter('query_vars', 			array(__CLASS__,'_query_vars'));
 			add_filter('rewrite_rules_array', 	array(__CLASS__,'_rewrite_rules_array'));
+			add_filter('authenticate', 			array(__CLASS__, '_authenticate'), 100, 3);
+			add_filter('lostpassword_url', 		array(__CLASS__,'_lostpassword_url'), 10, 2);
+			add_filter('register', 				array(__CLASS__,'_register'));			
 
-			// User/account related hooks
-			
-			add_action('wp_logout', 		array(__CLASS__,'_wp_logout'));
-			add_filter('authenticate', 		array(__CLASS__, '_authenticate'), 100, 3);
-			add_filter('lostpassword_url', 	array(__CLASS__,'_lostpassword_url'), 10, 2);
-			add_filter('register', 			array(__CLASS__,'_register'));			
-			// Add any additional action or filter hooks here.
 		}
 
-
-
-		/**
-		 * Init
-		 * Hook into Wordpress initialization
-		 */
-		static function _init() {
-
-			// handle all of the password reset requests.
-			self::pw_reset_router();			
-			//
-		}
-		// end init
 		
 
 
-
 		/**
-		 * route the pw reset behavior to the correct method
+		 * Theme activation
+		 * This runs when the theme is activated
 		 */
-		public static function pw_reset_router(){
+		static function _theme_activated() {
+
+			// Generate login and reset-password pages if the setting is enabled
+			if( Settings::frontend_login_enabled() ){
+				self::_generate_login_pages();
+			}
+
+			// Generate profile page if the setting is enabled
+			if( Settings::frontend_profile_enabled() ){
+				self::_generate_profile_page();
+			}
 			
-			// this is from the regular reset password form
-			// load in the first state
-			if($_POST['action'] == "tg_pwd_reset"){
-				self::pw_reset_load_state_one();
-			}
 
-			// this is from the link in the first email
-			// load in the second state
-			if(isset($_GET['key']) && $_GET['action'] == "reset_pwd_state_two"){
-				self::pw_reset_load_state_two();
-			}
-
-			// reset success yay
-			if ($_GET['action'] == 'reset_success'){
-				self::$status_message = "You will receive an email with your new password shortly.";
-			}
 		}
-		//
 
-		/**
-		 * this is the initial response from a reset password request.
-		 * it creates a key and emails the user with that key which will allow them
-		 * to generate a new password.
-		 */
-		public static function pw_reset_load_state_one(){
-			global $wpdb;
-			if ( !wp_verify_nonce( $_POST['tg_pwd_nonce'], "tg_pwd_nonce")) {
-				self::$status_message = 'No Tricks Please';
-			}
-			if(empty($_POST['user_input'])) {
-				self::$status_message = 'Please Enter Your Email Address';
-			}
-			$user_input = trim($_POST['user_input']);
 
-			if ( strpos($user_input, '@') ) {
-				$user_data = get_user_by( 'email', $user_input );
-				if( empty($user_data) ) {
-					self::$status_message = 'Invalid Email Address';
+
+		static function _updated_member_tools_settings( $old_settings, $settings ){
+
+			// Settings are enabled
+			if( !empty( $settings ) ) {
+
+				// Generate login and password reset pages if setting is enabled
+				if( isset( $settings['enable_frontend_login'] ) && $settings['enable_frontend_login'] == 1 ) {
+
+					self::_generate_login_pages();
+
 				}
-			} else {
-				$user_data = get_userdatabylogin($user_input);
-				if( empty($user_data) ) {
-					self::$status_message = 'Invalid Username';
+
+				// Generate login and password reset pages if setting is enabled
+				if( isset( $settings['enable_frontend_profile'] ) && $settings['enable_frontend_profile'] == 1 ) {
+
+					self::_generate_profile_page();
+
 				}
 			}
 
-			$user_login = $user_data->user_login;
-			$user_email = $user_data->user_email;
-
-			$key = $wpdb->get_var($wpdb->prepare("SELECT user_activation_key FROM $wpdb->users WHERE user_login = %s", $user_login));
-			if(empty($key)) {
-				//generate reset key
-				$key = wp_generate_password(20, false);
-				$wpdb->update($wpdb->users, array('user_activation_key' => $key), array('user_login' => $user_login));
-			}
-
-			//mailing reset details to the user
-			$message = __('Someone requested that the password be reset for the following account:') . "\r\n\r\n" . '<br>';
-			$message .= get_home_url() . "\r\n\r\n" . '<br>';
-			$message .= sprintf(__('Username: %s'), $user_email) . "\r\n\r\n" . '<br>';
-			$message .= __('If this was a mistake, just ignore this email and nothing will happen.') . "\r\n\r\n" . '<br>';
-			$message .= __('To reset your password, visit the following address:') . "\r\n\r\n" . '<br>';
-			$message .= home_url("/reset-password/?action=reset_pwd_state_two&key=$key&login=" . rawurlencode($user_login)) . "\r\n" . '<br>';
-			$message .= '<br><hr /><br>';
-
-			$headers[] = 'From: Admin';
-			$headers[] = 'Content-Type: text/html; charset=UTF-8';
-
-			if ( $message && !wp_mail($user_email, 'Password Reset Request', $message, $headers) ) {
-				self::$status_message = "Email failed to send, please contact the site Admin";
-			} else {
-				self::$status_message = "You will receive and email with password reset instructions within the next few minutes.";
-			}
 		}
-		// end load state 1
 
 
 
-		/**
-		 * load the second state of the password reset
-		 * the user arrives here by clicking the link in the first email they were sent
-		 * this checks if the key is correct, then generates a new password
-		 * and emails it to the user with a link to the login page.
-		 */
-		public static function pw_reset_load_state_two(){
-			global $wpdb;
-			$reset_key = $_GET['key'];
-			$user_login = $_GET['login'];
-			$user_data = $wpdb->get_row($wpdb->prepare("SELECT ID, user_login, user_email FROM $wpdb->users WHERE user_activation_key = %s AND user_login = %s", $reset_key, $user_login));
+		static function _generate_login_pages(){
 
-			$user_login = $user_data->user_login;
-			$user_email = $user_data->user_email;
+			$login_page = get_page_by_path('login');
+
+			if( is_null( $login_page ) ){
+				$login_page = wp_insert_post(array(
+					'post_content' => __('<p>This is the login page. It is required if front-end login is enabled.</p>','theme'),
+					'post_name' => 'login',
+					'post_title' => 'Login',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+			}
+
+			$reset_password_page = get_page_by_path('reset-password');
+
+			if( is_null( $reset_password_page ) ){
+				$reset_password_page = wp_insert_post(array(
+					'post_content' => __('<p>This is the reset password page. It is required if front-end login is enabled.</p>','theme'),
+					'post_name' => 'reset-password',
+					'post_title' => 'Reset Password',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+			}
+
+		}
+
+
+
+		static function _generate_profile_page(){
+
+			$profile_page = get_page_by_path('profile');
+
+			if( is_null( $profile_page ) ){
+				$profile_page = wp_insert_post(array(
+					'post_content' => __('<p>This is the user profile form page. It is required if front-end profile is enabled.</p>','theme'),
+					'post_name' => 'profile',
+					'post_title' => 'Profile',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+			}
+
+		}
+
+
 		
-			if(!empty($reset_key) && !empty($user_data)) {
-				$new_password = wp_generate_password(7, false);
-				//echo $new_password; exit();
-				wp_set_password( $new_password, $user_data->ID );
-				//mailing reset details to the user
-				$message = __('Your new password for the account at:') . "\r\n\r\n" . '<br>';
-				$message .= get_home_url() . "\r\n\r\n" . '<br>';
-				$message .= sprintf(__('Username: %s'), $user_email) . "\r\n\r\n" . '<br>';
-				$message .= sprintf(__('Password: %s'), $new_password) . "\r\n\r\n" . '<br>';
-				$message .= __('You can now login with your new password at: ') . get_option('siteurl')."/login" . "\r\n\r\n" . '<br>';
-				$message .= '<br><hr /><br>';
-
-				$headers[] = 'From: Admin';
-				$headers[] = 'Content-Type: text/html; charset=UTF-8';
-				if ( $message && !wp_mail($user_email, 'Password Reset Request', $message, $headers) ) {
-					self::$status_message = 'Email failed to send for some unknown reason';
-				} else {
-					self::$status_message = 'Another email containing a temporary password has been sent!';
-				}
-			}else{
-				exit('No Not a Valid Key.');
-			}
-		}
-		// end state two
 				
 
 
@@ -193,6 +151,10 @@ if(!class_exists('MemberTools')){
 				'redirect',
 				'login_error',
 				'profile_error',
+				'reset_error',
+				'reset_pending',
+				'reset_key',
+				'reset_username',
 				'update'
 			);
 			return array_merge( $new_vars, $query_vars );
@@ -222,7 +184,19 @@ if(!class_exists('MemberTools')){
 				'profile/update/?$' => 'index.php?pagename=profile&update=1',
 	
 				// Profile error page
-				'profile/error/?$' => 'index.php?pagename=profile&profile_error=1'
+				'profile/error/?$' => 'index.php?pagename=profile&profile_error=1',
+
+				// Reset password page with key and username, for new-password form
+				'reset-password/([^/]+)/([^/]+)/?$' => 'index.php?pagename=reset-password&reset_username=$matches[1]&reset_key=$matches[2]',
+
+				// Reset password page with key and username, for new-password form
+				'reset-password/([^/]+)/([^/]+)/error/([^/]+)/?$' => 'index.php?pagename=reset-password&reset_username=$matches[1]&reset_key=$matches[2]&reset_error=$matches[3]',
+
+				// Reset password errors
+				'reset-password/error/([^/]+)/?$' => 'index.php?pagename=reset-password&reset_error=$matches[1]',
+
+				// Reset password pending 
+				'reset-password/pending/?$' => 'index.php?pagename=reset-password&reset_pending=1'
 
 			);
 			$rules = $new_rules + $rules;
@@ -308,15 +282,11 @@ if(!class_exists('MemberTools')){
 				// If that didn't work...
 				if( ! $user ){
 
-					PC::debug('not an email');
-
 					// Maybe its a username, try that
 					$user = get_user_by( 'login', $username_email );
 
 					// If that didn't work then its a failure
 					if( ! $user ) {
-
-						PC::debug('not a username');
 
 						wp_redirect( home_url('login/error/failed') );
 						exit();
@@ -327,7 +297,6 @@ if(!class_exists('MemberTools')){
 				// Now check their password
 				if( ! wp_check_password( $password, $user->user_pass, $user->ID ) ) {
 
-					PC::debug('bad password');
 					wp_redirect( home_url('login/error/failed') );
 					exit();
 				}
@@ -347,76 +316,289 @@ if(!class_exists('MemberTools')){
 		 * =============
 		 */
 		
+		/**
+		 * Handler for reset-password form submission
+		 * @param  array $params {
+		 *      
+		 *      Parameters submitted from form
+		 *
+		 * 		@var string $username_email The username or email address entered by user
+		 * 
+		 * }
+		 */
+		static function _user_reset_password( $params ){
 
+			// Verify the nonce 
+			if( ! isset( $_POST['user_reset_password_nonce'] ) || ! wp_verify_nonce( $_POST['user_reset_password_nonce'], 'user_reset_password' ) ) {
+				print('Invalid form submission');
+				exit;
+			}
+
+			if( empty( $params ) || empty( $params['username_email'] ) ) {
+				wp_redirect( home_url('reset-password/error/submission') );
+				exit;
+			}
+
+			// First attempt to get the user data by email
+			// It might not be an email address, but we'll start with that since its more likely/user-friendly
+			$user = get_user_by( 'email', trim( $params['username_email'] ) );
+
+			// If that didn't work...
+			if( ! $user ){
+
+				// Maybe its a username, try that
+				$user = get_user_by( 'login', $params['username_email'] );
+
+				// If that didn't work then its a failure
+				if( ! $user ) {
+
+					wp_redirect( home_url('reset-password/error/user') );
+					exit();
+
+				}
+			}
+
+			// If no error by now, we successfully found the user
+			
+			// Get the WP Database global
+			global $wpdb;
+
+			// Check if theres a user activation key in the database
+			$key = $wpdb->get_var( $wpdb->prepare("SELECT user_activation_key FROM $wpdb->users WHERE user_login = %s", $user->user_login) );
+			
+			// If not, generate one
+			if( empty( $key ) ) {
+				$key = wp_generate_password(20, false);
+				$wpdb->update( $wpdb->users, array('user_activation_key' => $key), array('user_login' => $user->user_login) );
+			}
+
+			// Build an email message
+			$message = '<p>';
+			
+			$message .= sprintf(__('A password reset request was submitted from %s. ','theme'), home_url('password-reset'));
+			$message .= __('If this was a mistake, you may safely ignore this email. ','theme');
+			
+			$message .= '</p><p>';
+
+			$message .= __('To reset your password, visit the following link:') . "\r\n\r\n" . '<br>';
+			
+			$message .= home_url('reset-password/' . rawurlencode( $user->user_login ) . '/' . $key );
+			$message .= '</p>';
+
+			// Set the email headers
+			$headers[] = 'From: '. get_bloginfo('name') . ' <' . get_option('admin_email') . '>';
+			$headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+			// Attempt to send the email
+			if ( $message && !wp_mail($user->user_email, __('Password Reset Request','theme'), $message, $headers) ) {
+				// Didn't work
+				wp_redirect( home_url('reset-password/error/email') );
+				exit();
+			} else {
+				// Worked
+				wp_redirect( home_url('reset-password/pending') );
+				exit();
+			}
+
+		}
+
+
+		/**
+		 * Handler for new-password form submission
+		 * @param  array $params {
+		 *
+		 * 		Parameters submitted from form
+		 * 		
+		 * 		@var string $user_email 		Hidden field
+		 * 		@var int 	$user_ID 			Hidden field
+		 * 		@var string $key 				Hidden field
+		 * 		@var string $password 			The new password entered by the user
+		 * 		@var string $confirm_password 	The new password confirmation entered by the user
+		 * }
+		 */
+		static function _user_new_password( $params ){
+			
+			// Verify the nonce 
+			if( ! isset( $_POST['user_new_password_nonce'] ) || ! wp_verify_nonce( $_POST['user_new_password_nonce'], 'user_new_password' ) ) {
+				print('Invalid form submission');
+				exit;
+			}
+
+			// Make sure the necessary security params are there before we go any further
+			if( empty( $params ) || empty( $params['username'] ) || empty( $params['key'] ) || empty( $params['user_id'] ) ){
+				wp_redirect( home_url('reset-password/error/invalid') );
+				exit;
+			}
+
+			// If no password
+			if( empty( $params['password'] ) ) {
+				wp_redirect( home_url('reset-password/'.$params['username'].'/'.$params['key'].'/error/password') );
+				exit;
+			}
+
+			// If no confirmation
+			if( empty( $params['confirm_password'] ) ) {
+				wp_redirect( home_url('reset-password/'.$params['username'].'/'.$params['key'].'/error/confirm') );
+				exit;
+			}
+
+			// If they don't match
+			if( trim( $params['password'] ) !== trim( $params['confirm_password'] ) ) {
+				wp_redirect( home_url('reset-password/'.$params['username'].'/'.$params['key'].'/error/match') );
+				exit;
+			}
+
+			// Good enough, do it
+			$user_id = wp_update_user(array(
+				'ID' => $params['user_id'],
+				'user_pass' => esc_attr( $params['password'] )
+			));
+
+			// Log the user in by setting their auth cookie
+			wp_set_auth_cookie( $user_id );
+
+			// Redirect to either the profile page, or the admin
+			if( Settings::frontend_profile_enabled() ) {
+				wp_redirect( home_url('profile') );
+				exit;
+			} else {
+				wp_redirect( admin_url() );
+				exit;
+			}
+
+		}
+
+
+
+
+
+		/**
+		 * Handle save profile form
+		 * @param  array $params {
+		 *
+		 *     Parameters submitted from form
+		 *     
+		 *     @var string 	$username 			Hidden field
+		 *     @var int 	$user_id 			Hidden Field
+		 *     @var string 	$password 			New password entered by user
+		 *     @var string 	$confirm_password 	New password confirmed by user
+		 *     @var array 	$data {
+		 *
+		 * 			Array of user data. By default, just display name and email,
+		 * 			but other user data fields added to the form will be saved too.
+		 * 			
+		 * 			@var string $display_name The user's public display name
+		 *          @var email 	$user_email The user's email address
+		 *     }
+		 *     @var array $meta {
+		 *
+		 * 			Array of user meta fields. By default, just first and last name, 
+		 * 			but other user meta fields added to the form will be saved too.
+		 *
+		 * 			@var string $first_name User's first name
+		 * 			@var string $last_Name 	User's last name
+		 *     }
+		 * }
+		 */
 		static function _user_save_profile( $params ) {
 
+			// Verify the nonce
 			if( ! isset( $_POST['user_save_profile_nonce'] ) || ! wp_verify_nonce( $_POST['user_save_profile_nonce'], 'user_save_profile' ) ) {
 				print('Invalid form submission');
 				exit;
 			}
 
+			// Default no error
 			$error = false;
 
-
+			// Check if a user ID was supplied in the form
 			if( isset( $params['user_id'] ) ) {
 
+				// Build a user data array for saving
 				$user_data = array( 'ID' => $params['user_id'] );
 
+				// Add each data field in the form
 				foreach( $params['data'] as $key => $data ){
 					$user_data[$key] = esc_attr( $data );
 				}
 
+				// Add each meta field in the form
 				foreach( $params['meta'] as $key => $meta ){
 					$user_data[$key] = esc_attr( $meta );
 				}
+				// * Note, even though user data and user meta are stored separately in the database,
+				// They can be mixed together in the wp_update_user() function
 
+			// If not, theres something wrong
 			} else {
 
 				$error = true;
 			}
 
-
+			// If the password fields were entered, update the password too
 			if( !empty( $params['password'] ) && !empty( $params['confirm_password'] ) ) {
 
+				// Make sure they match
 				if( $params['password'] == $params['confirm_password'] ){
 
 					$user_data['user_pass'] = esc_attr( $params['password'] );
 
+				// Otherwise call it an error
 				} else {
 					
-					PC::debug('pass error');
 					$error = true;
 				}
 
 			}
 
+			// If there are errors, redirect to the profile error page
 			if( $error ){
 
 				wp_redirect( home_url('profile/error') );
 				exit;
 			}
 
+			// If there are updates to make
 			if( count( $user_data ) > 1 ){
+
+				// Do it
 				wp_update_user( $user_data );
 			}
 
+			// Redirect back to the updated profile
 			wp_redirect( home_url('profile/update') );
 			exit;
 		
 
 		}
 
-		/**
-		 *	Helper functions
-		 */
-		
-		public static $status_message = '';
+
+
+
 
 		/**
-		 * Get the status message
+		 * ================
+		 * Helper functions
+		 * ================
 		 */
-		public static function get_status(){
-			return self::$status_message;
+
+
+		/**
+		 * Validate a reset-password key against a username
+		 * @param  string $key      	Unique key from a reset-password link
+		 * @param  string $username 	The username from a reset-password link
+		 * @return boolean           	Did it validate?
+		 */
+		public static function validate_reset_key( $key, $username ){
+
+			global $wpdb;
+
+			$user = $wpdb->get_row($wpdb->prepare("SELECT ID, user_login, user_email FROM $wpdb->users WHERE user_activation_key = %s AND user_login = %s", $key, $username ));
+
+			if( ! is_null( $user ) )
+				return true;
+
+			return false;
 		}
 		
 	}

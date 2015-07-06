@@ -20,11 +20,11 @@ if(!class_exists('Theme')){
 		public static function load() {
 
 
-			add_action('after_switch_theme', 				array(__CLASS__,'_theme_activated'));
-			add_action('wp_print_styles', 					array(__CLASS__,'_add_styles'));
-			add_action('wp_print_scripts', 					array(__CLASS__,'_add_scripts'));
-			add_action('after_setup_theme', 				array(__CLASS__,'_setup_theme'));
-			add_action('update_option_template_settings', 	array(__CLASS__,'_updated_template_settings'), 10, 3);
+			add_action('after_switch_theme', 					array(__CLASS__,'_theme_activated'));
+			add_action('wp_print_styles', 						array(__CLASS__,'_add_styles'));
+			add_action('wp_print_scripts', 						array(__CLASS__,'_add_scripts'));
+			add_action('after_setup_theme', 					array(__CLASS__,'_setup_theme'));
+			add_action('update_option_template_settings', 		array(__CLASS__,'_updated_template_settings'), 10, 3);
 
 			add_filter('skiplinks', 			array(__CLASS__,'_add_skiplinks'));
 			add_filter('template_include', 		array(__CLASS__,'_template_include'));
@@ -52,6 +52,11 @@ if(!class_exists('Theme')){
 			// Generate a style guide if the setting is enabled
 			if( Settings::generate_style_guide_enabled() ){
 				self::_generate_style_guide();
+			}
+
+			// Generate login and reset-password pages if the setting is enabled
+			if( Settings::frontend_login_enabled() ){
+				self::_generate_login_pages();
 			}
 			
 
@@ -95,6 +100,9 @@ if(!class_exists('Theme')){
 
 			}
 		}
+
+
+		
 
 		
 		
@@ -245,6 +253,7 @@ if(!class_exists('Theme')){
 					trigger_error('Error generating style guide page');
 			}
 		}
+
 
 
 

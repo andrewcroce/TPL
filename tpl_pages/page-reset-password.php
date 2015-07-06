@@ -1,77 +1,56 @@
-<?php
-
+<?php 
 /**
- * Set Vars
- */
-// global  $wpdb, $user_ID;
+ * The login page template
+ * 
+ **/
+get_header(); ?>
 
-$status_message = StarterMemberTools::get_status();
-?>
+  <?php if( have_posts() ) : ?>
+    
+    <?php while( have_posts() ) : the_post(); 
 
-<?php get_header(); ?>
+      $page = new ACFPost($post); ?>
 
-<?php if( have_posts() ) : ?>
+      <article class="reset-password page" itemscope itemtype="http://schema.org/WebPage">
 
-  <?php while( have_posts() ) : the_post(); $page = new ACFPost( $post ); ?>
 
-    <article class="login page" itemscope itemtype="http://schema.org/WebPage">
+        <?php tpl_wrapper_header_open(); ?>
 
-      <div class="row">
+          <header>
 
-        <section class="large-5 columns">
-          <h1 class="large-heading">Reset Password</h1>
-        </section>
+            <h1 itemprop="headline" class="title"><?php echo $page->post_title; ?></h1>
+            
+            <?php echo edit_post_link( __('Edit post'), $before = '<span class="meta">', $after = '</span>', $page->ID ); ?>
+            
+          </header>
 
-        <section class="large-5 columns form-content">
+        <?php tpl_wrapper_header_close(); ?>
 
-          <form class="user_form" id="wp_pass_reset" action="" method="post">
-            <?php if ($status_message != ''): ?>
-                <div class="status-message neg">
-                  <p><?php echo $status_message; ?></p>
-                </div>
-            <?php endif; ?>
-            <p class="login-password">
-              <label for="user-email">Email Address</label>
-              <input type="text" class="text" name="user_input" id="user-email" value="" />
-            </p>
 
-            <input type="hidden" name="action" value="tg_pwd_reset" />
-            <input type="hidden" name="tg_pwd_nonce" value="<?php echo wp_create_nonce("tg_pwd_nonce"); ?>" />
+        <?php tpl_wrapper_content_open(); ?>
 
-            <p class="login-submit">
-              <input type="submit" id="submitbtn" class="reset_password button-primary" name="submit" value="Reset Password" />
-            </p>
+    
+          <div itemprop="text"><?php echo $page->filterContent('post_content'); ?></div>
 
-          </form>
+        <?php tpl_wrapper_content_close(); ?>
+      
 
-          <div id="result"></div> <!-- To hold validation results -->
+        
+        <?php tpl_wrapper_secondary_open(); ?>
 
-          <script type="text/javascript">
-            $("#wp_pass_reset").submit(function() {
-              $('#result').html('<span class="loading">Validating...</span>').fadeIn();
-              var input_data = $('#wp_pass_reset').serialize();
-              $.ajax({
-                type: "POST",
-                url:  "<?php echo get_permalink( $post->ID ); ?>",
-                data: input_data,
-                success: function(msg){
-                  $('.loading').remove();
-                  $('<div>').html(msg).appendTo('div#result').hide().fadeIn('slow');
-                }
-              });
-              return false;
-            });
-          </script>
+          <?php tpl_form_reset_password(); ?>
 
-        </section>
+        <?php tpl_wrapper_secondary_close(); ?>
 
-      </div>
 
-    </article><!-- content -->
+      </article>
 
-  <?php endwhile; ?>
 
-<?php endif; ?>
+    <?php endwhile; ?>
+
+  <?php endif; ?>
+
+<?php get_footer(); ?>
 
 
 <?php get_footer(); ?>

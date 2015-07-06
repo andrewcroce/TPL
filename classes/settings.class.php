@@ -121,6 +121,42 @@ if( !class_exists( 'Settings' ) ) {
 			);
 
 
+
+			/**
+			 * =====================
+			 * Member Tools Settings
+			 * =====================
+			 */
+			
+			// register setting
+			register_setting('tpl-config','member_tools_settings');
+
+			// add setting section
+			add_settings_section(
+				'member-tools-settings',
+				__('Member Tools Settings','theme'),
+				array(__CLASS__,'_render_member_tools_settings_section'),
+				'tpl-config'
+			);
+
+			// add 'enable_frontend_login' field
+			add_settings_field(
+				'enable_frontend_login',
+				__('Front End Login','theme'),
+				array(__CLASS__,'_render_enable_frontend_login_field'),
+				'tpl-config',
+				'member-tools-settings'
+			);
+
+			// add 'enable_frontend_profile' field
+			add_settings_field(
+				'enable_frontend_profile',
+				__('Front End Profile','theme'),
+				array(__CLASS__,'_render_enable_frontend_profile_field'),
+				'tpl-config',
+				'member-tools-settings'
+			);
+
 		}
 
 
@@ -238,6 +274,46 @@ if( !class_exists( 'Settings' ) ) {
 		
 
 
+
+
+		/**
+		 * ===============================
+		 * Member Tools Settings Renderers
+		 * ===============================
+		 */
+
+		/**
+		 * Render content at the top of the Member Tools Settings section
+		 */
+		static function _render_member_tools_settings_section(){
+			// Silence
+		}
+
+
+		/**
+		 * Enable front end login tools
+		 */
+		static function _render_enable_frontend_login_field(){
+			$options = get_option('member_tools_settings');
+			$value = isset( $options['enable_frontend_login'] ) ? $options['enable_frontend_login'] : 0;
+			$checked = checked( $value, 1, false );
+			echo '<input type="checkbox" id="enable_frontend_login" name="member_tools_settings[enable_frontend_login]" value="1" '.$checked.'>';
+			echo '<label for="enable_frontend_login">'.__('Enable','theme').'</label>';
+			echo '<p class="description">'.__('This will generate front end login and password reset pages. Note: disabling this setting <strong>will not delete</strong> the pages.','theme').'</p>';
+		}
+
+
+		static function _render_enable_frontend_profile_field(){
+			$options = get_option('member_tools_settings');
+			$value = isset( $options['enable_frontend_profile'] ) ? $options['enable_frontend_profile'] : 0;
+			$checked = checked( $value, 1, false );
+			echo '<input type="checkbox" id="enable_frontend_profile" name="member_tools_settings[enable_frontend_profile]" value="1" '.$checked.'>';
+			echo '<label for="enable_frontend_profile">'.__('Enable','theme').'</label>';
+			echo '<p class="description">'.__('This will generate front end profile form page. Note: disabling this setting <strong>will not delete</strong> the pages.','theme').'</p>';
+		}
+
+
+
 		/**
 		 * ========================
 		 * Settings Check functions
@@ -267,6 +343,26 @@ if( !class_exists( 'Settings' ) ) {
 
 			$template_settings = get_option('template_settings');
 			if( isset( $template_settings ) && isset( $template_settings['generate_style_guide'] ) && $template_settings['generate_style_guide'] == 1 )
+				return true;
+			return false;
+
+		}
+
+
+		public static function frontend_login_enabled() {
+
+			$member_tools_settings = get_option('member_tools_settings');
+			if( isset( $member_tools_settings ) && isset( $member_tools_settings['enable_frontend_login'] ) && $member_tools_settings['enable_frontend_login'] == 1 )
+				return true;
+			return false;
+
+		}
+
+
+		public static function frontend_profile_enabled() {
+
+			$member_tools_settings = get_option('member_tools_settings');
+			if( isset( $member_tools_settings ) && isset( $member_tools_settings['enable_frontend_profile'] ) && $member_tools_settings['enable_frontend_profile'] == 1 )
 				return true;
 			return false;
 

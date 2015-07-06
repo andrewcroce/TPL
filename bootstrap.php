@@ -55,7 +55,7 @@ function tpl_init(){
 	 * this form can be handled by creating an action hook add_action('form_action_submit_something','my_form_submission_handler');
 	 */
 	if( isset( $_POST['form_action'] ) ) {
-		$action = '_'.$_POST['form_action'];
+		$action = $_POST['form_action'];
 		$params = !empty($_POST['params']) ? $_POST['params'] : array();
 		do_action( 'form_action_' . $action, $params );
 	}
