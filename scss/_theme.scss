@@ -31,9 +31,9 @@
 	// ==============
 	// WYSIWYG Images
 	// ==============
-	
+
 	img, .wp-caption {
-		
+
 		margin: 0 auto $column-gutter;
 		width: 100%;
 		height: auto;
@@ -95,6 +95,23 @@ input.check-pass-strength-meter {
 
 input[data-invalid] {
 	border-color: $red;
+}
+
+// Gravity form styles
+
+.gform_wrapper {
+	ul {
+		list-style: none;
+		margin: 0;
+	}
+}
+
+.gfield_error {
+	@extend .error;
+}
+
+.validation_message, .validation_error {
+	@extend small.error;
 }
 
 
