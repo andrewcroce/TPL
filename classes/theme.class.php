@@ -20,13 +20,11 @@ if(!class_exists('Theme')){
 		public static function load() {
 
 
-			
 			add_action('after_switch_theme', 				array(__CLASS__,'_theme_activated'));
 			add_action('wp_print_styles', 					array(__CLASS__,'_add_styles'));
 			add_action('wp_print_scripts', 					array(__CLASS__,'_add_scripts'));
 			add_action('after_setup_theme', 				array(__CLASS__,'_setup_theme'));
 			add_action('update_option_template_settings', 	array(__CLASS__,'_updated_template_settings'), 10, 3);
-
 
 			add_filter('skiplinks', 			array(__CLASS__,'_add_skiplinks'));
 			add_filter('template_include', 		array(__CLASS__,'_template_include'));
@@ -36,7 +34,6 @@ if(!class_exists('Theme')){
 			add_filter('rewrite_rules_array', 	array(__CLASS__,'_rewrite_rules_array'));
 			add_filter('get_search_form', 		array(__CLASS__,'_get_search_form'));
 			add_filter('the_content', 			array(__CLASS__,'_the_content'));
-
 		}
 
 
@@ -111,6 +108,13 @@ if(!class_exists('Theme')){
 			wp_enqueue_style('theme', get_stylesheet_directory_uri() .'/css/app.css', array(), '1.0.0', 'screen');
 		}
 		
+
+		function _admin_menu() {
+			add_options_page( __('Functionality Settings','theme'), __('Functionality','theme'), 'manage_options', 'theme-functionality.php', array(&$this,'_functionality_settings_page') );
+		}
+		function _functionality_settings_page(){ 
+			include 'includes/admin/theme-functionality-settings.php';
+		}
 
 
 		/**
@@ -406,9 +410,7 @@ if(!class_exists('Theme')){
 		 **/
 		static function _query_vars( $query_vars ) {
 
-			$new_vars = array(
-				// Add vars
-			);
+			$new_vars = array();
 			return array_merge( $new_vars, $query_vars );
 		}
 		
@@ -425,9 +427,7 @@ if(!class_exists('Theme')){
 		**/
 		static function _rewrite_rules_array( $rules ) {
 			
-			$new_rules = array(
-				// 'some-slug/([^/]+)/?$' => 'index.php?pagename=some-slug&some_query_var=$matches[1]'
-			);
+			$new_rules = array();
 			$rules = $new_rules + $rules;
 			return $rules;
 		}
@@ -488,19 +488,19 @@ if(!class_exists('Theme')){
 		}
 
 
-
 		/**
-		 * We have a custom search form located in our tpl_forms folder,
-		 * so override the normal searchform.php
+		 * Intercept our search form output so we can increment an ID counter.
+		 * Since the searchform can be output multiple times on a given page, this could lead to invalid duplicate HTML IDs.
+		 * We increment this counter, and append it to the field IDs, so each one is unique.
 		 */
 		static function _get_search_form(){
-
 			/**
 			 * Since we might have more than one search form on a page, incrememnt a global counter
 			 * which will be used to create unique HTML ids for each form's fields
 			 */
 			global $search_form_counter;
 			$search_form_counter += 1;
+
 
 			if( is_readable( get_template_directory() . '/tpl_forms/form-search.php' ) ) {
 

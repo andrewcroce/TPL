@@ -9,29 +9,29 @@
 // includes were here, they have since been removed....
 
 
-if(!class_exists('StarterMemberTools')){
+if(!class_exists('MemberTools')){
 	
-	class StarterMemberTools {
+	class MemberTools {
 		
 		
 		/**
 		*
-		* Constructor
+		* Load
 		* Primarily used to set up action and filter hooks.
 		**/
-		function __construct() {
+		public static function load() {
 			
-			add_action('init', array(&$this, '_init'));
-			add_action('template_redirect', array(&$this,'_template_redirect'));
-			add_filter('query_vars', array(&$this,'_query_vars'));
-			add_filter('rewrite_rules_array', array(&$this,'_rewrite_rules_array'));
+			add_action('init', 					array(__CLASS__, '_init'));
+			add_action('template_redirect', 	array(__CLASS__,'_template_redirect'));
+			add_filter('query_vars', 			array(__CLASS__,'_query_vars'));
+			add_filter('rewrite_rules_array', 	array(__CLASS__,'_rewrite_rules_array'));
 
 			// User/account related hooks
 			
-			add_action('wp_logout', array(&$this,'_wp_logout'));
-			add_filter('authenticate', array(&$this, '_authenticate'), 100, 3);
-			add_filter('lostpassword_url', array(&$this,'_lostpassword_url'), 10, 2);
-			add_filter('register', array(&$this,'_register'));			
+			add_action('wp_logout', 		array(__CLASS__,'_wp_logout'));
+			add_filter('authenticate', 		array(__CLASS__, '_authenticate'), 100, 3);
+			add_filter('lostpassword_url', 	array(__CLASS__,'_lostpassword_url'), 10, 2);
+			add_filter('register', 			array(__CLASS__,'_register'));			
 			// Add any additional action or filter hooks here.
 		}
 
@@ -41,7 +41,7 @@ if(!class_exists('StarterMemberTools')){
 		 * Init
 		 * Hook into Wordpress initialization
 		 */
-		function _init() {
+		static function _init() {
 
 			// handle all of the password reset requests.
 			self::pw_reset_router();			
@@ -187,7 +187,7 @@ if(!class_exists('StarterMemberTools')){
 		 * @param  array $query_vars  	Query vars array to be modified
 		 * @return array 				Modified query vars array
 		 **/
-		function _query_vars( $query_vars ) {
+		static function _query_vars( $query_vars ) {
 			$new_vars = array(
 				'restricted',
 				'redirect',
@@ -209,7 +209,7 @@ if(!class_exists('StarterMemberTools')){
 		* @param  array $rules  	Rewrite rules array to be modified
 		* @return array 			Modified rewrite rules array
 		**/
-		function _rewrite_rules_array( $rules ) {
+		static function _rewrite_rules_array( $rules ) {
 			$new_rules = array(
 
 				// Login error page
@@ -236,7 +236,7 @@ if(!class_exists('StarterMemberTools')){
 		* Template Redirection
 		* Generic hook for handling various redirections. Do what you will... carefully
 		**/
-		function _template_redirect() {
+		static function _template_redirect() {
 			/**
 			 * If the user is not logged into WP
 			 */
@@ -260,7 +260,7 @@ if(!class_exists('StarterMemberTools')){
 		/**
 		 * If logging out from the front end, redirect to the home page
 		 */
-		function _wp_logout(){
+		static function _wp_logout(){
 			if( ! is_admin() ){
 				wp_redirect( home_url() );
 				exit();
@@ -275,7 +275,7 @@ if(!class_exists('StarterMemberTools')){
 		 * @param  string 	$password       	The supplied password
 		 * @return WP_User                 		A WP_User object, if it all goes well
 		 */
-		function _authenticate( $user, $username_email, $password ){
+		static function _authenticate( $user, $username_email, $password ){
 
 			// Only do our custom authentication if 'login' is the referring page
 			if( isset( $_SERVER['HTTP_REFERER'] ) && strstr( $_SERVER['HTTP_REFERER'] ,'login' ) ) {
@@ -348,7 +348,7 @@ if(!class_exists('StarterMemberTools')){
 		 */
 		
 
-		function _user_save_profile( $params ) {
+		static function _user_save_profile( $params ) {
 
 			if( ! isset( $_POST['user_save_profile_nonce'] ) || ! wp_verify_nonce( $_POST['user_save_profile_nonce'], 'user_save_profile' ) ) {
 				print('Invalid form submission');
@@ -423,8 +423,8 @@ if(!class_exists('StarterMemberTools')){
 	
 }
 
-if(class_exists('StarterMemberTools')){
-	$theme = new StarterMemberTools();
+if(class_exists('MemberTools')){
+	MemberTools::load();
 }
 
 ?>
