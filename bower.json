@@ -7,7 +7,7 @@
     "bourbon": "~4.2.3",
     "modernizr": "~2.8.3",
     "uri.js": "~1.15.1",
-    "jquery-transporter": "~1.0.0",
+    "jquery-transporter": "~1.0.2",
     "jquery-throttle-debounce": "*"
   }
 }
