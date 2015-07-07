@@ -5,6 +5,59 @@ if( !class_exists( 'Settings' ) ) {
 	class Settings {
 
 
+
+		/**
+		 * ========================
+		 * Settings Check functions
+		 * ========================
+		 */
+
+		public static function index_template_enabled() {
+			$template_settings = get_option('template_settings');
+			if( isset( $template_settings ) && isset( $template_settings['enable_index_template'] ) && $template_settings['enable_index_template'] == 1 )
+				return true;
+			return false;
+		}
+
+		public static function generate_home_page_enabled() {
+			$template_settings = get_option('template_settings');
+			if( isset( $template_settings ) && isset( $template_settings['generate_home_page'] ) && $template_settings['generate_home_page'] == 1 )
+				return true;
+			return false;
+		}
+
+		public static function generate_style_guide_enabled() {
+			$template_settings = get_option('template_settings');
+			if( isset( $template_settings ) && isset( $template_settings['generate_style_guide'] ) && $template_settings['generate_style_guide'] == 1 )
+				return true;
+			return false;
+		}
+
+		public static function frontend_login_enabled() {
+			$member_tools_settings = get_option('member_tools_settings');
+			if( isset( $member_tools_settings ) && isset( $member_tools_settings['enable_frontend_login'] ) && $member_tools_settings['enable_frontend_login'] == 1 )
+				return true;
+			return false;
+		}
+
+		public static function frontend_profile_enabled() {
+			$member_tools_settings = get_option('member_tools_settings');
+			if( isset( $member_tools_settings ) && isset( $member_tools_settings['enable_frontend_profile'] ) && $member_tools_settings['enable_frontend_profile'] == 1 )
+				return true;
+			return false;
+		}
+
+		public static function frontend_registration_enabled() {
+			$member_tools_settings = get_option('member_tools_settings');
+			if( isset( $member_tools_settings ) && isset( $member_tools_settings['enable_frontend_registration'] ) && $member_tools_settings['enable_frontend_registration'] == 1 )
+				return true;
+			return false;
+		}
+
+
+
+
+
 		/**
 		*
 		* Load
@@ -91,34 +144,6 @@ if( !class_exists( 'Settings' ) ) {
 				'tpl-config',
 				'template-settings'
 			);
-			
-
-
-			/**
-			 * =============
-			 * Menu Settings
-			 * =============
-			 */
-			
-			// register setting
-			register_setting('tpl-config','menu_settings');
-
-			// add setting section
-			add_settings_section(
-				'menu-settings',
-				__('Menu Settings','theme'),
-				array(__CLASS__,'_render_menu_settings_section'),
-				'tpl-config'
-			);
-
-			// add 'enable_index_template' field
-			add_settings_field(
-				'menu_locations',
-				__('Menu locations','theme'),
-				array(__CLASS__,'_render_menu_locations_field'),
-				'tpl-config',
-				'menu-settings'
-			);
 
 
 
@@ -155,6 +180,43 @@ if( !class_exists( 'Settings' ) ) {
 				array(__CLASS__,'_render_enable_frontend_profile_field'),
 				'tpl-config',
 				'member-tools-settings'
+			);
+
+			// add 'enable_frontend_registration' field
+			add_settings_field(
+				'enable_frontend_registration',
+				__('Front End Registration','theme'),
+				array(__CLASS__,'_render_enable_frontend_registration_field'),
+				'tpl-config',
+				'member-tools-settings'
+			);
+
+
+
+			/**
+			 * =============
+			 * Menu Settings
+			 * =============
+			 */
+			
+			// register setting
+			register_setting('tpl-config','menu_settings');
+
+			// add setting section
+			add_settings_section(
+				'menu-settings',
+				__('Menu Settings','theme'),
+				array(__CLASS__,'_render_menu_settings_section'),
+				'tpl-config'
+			);
+
+			// add 'enable_index_template' field
+			add_settings_field(
+				'menu_locations',
+				__('Menu locations','theme'),
+				array(__CLASS__,'_render_menu_locations_field'),
+				'tpl-config',
+				'menu-settings'
 			);
 
 		}
@@ -309,64 +371,19 @@ if( !class_exists( 'Settings' ) ) {
 			$checked = checked( $value, 1, false );
 			echo '<input type="checkbox" id="enable_frontend_profile" name="member_tools_settings[enable_frontend_profile]" value="1" '.$checked.'>';
 			echo '<label for="enable_frontend_profile">'.__('Enable','theme').'</label>';
-			echo '<p class="description">'.__('This will generate front end profile form page. Note: disabling this setting <strong>will not delete</strong> the pages.','theme').'</p>';
+			echo '<p class="description">'.__('This will generate front end profile form page. Note: disabling this setting <strong>will not delete</strong> the page.','theme').'</p>';
 		}
 
 
-
-		/**
-		 * ========================
-		 * Settings Check functions
-		 * ========================
-		 */
-
-		public static function index_template_enabled() {
-
-			$template_settings = get_option('template_settings');
-			if( isset( $template_settings ) && isset( $template_settings['enable_index_template'] ) && $template_settings['enable_index_template'] == 1 )
-				return true;
-			return false;
+		static function _render_enable_frontend_registration_field(){
+			$options = get_option('member_tools_settings');
+			$value = isset( $options['enable_frontend_registration'] ) ? $options['enable_frontend_registration'] : 0;
+			$checked = checked( $value, 1, false );
+			echo '<input type="checkbox" id="enable_frontend_registration" name="member_tools_settings[enable_frontend_registration]" value="1" '.$checked.'>';
+			echo '<label for="enable_frontend_registration">'.__('Enable','theme').'</label>';
+			echo '<p class="description">'.__('This will generate front end registration form page. Note: disabling this setting <strong>will not delete</strong> the page.','theme').'</p>';
 		}
 
-
-		public static function generate_home_page_enabled() {
-
-			$template_settings = get_option('template_settings');
-			if( isset( $template_settings ) && isset( $template_settings['generate_home_page'] ) && $template_settings['generate_home_page'] == 1 )
-				return true;
-			return false;
-
-		}
-
-
-		public static function generate_style_guide_enabled() {
-
-			$template_settings = get_option('template_settings');
-			if( isset( $template_settings ) && isset( $template_settings['generate_style_guide'] ) && $template_settings['generate_style_guide'] == 1 )
-				return true;
-			return false;
-
-		}
-
-
-		public static function frontend_login_enabled() {
-
-			$member_tools_settings = get_option('member_tools_settings');
-			if( isset( $member_tools_settings ) && isset( $member_tools_settings['enable_frontend_login'] ) && $member_tools_settings['enable_frontend_login'] == 1 )
-				return true;
-			return false;
-
-		}
-
-
-		public static function frontend_profile_enabled() {
-
-			$member_tools_settings = get_option('member_tools_settings');
-			if( isset( $member_tools_settings ) && isset( $member_tools_settings['enable_frontend_profile'] ) && $member_tools_settings['enable_frontend_profile'] == 1 )
-				return true;
-			return false;
-
-		}
 		
 
 	}

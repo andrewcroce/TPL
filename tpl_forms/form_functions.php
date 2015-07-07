@@ -50,6 +50,20 @@ function tpl_form_profile( $user = null ) {
 
 
 /**
+ * Include the registration form template 
+ * @param WP_User $user
+ */
+function tpl_form_register(){
+
+	wp_enqueue_script( 'password-strength-meter' );
+
+	tpl( 'form' , 'register' );
+
+}
+
+
+
+/**
  * Include the reset password form template
  */
 function tpl_form_reset_password(){

@@ -22,8 +22,8 @@
 			return new RegExp(string);
 		},
 
-		// Initialize
-		init : function(){
+		// Initialize Strength Meter
+		initStrengthMeter : function(){
 
 			// Find each instance of a password field
 			$('.check-pass-strength').each(function(){
@@ -100,6 +100,37 @@
 
 			// I'll allow it
 			allow.val(1).trigger('change');
+
+		},
+
+
+		// Initialize toggle to show/hide password
+		initShowPasswordToggle : function(){
+
+			// Find each toggle
+			$('.show-password-toggle').each(function(){
+
+				// When the value is changed
+				$(this).on('change', function(){
+
+					// Find any toggleable password fields in the form
+					$(this).closest('form').find('.show-password-toggleable').each(function(){
+
+						// If its already hidden (its an input[type="password"])
+						// make it visible (change it to input[type="text"])
+						if( $(this).attr('type') == 'password' ) {
+							$(this).attr('type','text');
+
+						// Otherwise do the opposite
+						} else {
+							$(this).attr('type','password');
+						}
+
+					});
+
+				});
+
+			});
 
 		}
 

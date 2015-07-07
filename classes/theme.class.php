@@ -19,8 +19,9 @@ if(!class_exists('Theme')){
 		 */
 		public static function load() {
 
-
 			add_action('after_switch_theme', 					array(__CLASS__,'_theme_activated'));
+			add_action('init', 									array(__CLASS__,'_init'));
+			add_action('admin_menu',							array(__CLASS__,'_admin_menu'));
 			add_action('wp_print_styles', 						array(__CLASS__,'_add_styles'));
 			add_action('wp_print_scripts', 						array(__CLASS__,'_add_scripts'));
 			add_action('after_setup_theme', 					array(__CLASS__,'_setup_theme'));
@@ -60,6 +61,44 @@ if(!class_exists('Theme')){
 			}
 			
 
+		}
+
+
+
+		/**
+		 * WP Initialized
+		 */
+		static function _init(){
+
+			/**
+			 * Require our custom ACF Fieldset for the post type index page template if the setting is enabled
+			 */
+			if( Settings::index_template_enabled() )
+				require get_template_directory() . '/includes/acf_fieldsets/index_post_type_fields.php';
+
+		}
+
+
+
+		/**
+		 * Admin Menu hook
+		 */
+		static function _admin_menu(){
+
+			// If this is a post edit page
+			if( isset( $_GET['post'] ) ) {
+
+				if( Settings::generate_home_page_enabled() ){
+
+					// Get the home page
+					$home_page_ID = get_option('page_on_front');
+
+					// If we're looking at the home page edit screen
+					// hide the "Page Attributes" metabox
+					if( $_GET['post'] == $home_page_ID )
+						remove_meta_box( 'pageparentdiv', 'page', 'normal' );
+				}
+			}
 		}
 		
 
@@ -101,9 +140,6 @@ if(!class_exists('Theme')){
 			}
 		}
 
-
-		
-
 		
 		
 		/**
@@ -116,13 +152,6 @@ if(!class_exists('Theme')){
 			wp_enqueue_style('theme', get_stylesheet_directory_uri() .'/css/app.css', array(), '1.0.0', 'screen');
 		}
 		
-
-		function _admin_menu() {
-			add_options_page( __('Functionality Settings','theme'), __('Functionality','theme'), 'manage_options', 'theme-functionality.php', array(&$this,'_functionality_settings_page') );
-		}
-		function _functionality_settings_page(){ 
-			include 'includes/admin/theme-functionality-settings.php';
-		}
 
 
 		/**

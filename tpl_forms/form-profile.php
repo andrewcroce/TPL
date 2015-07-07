@@ -16,14 +16,6 @@ extract( $params ); ?>
 <?php if( is_user_logged_in() ) : ?>
 	
 
-	<?php if( get_query_var('profile_error',0) ){
-		tpl_block_alert( __('There was a problem saving your profile.','theme'), 'alert' );
-	} ?>
-	
-	<?php if( get_query_var('update',0) ){
-		tpl_block_alert( __('Your profile has been updated.','theme') );
-	} ?>	
-
 	<form method="post" action="<?php the_permalink(); ?>" data-abide>
 
 		<div class="row">
@@ -83,15 +75,23 @@ extract( $params ); ?>
 
 				<div class="form-field">
 					<label for="password-input"><?php echo __('Change your password') ?></label>
-					<input type="password" id="password-input" class="check-pass-strength" data-pass-id="profile-form-pass" name="params[password]" data-abide-validator="strongPassword">
+					<input type="password" id="password-input" class="check-pass-strength show-password-toggleable" data-pass-id="profile-form-pass" name="params[password]" data-abide-validator="strongPassword">
 					<span class="secondary-text error"><?php echo __('Please enter a stronger password','theme'); ?></span>
 				</div>
 				
 				<div class="form-field">
 					<label for="confirm-password-input"><?php echo __('Enter your new password again') ?></label>
-					<input type="password" id="confirm-password-input" class="check-pass-strength-confirm" data-pass-id="profile-form-pass" name="params[confirm_password]" data-equalto="password-input">
+					<input type="password" id="confirm-password-input" class="check-pass-strength-confirm show-password-toggleable" data-pass-id="profile-form-pass" name="params[confirm_password]" data-equalto="password-input">
 					<span class="secondary-text error"><?php echo __('Password confirmation does not match','theme'); ?></span>
 				</div>
+
+				<div class="form-field">
+					<label for="show-password">
+						<input type="checkbox" id="show-password" class="show-password-toggle">
+						<?php echo __('Show password','theme') ?>
+					</label>
+				</div>
+				
 
 			</div>
 
@@ -110,7 +110,7 @@ extract( $params ); ?>
 			<div class="large-8 large-centered medium-10 medium-centered columns">
 				<?php wp_nonce_field( 'user_save_profile', 'user_save_profile_nonce' ); ?>
 				<input type="hidden" name="form_action" value="user_save_profile">
-				<input type="submit" class="submit-gate-protected" data-open="1" value="<?php echo __('Save Profile','theme'); ?>">
+				<input type="submit" value="<?php echo __('Save Profile','theme'); ?>">
 			</div>
 		</div>
 

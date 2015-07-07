@@ -37,6 +37,37 @@ function tpl_block_comments( $post, $status = 'approve' ) {
 }
 
 
+
+/**
+ * Display an alert box with a message corresponding to the provided status name
+ * @param  string $status Status string from query var
+ */
+function tpl_block_profile_status( $status ){
+
+	switch( (string)$status ) {
+
+		case 'error':
+			$message = __('There was a problem saving your profile, please make sure all required fields are filled.','theme');
+			$class = 'alert';
+			break;
+
+		case 'updated':
+			$message = __('Your profile has been updated.','theme');
+			$class = 'success';
+			break;
+
+		case 'created':
+			$message = __('Welcome! Your profile has successfully been created.','theme');
+			$class = 'success';
+			break;
+
+	}
+
+	tpl_block_alert( $message, $class );
+}
+
+
+
 /**
  * Include the alert block template 
  * @param string $message Alert message to display

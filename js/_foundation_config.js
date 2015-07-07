@@ -15,9 +15,9 @@
 			},
 
 			validators : {
-				strongPassword : function( el , required, parent ){
+				strongPassword : function( el, required, parent ){
 					
-					if( el.value.trim().length === 0 ) return true;
+					if( !required && el.value.trim().length === 0 ) return true;
 					
 					if( typeof zxcvbn === 'function' ) {
 						var result = zxcvbn( el.value );

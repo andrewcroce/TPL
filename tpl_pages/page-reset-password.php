@@ -28,9 +28,18 @@ get_header(); ?>
 
 
         <?php tpl_wrapper_content_open(); ?>
+        
+         <div itemprop="text">
+            
+            <?php if( get_query_var('reset_key', 0) || get_query_var('reset_username', 0) ) : ?>
+                
+                <?php echo $page->filterContent('new_password_content'); ?>
 
-    
-          <div itemprop="text"><?php echo $page->filterContent('post_content'); ?></div>
+            <?php else : ?>
+
+                <?php echo $page->filterContent('request_reset_content'); ?>
+                
+            <?php endif; ?>
 
         <?php tpl_wrapper_content_close(); ?>
       

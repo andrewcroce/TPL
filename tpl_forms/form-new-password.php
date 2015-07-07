@@ -36,14 +36,21 @@ extract( $params ); ?>
     
             <div class="form-field">
                 <label for="password-input"><?php echo __('Enter a new password','theme') ?></label>
-                <input type="password" id="password-input" class="check-pass-strength" data-pass-id="reset-form-pass" name="params[password]" data-abide-validator="strongPassword">
+                <input type="password" id="password-input" class="check-pass-strength show-password-toggleable" data-pass-id="reset-form-pass" name="params[password]" data-abide-validator="strongPassword">
                 <span class="secondary-text error"><?php echo __('Please enter a stronger password','theme'); ?></span>
             </div>
             
             <div class="form-field">
                 <label for="confirm-password-input"><?php echo __('Enter your new password again','theme') ?></label>
-                <input type="password" id="confirm-password-input" class="check-pass-strength-confirm" data-pass-id="reset-form-pass" name="params[confirm_password]" data-equalto="password-input">
+                <input type="password" id="confirm-password-input" class="check-pass-strength-confirm show-password-toggleable" data-pass-id="reset-form-pass" name="params[confirm_password]" data-equalto="password-input">
                 <span class="secondary-text error"><?php echo __('Password confirmation does not match','theme'); ?></span>
+            </div>
+
+            <div class="form-field">
+                <label for="show-password">
+                    <input type="checkbox" id="show-password" class="show-password-toggle">
+                    <?php echo __('Show password','theme') ?>
+                </label>
             </div>
 
         </div>

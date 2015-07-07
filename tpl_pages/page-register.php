@@ -12,7 +12,7 @@ get_header(); ?>
 			$page = new ACFPost($post);
 			$user = get_userdata( get_current_user_id() ); ?>
 			
-			<article class="profile page" itemscope itemtype="http://schema.org/WebPage">
+			<article class="register page" itemscope itemtype="http://schema.org/WebPage">
 
 
 				<?php tpl_wrapper_header_open(); ?>
@@ -37,10 +37,6 @@ get_header(); ?>
 
 
 				<?php tpl_wrapper_content_open(); ?>
-	
-					<?php if( get_query_var('profile_status',0) ){
-						tpl_block_profile_status( get_query_var('profile_status') );
-					} ?>	
 		
 					<div itemprop="text"><?php echo $page->filterContent('post_content'); ?></div>
 
@@ -50,7 +46,7 @@ get_header(); ?>
 				
 				<?php tpl_wrapper_secondary_open(); ?>
 
-					<?php tpl_form_profile( $user ); ?>
+					<?php tpl_form_register(); ?>
 
 				<?php tpl_wrapper_secondary_close(); ?>
 

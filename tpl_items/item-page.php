@@ -17,7 +17,7 @@ extract( $params );
 ob_start();
 
 // Include the link template
-tpl_readmore( get_permalink( $page->ID ) );
+tpl_link_read_more( get_permalink( $page->ID ) );
 
 // Assign it to the $permalink variable
 $permalink = ob_get_clean(); ?>

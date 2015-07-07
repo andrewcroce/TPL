@@ -21,12 +21,16 @@ if(!class_exists('MemberTools')){
 		**/
 		public static function load() {
 			
-			add_action('template_redirect', 					array(__CLASS__,'_template_redirect'));
 			add_action('after_switch_theme', 					array(__CLASS__,'_theme_activated'));
+			add_action('init', 									array(__CLASS__,'_init'));
+			add_action('admin_menu',							array(__CLASS__,'_admin_menu'));
+			add_action('template_redirect', 					array(__CLASS__,'_template_redirect'));
 			add_action('update_option_member_tools_settings',	array(__CLASS__,'_updated_member_tools_settings'), 10, 3);
 			add_action('wp_logout', 							array(__CLASS__,'_wp_logout'));
 			add_action('form_action_user_reset_password', 		array(__CLASS__,'_user_reset_password'));
 			add_action('form_action_user_new_password',  		array(__CLASS__,'_user_new_password'));
+			add_action('form_action_user_register',				array(__CLASS__,'_user_register'));
+			add_action('form_action_user_save_profile',			array(__CLASS__,'_user_save_profile'));
 			
 			add_filter('query_vars', 			array(__CLASS__,'_query_vars'));
 			add_filter('rewrite_rules_array', 	array(__CLASS__,'_rewrite_rules_array'));
@@ -54,12 +58,77 @@ if(!class_exists('MemberTools')){
 			if( Settings::frontend_profile_enabled() ){
 				self::_generate_profile_page();
 			}
+
+			// Generate profile page if the setting is enabled
+			if( Settings::frontend_registration_enabled() ){
+				self::_generate_registration_page();
+			}
 			
 
 		}
 
 
 
+		/**
+		 * WP Initialized
+		 */
+		static function _init(){
+
+			/**
+			 * Require our custom ACF Fieldset for the reset-password page content if front end login is enabled
+			 */
+			if( Settings::frontend_login_enabled() )
+				require get_template_directory() . '/includes/acf_fieldsets/reset_password_page_content.php';
+
+		}
+
+
+
+		/**
+		 * Admin Menu hook
+		 */
+		static function _admin_menu(){
+
+			// If this is a post edit page
+			if( isset( $_GET['post'] ) ) {
+
+				// Get our auto-generated pages
+				$login_page = get_page_by_path('login');
+				$reset_password_page = get_page_by_path('reset-password');
+				$profile_page = get_page_by_path('profile');
+				$registration_page = get_page_by_path('register');
+
+				// Empty array for IDs
+				$ids = array();
+
+				// Add each page ID to the array, if it exists and the setting is enabled
+				if( !is_null( $login_page ) && Settings::frontend_login_enabled() )
+					$ids[] = $login_page->ID;
+
+				if( !is_null( $reset_password_page ) && Settings::frontend_login_enabled() )
+					$ids[] = $reset_password_page->ID;
+
+				if( !is_null( $profile_page ) && Settings::frontend_profile_enabled() )
+					$ids[] = $profile_page->ID;
+
+				if( !is_null( $registration_page ) && Settings::frontend_registration_enabled() )
+					$ids[] = $registration_page->ID;
+
+				// If we're looking at one of these pages
+				// hide the "Page Attributes" metabox
+				if( in_array( $_GET['post'], $ids ) )
+					remove_meta_box( 'pageparentdiv', 'page', 'normal' );
+
+			}
+		}
+
+
+
+		/**
+		 * The Member Tools settings have been updated
+		 * @param  mixed $old_settings Array of previous settings, or nothing if they were previously disabled
+		 * @param  mixed $settings     Array of new settings, or nothing if they have been disabled 
+		 */
 		static function _updated_member_tools_settings( $old_settings, $settings ){
 
 			// Settings are enabled
@@ -78,12 +147,22 @@ if(!class_exists('MemberTools')){
 					self::_generate_profile_page();
 
 				}
+
+				// Generate login and password reset pages if setting is enabled
+				if( isset( $settings['enable_frontend_registration'] ) && $settings['enable_frontend_registration'] == 1 ) {
+
+					self::_generate_registration_page();
+
+				}
 			}
 
 		}
 
 
 
+		/**
+		 * Generate a login and reset password page, if they don't already exist
+		 */
 		static function _generate_login_pages(){
 
 			$login_page = get_page_by_path('login');
@@ -114,6 +193,9 @@ if(!class_exists('MemberTools')){
 
 
 
+		/**
+		 * Generate a user profile page
+		 */
 		static function _generate_profile_page(){
 
 			$profile_page = get_page_by_path('profile');
@@ -123,6 +205,27 @@ if(!class_exists('MemberTools')){
 					'post_content' => __('<p>This is the user profile form page. It is required if front-end profile is enabled.</p>','theme'),
 					'post_name' => 'profile',
 					'post_title' => 'Profile',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+			}
+
+		}
+
+
+
+		/**
+		 * Generate a registration page
+		 */
+		static function _generate_registration_page(){
+
+			$registration_page = get_page_by_path('register');
+
+			if( is_null( $registration_page ) ){
+				$registration_page = wp_insert_post(array(
+					'post_content' => __('<p>This is the user registration form page. It is required if front-end registration is enabled.</p>','theme'),
+					'post_name' => 'register',
+					'post_title' => 'Register',
 					'post_status' => 'publish',
 					'post_type' => 'page'
 				));
@@ -150,12 +253,12 @@ if(!class_exists('MemberTools')){
 				'restricted',
 				'redirect',
 				'login_error',
-				'profile_error',
+				'profile_status',
+				'register_error',
 				'reset_error',
 				'reset_pending',
 				'reset_key',
-				'reset_username',
-				'update'
+				'reset_username'
 			);
 			return array_merge( $new_vars, $query_vars );
 		}
@@ -180,11 +283,8 @@ if(!class_exists('MemberTools')){
 				// Login page from restricted page, with redirect slug/ID
 				'login/restricted/([^/]+)/?$' => 'index.php?pagename=login&restricted=1&redirect=$matches[1]',
 
-				// Profile update page
-				'profile/update/?$' => 'index.php?pagename=profile&update=1',
-	
-				// Profile error page
-				'profile/error/?$' => 'index.php?pagename=profile&profile_error=1',
+				// Profile page
+				'profile/([^/]+)/?$' => 'index.php?pagename=profile&profile_status=$matches[1]',
 
 				// Reset password page with key and username, for new-password form
 				'reset-password/([^/]+)/([^/]+)/?$' => 'index.php?pagename=reset-password&reset_username=$matches[1]&reset_key=$matches[2]',
@@ -196,7 +296,10 @@ if(!class_exists('MemberTools')){
 				'reset-password/error/([^/]+)/?$' => 'index.php?pagename=reset-password&reset_error=$matches[1]',
 
 				// Reset password pending 
-				'reset-password/pending/?$' => 'index.php?pagename=reset-password&reset_pending=1'
+				'reset-password/pending/?$' => 'index.php?pagename=reset-password&reset_pending=1',
+
+				// Registration error page
+				'register/error/([^/]+)/?$' => 'index.php?pagename=register&register_error=$matches[1]',
 
 			);
 			$rules = $new_rules + $rules;
@@ -211,18 +314,39 @@ if(!class_exists('MemberTools')){
 		* Generic hook for handling various redirections. Do what you will... carefully
 		**/
 		static function _template_redirect() {
+
 			/**
 			 * If the user is not logged into WP
 			 */
 			if( ! is_user_logged_in() ) {
 
-				/**
-				 * If a non logged-in user is trying to access the profile page
-				 * redirect them to login
-				 */
+				// If a non logged-in user is trying to access the profile page
+				// redirect them to login
 				if( is_page('profile') ){
 					wp_redirect( home_url('login/restricted/profile') );
 					exit();
+				}
+
+
+			/**
+			 * If the user is logged in
+			 */
+			} else {
+
+				
+				// If someone tries to access the login page, when they are already logged in 
+				if( is_page('login') ) {
+					
+					// Redirect to their profile, if the front end profile setting is enabled
+					if( Settings::frontend_login_enabled() ){
+						wp_redirect( home_url('profile/loggedin') );
+						exit;
+
+					// Otherwise redirect to the admin
+					} else {
+						wp_redirect( admin_url() );
+						exit;
+					}
 				}
 
 			}
@@ -240,6 +364,7 @@ if(!class_exists('MemberTools')){
 				exit();
 			}
 		}
+
 
 
 		/**
@@ -420,6 +545,7 @@ if(!class_exists('MemberTools')){
 			
 			// Verify the nonce 
 			if( ! isset( $_POST['user_new_password_nonce'] ) || ! wp_verify_nonce( $_POST['user_new_password_nonce'], 'user_new_password' ) ) {
+				// Begone, fiend!
 				print('Invalid form submission');
 				exit;
 			}
@@ -430,19 +556,19 @@ if(!class_exists('MemberTools')){
 				exit;
 			}
 
-			// If no password
+			// If no password was entered
 			if( empty( $params['password'] ) ) {
 				wp_redirect( home_url('reset-password/'.$params['username'].'/'.$params['key'].'/error/password') );
 				exit;
 			}
 
-			// If no confirmation
+			// If no confirmation was entered
 			if( empty( $params['confirm_password'] ) ) {
 				wp_redirect( home_url('reset-password/'.$params['username'].'/'.$params['key'].'/error/confirm') );
 				exit;
 			}
 
-			// If they don't match
+			// If the passwords don't match
 			if( trim( $params['password'] ) !== trim( $params['confirm_password'] ) ) {
 				wp_redirect( home_url('reset-password/'.$params['username'].'/'.$params['key'].'/error/match') );
 				exit;
@@ -459,7 +585,7 @@ if(!class_exists('MemberTools')){
 
 			// Redirect to either the profile page, or the admin
 			if( Settings::frontend_profile_enabled() ) {
-				wp_redirect( home_url('profile') );
+				wp_redirect( home_url('profile/loggedin') );
 				exit;
 			} else {
 				wp_redirect( admin_url() );
@@ -469,6 +595,95 @@ if(!class_exists('MemberTools')){
 		}
 
 
+
+		static function _user_register( $params ){
+
+			// Verify the nonce
+			if( ! isset( $_POST['user_register_nonce'] ) || ! wp_verify_nonce( $_POST['user_register_nonce'], 'user_register' ) ) {
+				print('Invalid form submission');
+				exit;
+			}
+
+			// If required fields are missing
+			if( empty( $params['password'] ) || empty( $params['confirm_password'] ) || empty( $params['data']['display_name'] ) || empty( $params['data']['user_email'] ) ) {
+				wp_redirect( home_url('register/error/incomplete') );
+				exit;
+			}
+
+			// If the passwords don't match
+			if( trim( $params['password'] ) !== trim( $params['confirm_password'] ) ) {
+				wp_redirect( home_url('register/error/match') );
+				exit;
+			}
+
+			// Build a username
+			$username = '';
+
+			// If a first-name was supplied, use that
+			if( !empty( $params['meta']['first_name'] ) ){
+				$username = esc_attr( strtolower( trim( $params['meta']['first_name'] ) ) );
+
+				// If a last name was also supplied, append that with a '.'
+				if( !empty( $params['meta']['last_name'] ) )
+					$username .= '.' . esc_attr( strtolower( trim( $params['meta']['last_name'] ) ) );
+
+			// If not a first name, maybe a last name was supplied, try that
+			} elseif( !empty( $params['meta']['last_name'] ) ) {
+				$username = esc_attr( strtolower( trim( $params['meta']['last_name'] ) ) );
+
+			// Otherwise, use the display name, since thats required anyway
+			} else {
+
+				$username = esc_attr( strtolower( trim( $params['data']['display_name'] ) ) );
+			}
+
+			// Make sure the username is unique
+			$username = self::uniquify_username( $username );
+
+			// Create the user
+			$user_id = wp_create_user(
+				$username,
+				esc_attr( $params['password'] ),
+				esc_attr( $params['data']['user_email'] ) 
+			);
+
+			$user_data = array();
+
+			// Build a user data array for saving additional metadata and user data.
+			// This might be repetative, but it allows for adding additional fields to the form
+			// without needing to modify this function
+			$user_data = array( 'ID' => $user_id );
+
+			// Add each data field in the form
+			foreach( $params['data'] as $key => $data ){
+				$user_data[$key] = esc_attr( $data );
+			}
+
+			// Add each meta field in the form
+			foreach( $params['meta'] as $key => $meta ){
+				$user_data[$key] = esc_attr( $meta );
+			}
+
+			// Save the additional data
+			wp_update_user( $user_data );
+
+			// Log the user in by setting their auth cookie
+			wp_set_auth_cookie( $user_id );
+
+
+			//TO DO: Send confirmation email?
+
+
+			// Redirect to either the profile page, or the admin
+			if( Settings::frontend_profile_enabled() ) {
+				wp_redirect( home_url('profile/created') );
+				exit;
+			} else {
+				wp_redirect( admin_url() );
+				exit;
+			}
+
+		}
 
 
 
@@ -583,6 +798,7 @@ if(!class_exists('MemberTools')){
 		 */
 
 
+
 		/**
 		 * Validate a reset-password key against a username
 		 * @param  string $key      	Unique key from a reset-password link
@@ -601,6 +817,26 @@ if(!class_exists('MemberTools')){
 			return false;
 		}
 		
+
+
+		/**
+		 * Check if a username is unique, and if not append an incrementing number until it is
+		 * @param 	string 	$username 	The username to test
+		 * @param 	int 	$iteration 	Iteration number, for recursive calls when a supplied username isn't unique	
+		 * @return 	string           	A unique username
+		 */
+		public static function uniquify_username( $username, $iteration = 1 ){
+
+			if( username_exists( $username ) ) {
+
+				$iteration ++;
+				$username .= (string)$iteration;
+				$username = self::uniquify_username( $username, $iteration );
+			}
+
+			return $username;
+
+		}
 	}
 	
 }
