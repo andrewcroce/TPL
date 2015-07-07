@@ -19,6 +19,9 @@ require get_template_directory() . '/includes/plugins/plugins.php';
 // Settings class
 require get_template_directory() . '/classes/settings.class.php';
 
+// Media class
+require get_template_directory() . '/classes/media.class.php';
+
 // Main theme class
 require get_template_directory() . '/classes/theme.class.php';
 
@@ -47,9 +50,9 @@ function tpl_after_switch_theme(){
  * WP Initialized
  */
 function tpl_init(){
-	
 
-	/** 
+
+	/**
 	 * We use a generalized init function to intercept any custom form submissions
 	 * For example, if a form is submitted where $_POST['form_action'] == 'submit_something',
 	 * this form can be handled by creating an action hook add_action('form_action_submit_something','my_form_submission_handler');
