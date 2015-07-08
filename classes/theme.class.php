@@ -444,6 +444,7 @@ if(!class_exists('Theme')){
 
 			global $post;
 
+			// If this is an attachment page, try to locate the right template, otherwise just return the attachment
 			if( is_attachment() ) {
 				if( is_readable( get_template_directory() . '/tpl_pages/page-attachment.php' ) ){
 					return locate_template( 'tpl_pages/page-attachment.php' );
