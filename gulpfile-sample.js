@@ -4,6 +4,7 @@ var localurl	= '%%YOUR LOCAL URL HERE%%',
 	mkdirp		= require('mkdirp'),
 	bower 		= require('gulp-bower'),
 	sass 		= require('gulp-sass'),
+	bless = require('gulp-bless'),
 	include 	= require('gulp-include'),
 	uglify 		= require('gulp-uglify'),
 	rename		= require('gulp-rename'),
@@ -33,6 +34,7 @@ gulp.task('scss', function(){
 	gulp.src('scss/*.scss')
 		.pipe( sourcemaps.init() )
 			.pipe( sass.sync({ outputStyle : 'compressed' }).on('error', sass.logError) )
+			.pipe( bless() )
 		.pipe( sourcemaps.write('../css') )
 		.pipe( gulp.dest('css') )
 		.pipe( filter('**/*.css') )
@@ -71,7 +73,7 @@ gulp.task('server', ['scss','scripts'], function(){
 
 		gulp.watch('scss/**/*.scss', ['scss']);
 		gulp.watch(['js/**/*.js','!js/min/**/*.js'], ['scripts']);
-		
+
 	});
 
 });
@@ -79,7 +81,7 @@ gulp.task('server', ['scss','scripts'], function(){
 
 
 // Yay a template generator!
-// 
+//
 // Run gulp tpl --n {prefix}-{name} to generate a template file, and matching template function.
 // Folders and files will be created if they do not already exist.
 // @see includes/generator_templates for the blank placeholder files from which content will be copied
@@ -108,7 +110,7 @@ gulp.task('tpl', function( n, p ){
 	if( p ){
 
 		var params = p.split(',');
-	
+
 	}
 
 
@@ -148,13 +150,13 @@ gulp.task('tpl', function( n, p ){
 										datatype 	= param_parts[1] && ( param_parts[1].replace(/ /g,'') !== '' ) ? param_parts[1] : 'mixed',
 										quote		= datatype == 'string' ? '\'' : '',
 										description = param_parts[3] && ( param_parts[3].replace(/ /g,'') !== '' ) ? param_parts[3] : '[description]';
-									
+
 
 									param_docs += '\n *\t\t @var ' + datatype + ' $' + variable + ' ' + description;
 								}
 								text = text.replace( /\{\{param_docs\}\}/g, param_docs );
 							}
-								
+
 
 							fs.writeFile( filepath, text, function(){
 								console.log('--File created: ' + filepath);
@@ -165,7 +167,7 @@ gulp.task('tpl', function( n, p ){
 							console.error( 'Warning:  template file "' + filepath + '" aready exists.' );
 
 						}
-					});	
+					});
 
 				}
 
@@ -197,7 +199,7 @@ gulp.task('tpl', function( n, p ){
 								quote		= datatype == 'string' ? '\'' : '',
 								defaultval 	= param_parts[2] && ( param_parts[2].replace(/ /g,'') !== '' ) ? ' = ' + quote + param_parts[2] + quote : '',
 								description = param_parts[3] && ( param_parts[3].replace(/ /g,'') !== '' ) ? param_parts[3] : '[description]';
-								
+
 
 							if( i > 0 ){
 								params_in += ', ';

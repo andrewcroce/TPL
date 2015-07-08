@@ -19,6 +19,8 @@
 	line-height: $base-line-height * 1.25;
 }
 
+.caption-text {}
+
 
 // ======================================================
 // WYSIWYG Blocks
@@ -61,7 +63,7 @@
 		&.wp-caption {
 			width: auto !important;
 			.wp-caption-text {
-				// Caption styles
+				@extend .caption-text;
 			}
 		}
 	}
@@ -72,6 +74,20 @@
 // Buttons & Links
 // ===============
 
+
+// =========
+// Galleries
+// =========
+
+@for $i from 1 through 9 {
+	.gallery-columns-#{$i} {
+		.gallery-item {
+			float: left;
+			width: 100%/$i;
+			margin: em(10) 0;
+		}
+	}
+}
 
 
 // =====
