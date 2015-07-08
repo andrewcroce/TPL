@@ -54,6 +54,16 @@ if( !class_exists( 'Settings' ) ) {
 			return false;
 		}
 
+		public static function registration_activation_required() {
+			$member_tools_settings = get_option('member_tools_settings');
+			if( isset( $member_tools_settings ) && isset( $member_tools_settings['enable_frontend_registration'] ) && $member_tools_settings['enable_frontend_registration'] == 1 ){
+				if( isset( $member_tools_settings['registration_activation_required'] ) && $member_tools_settings['registration_activation_required'] == 1 )
+					return true;
+				return false;
+			}
+			return false;
+		}
+
 
 
 
@@ -187,6 +197,15 @@ if( !class_exists( 'Settings' ) ) {
 				'enable_frontend_registration',
 				__('Front End Registration','theme'),
 				array(__CLASS__,'_render_enable_frontend_registration_field'),
+				'tpl-config',
+				'member-tools-settings'
+			);
+
+			// add 'registration_activation_required' field
+			add_settings_field(
+				'registration_activation_required',
+				__('Send Activation Email','theme'),
+				array(__CLASS__,'_render_registration_activation_required_field'),
 				'tpl-config',
 				'member-tools-settings'
 			);
@@ -384,6 +403,14 @@ if( !class_exists( 'Settings' ) ) {
 			echo '<p class="description">'.__('This will generate front end registration form page. Note: disabling this setting <strong>will not delete</strong> the page.','theme').'</p>';
 		}
 
+		static function _render_registration_activation_required_field(){
+			$options = get_option('member_tools_settings');
+			$value = isset( $options['registration_activation_required'] ) ? $options['registration_activation_required'] : 0;
+			$checked = checked( $value, 1, false );
+			echo '<input type="checkbox" id="registration_activation_required" name="member_tools_settings[registration_activation_required]" value="1" '.$checked.'>';
+			echo '<label for="registration_activation_required">'.__('Enable','theme').'</label>';
+			echo '<p class="description">'.__('If front end registration is enabled, this will send an email to new users, and required them to click a link and login to activate their account.','theme').'</p>';
+		}
 		
 
 	}

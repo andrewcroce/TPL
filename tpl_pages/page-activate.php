@@ -1,6 +1,6 @@
 <?php 
 /**
- * The login page template
+ * The user activation page template
  * 
  **/
 get_header(); ?>
@@ -11,7 +11,7 @@ get_header(); ?>
 
       $page = new ACFPost($post); ?>
 
-      <article class="reset-password page" itemscope itemtype="http://schema.org/WebPage">
+      <article class="activation page" itemscope itemtype="http://schema.org/WebPage">
 
 
         <?php tpl_wrapper_header_open(); ?>
@@ -29,15 +29,7 @@ get_header(); ?>
         
          <div itemprop="text">
             
-            <?php if( get_query_var('reset_key', 0) || get_query_var('reset_username', 0) ) : ?>
-                
-                <?php echo $page->filterContent('new_password_content'); ?>
-
-            <?php else : ?>
-
-                <?php echo $page->filterContent('request_reset_content'); ?>
-                
-            <?php endif; ?>
+            <?php echo $page->filterContent('post_content'); ?>
 
           </div>
 
@@ -47,7 +39,7 @@ get_header(); ?>
         
         <?php tpl_wrapper_secondary_open(); ?>
 
-          <?php tpl_form_reset_password(); ?>
+          <?php tpl_form_send_activation(); ?>
 
         <?php tpl_wrapper_secondary_close(); ?>
 

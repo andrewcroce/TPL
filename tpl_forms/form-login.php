@@ -15,24 +15,7 @@ extract( $params ); ?>
 <div class="row">
 	<div class="large-8 large-centered medium-10 medium-centered small-12 columns">
 
-		<?php if( ! is_user_logged_in() ) : ?>
-
-
-			<?php if( $error = get_query_var( 'login_error', 0 ) ) {
-
-				if( $error == 'failed' )
-					tpl_block_alert( __('The credentials you entered are incorrect.'), 'alert' );
-
-				if( $error == 'username_email' )
-					tpl_block_alert( __('Please enter your email or username.'), 'alert' );
-
-				if( $error == 'password' )
-					tpl_block_alert( __('Please enter your password.'), 'alert' );
-			
-			} ?>
-
-			
-			<?php
+		<?php if( ! is_user_logged_in() ) :
 
 			wp_login_form(array(
 
@@ -45,7 +28,7 @@ extract( $params ); ?>
 				// (optional) form_id
 				'form_id' => $form_id,
 
-				'label_username' => __( 'Email or Username', 'theme' ),
+				'label_username' => __( 'Email Address', 'theme' ),
 
 				'label_password' => __( 'Password', 'theme' ),
 					
@@ -65,7 +48,7 @@ extract( $params ); ?>
 				'remember' => 1,
 
 				// (optional) value_username
-				'value_username' => null,
+				'value_username' => urldecode( get_query_var('login_email', null) ),
 
 				// (optional)
 				'value_remember' => 0,

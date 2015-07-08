@@ -16,6 +16,9 @@ function tpl_form_login( $form_id, $redirect = null ) {
 		$redirect_url = get_permalink( get_page_by_path( $redirect ) );
 	}
 
+	if( get_query_var('login_status') == 'activate' )
+		$redirect_url .= 'created';
+
 	tpl( 'form' , 'login', array(
 		'form_id' => $form_id,
 		'redirect_url' => $redirect_url
@@ -70,13 +73,13 @@ function tpl_form_reset_password(){
 
 	$reset_error = get_query_var('reset_error', 0);
 	$reset_pending = get_query_var('reset_pending', 0);
-	$key = get_query_var('reset_key', 0);
+	$activation_key = get_query_var('activation_key', 0);
 	$username = get_query_var('reset_username', 0);
 	$status_message = null;
 
-	if( $key && $username ) {
+	if( $activation_key && $username ) {
 
-		if( MemberTools::validate_reset_key( $key, $username ) ){
+		if( MemberTools::validate_activation_key( $activation_key, $username ) ){
 			
 			wp_enqueue_script( 'password-strength-meter' );
 
@@ -111,9 +114,9 @@ function tpl_form_reset_password(){
 
 	} elseif( $reset_error ) {
 
-		switch( $reset_error ){
+		switch( (string)$reset_error ){
 			case 'submission':
-				$status_message = __('Please enter either your username, or the email address you provided when you registered your account.','theme');
+				$status_message = __('Please enter the email address you provided when you registered your account.','theme');
 				break;
 
 			case 'user':
@@ -151,6 +154,40 @@ function tpl_form_reset_password(){
 
 }
 
+
+
+
+function tpl_form_send_activation(){
+
+	$activation_status = get_query_var('activation_status', 0);
+
+	switch( (string)$activation_status ){
+
+		case 'submission':
+			$status_message = __('Please enter the email address you provided when you registered your account.','theme');
+			$alert_level = 'alert';
+			break;
+
+		case 'user':
+			$status_message = __('There is no account associated with the email address you entered. Perhaps you used a different email address.','theme');
+			$alert_level = 'alert';
+			break;
+
+		case 'pending':
+			$status_message = __('Please check your email for a message containing further instructions on how to activate your profile','theme');
+			$alert_level = '';
+			break;
+
+		default:
+			$status_message = '';
+			$alert_level = '';
+	}
+
+	tpl( 'form' , 'send-activation', array(
+		'status_message' => $status_message,
+		'alert_level' => $alert_level
+	));
+}
 
 
 /**

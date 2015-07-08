@@ -2,7 +2,7 @@
 
 /**
  * Enter new password form - tpl_form_reset_password()
- * This form will load only if a valid key and username are contained in the URL
+ * This form will load only if a valid activation_key and username are contained in the URL
  * Otherwise the reset-password form will be loaded
  *
  * @var array $params {
@@ -32,7 +32,7 @@ extract( $params ); ?>
             <input type="hidden" class="check-pass-strength-username" data-pass-id="reset-form-pass" name="params[username]" value="<?php echo $user->user_login; ?>">
             <input type="hidden" class="check-pass-strength-email" data-pass-id="reset-form-pass" name="params[user_email]" value="<?php echo $user->user_email; ?>">
             <input type="hidden" name="params[user_id]" value="<?php echo $user->ID; ?>">
-            <input type="hidden" name="params[key]" value="<?php echo get_query_var('reset_key'); ?>">
+            <input type="hidden" name="params[activation_key]" value="<?php echo get_query_var('activation_key'); ?>">
     
             <div class="form-field">
                 <label for="password-input"><?php echo __('Enter a new password','theme') ?></label>

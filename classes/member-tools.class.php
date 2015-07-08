@@ -26,14 +26,17 @@ if(!class_exists('MemberTools')){
 			add_action('admin_menu',							array(__CLASS__,'_admin_menu'));
 			add_action('template_redirect', 					array(__CLASS__,'_template_redirect'));
 			add_action('update_option_member_tools_settings',	array(__CLASS__,'_updated_member_tools_settings'), 10, 3);
+			
 			add_action('wp_logout', 							array(__CLASS__,'_wp_logout'));
 			add_action('form_action_user_reset_password', 		array(__CLASS__,'_user_reset_password'));
 			add_action('form_action_user_new_password',  		array(__CLASS__,'_user_new_password'));
 			add_action('form_action_user_register',				array(__CLASS__,'_user_register'));
 			add_action('form_action_user_save_profile',			array(__CLASS__,'_user_save_profile'));
+			add_action('form_action_user_send_activation',		array(__CLASS__,'_user_send_activation'));
 			
 			add_filter('query_vars', 			array(__CLASS__,'_query_vars'));
 			add_filter('rewrite_rules_array', 	array(__CLASS__,'_rewrite_rules_array'));
+			add_filter('login_form_top', 		array(__CLASS__,'_login_form_top'));
 			add_filter('authenticate', 			array(__CLASS__, '_authenticate'), 100, 3);
 			add_filter('lostpassword_url', 		array(__CLASS__,'_lostpassword_url'), 10, 2);
 			add_filter('register', 				array(__CLASS__,'_register'));			
@@ -62,6 +65,10 @@ if(!class_exists('MemberTools')){
 			// Generate profile page if the setting is enabled
 			if( Settings::frontend_registration_enabled() ){
 				self::_generate_registration_page();
+
+				if( Settings::registration_activation_required() ){
+					self::_generate_activation_page();
+				}
 			}
 			
 
@@ -136,22 +143,21 @@ if(!class_exists('MemberTools')){
 
 				// Generate login and password reset pages if setting is enabled
 				if( isset( $settings['enable_frontend_login'] ) && $settings['enable_frontend_login'] == 1 ) {
-
 					self::_generate_login_pages();
-
 				}
 
 				// Generate login and password reset pages if setting is enabled
 				if( isset( $settings['enable_frontend_profile'] ) && $settings['enable_frontend_profile'] == 1 ) {
-
 					self::_generate_profile_page();
-
 				}
 
 				// Generate login and password reset pages if setting is enabled
 				if( isset( $settings['enable_frontend_registration'] ) && $settings['enable_frontend_registration'] == 1 ) {
-
 					self::_generate_registration_page();
+
+					if( isset( $settings['registration_activation_required'] ) && $settings['registration_activation_required'] == 1 ) {
+						self::_generate_activation_page();
+					}
 
 				}
 			}
@@ -235,7 +241,22 @@ if(!class_exists('MemberTools')){
 
 
 		
-				
+		static function _generate_activation_page(){
+
+			$registration_page = get_page_by_path('activate');
+
+			if( is_null( $registration_page ) ){
+				$registration_page = wp_insert_post(array(
+					'post_content' => __('<p>This is the user activation form page. It is required if front-end registration and email activation is enabled.</p>','theme'),
+					'post_name' => 'activate',
+					'post_title' => 'Send Activation Email',
+					'post_status' => 'publish',
+					'post_type' => 'page'
+				));
+			}
+
+
+		}
 
 
 		/**
@@ -252,13 +273,17 @@ if(!class_exists('MemberTools')){
 			$new_vars = array(
 				'restricted',
 				'redirect',
+				'login_status',
+				'login_email',
 				'login_error',
 				'profile_status',
 				'register_error',
+				'register_status',
 				'reset_error',
 				'reset_pending',
-				'reset_key',
-				'reset_username'
+				'reset_username',
+				'activation_key',
+				'activation_status'
 			);
 			return array_merge( $new_vars, $query_vars );
 		}
@@ -277,20 +302,23 @@ if(!class_exists('MemberTools')){
 		static function _rewrite_rules_array( $rules ) {
 			$new_rules = array(
 
+				// Login link with email provided
+				'login/activate/([^/]+)/([^/]+)/?$' => 'index.php?pagename=login&login_status=activate&login_email=$matches[1]&activation_key=$matches[2]',
+
 				// Login error page
-				'login/error/([^/]+)/?$' => 'index.php?pagename=login&login_error=$matches[1]',
+				'login/error/([^/]+)/?$' => 'index.php?pagename=login&login_status=error&login_error=$matches[1]',
 
 				// Login page from restricted page, with redirect slug/ID
-				'login/restricted/([^/]+)/?$' => 'index.php?pagename=login&restricted=1&redirect=$matches[1]',
+				'login/restricted/([^/]+)/?$' => 'index.php?pagename=login&login_status=restricted&redirect=$matches[1]',
 
 				// Profile page
 				'profile/([^/]+)/?$' => 'index.php?pagename=profile&profile_status=$matches[1]',
 
 				// Reset password page with key and username, for new-password form
-				'reset-password/([^/]+)/([^/]+)/?$' => 'index.php?pagename=reset-password&reset_username=$matches[1]&reset_key=$matches[2]',
+				'reset-password/([^/]+)/([^/]+)/?$' => 'index.php?pagename=reset-password&reset_username=$matches[1]&activation_key=$matches[2]',
 
 				// Reset password page with key and username, for new-password form
-				'reset-password/([^/]+)/([^/]+)/error/([^/]+)/?$' => 'index.php?pagename=reset-password&reset_username=$matches[1]&reset_key=$matches[2]&reset_error=$matches[3]',
+				'reset-password/([^/]+)/([^/]+)/error/([^/]+)/?$' => 'index.php?pagename=reset-password&reset_username=$matches[1]&activation_key=$matches[2]&reset_error=$matches[3]',
 
 				// Reset password errors
 				'reset-password/error/([^/]+)/?$' => 'index.php?pagename=reset-password&reset_error=$matches[1]',
@@ -300,6 +328,9 @@ if(!class_exists('MemberTools')){
 
 				// Registration error page
 				'register/error/([^/]+)/?$' => 'index.php?pagename=register&register_error=$matches[1]',
+
+				// Send activation email page
+				'activate/([^/]+)/?' => 'index.php?pagename=activate&activation_status=$matches[1]',
 
 			);
 			$rules = $new_rules + $rules;
@@ -333,7 +364,6 @@ if(!class_exists('MemberTools')){
 			 */
 			} else {
 
-				
 				// If someone tries to access the login page, when they are already logged in 
 				if( is_page('login') ) {
 					
@@ -350,6 +380,18 @@ if(!class_exists('MemberTools')){
 				}
 
 			}
+
+		}
+
+
+
+		/**
+		 * Hook the WP login form to add fields at the end
+		 */
+		static function _login_form_top(){
+
+			$activation_key = get_query_var('activation_key',0);
+			return '<input type="hidden" name="user_activation_key" value="'. $activation_key .'">';
 
 		}
 
@@ -390,7 +432,7 @@ if(!class_exists('MemberTools')){
 
 				// If username/email is blank
 				if( empty( $username_email ) ){
-					wp_redirect( home_url('login/error/username_email') );
+					wp_redirect( home_url('login/error/email') );
 					exit();
 				}
 
@@ -413,11 +455,39 @@ if(!class_exists('MemberTools')){
 					// If that didn't work then its a failure
 					if( ! $user ) {
 
-						wp_redirect( home_url('login/error/failed') );
+						wp_redirect( home_url('login/error/profile') );
 						exit();
 
 					}
 				}
+
+				// We've verified the user exists 
+				
+				// If an activation key was sent along with the form,
+				// i.e. they followed a login link from a profile activation email
+				if( isset($_POST['user_activation_key']) ){
+
+					// Make sure the key checks out
+					if( self::validate_activation_key( $_POST['user_activation_key'], $user->user_login ) ){
+
+						// If they currenly don't have an assigned role (i.e. they are inactive)
+						// set them as a subscriber.
+						if( empty( $user->roles ) )
+							$user->set_role('subscriber');
+
+					}
+
+				}
+
+				if( Settings::registration_activation_required() ){
+
+					if( !self::user_activated( $user ) ){
+						wp_redirect( home_url('login/error/activate') );
+						exit();
+
+					}
+				}
+
 
 				// Now check their password
 				if( ! wp_check_password( $password, $user->user_pass, $user->ID ) ) {
@@ -484,30 +554,16 @@ if(!class_exists('MemberTools')){
 			}
 
 			// If no error by now, we successfully found the user
-			
-			// Get the WP Database global
-			global $wpdb;
-
-			// Check if theres a user activation key in the database
-			$key = $wpdb->get_var( $wpdb->prepare("SELECT user_activation_key FROM $wpdb->users WHERE user_login = %s", $user->user_login) );
-			
-			// If not, generate one
-			if( empty( $key ) ) {
-				$key = wp_generate_password(20, false);
-				$wpdb->update( $wpdb->users, array('user_activation_key' => $key), array('user_login' => $user->user_login) );
-			}
+			// Get/create a user activation key
+			$activation_key = self::get_user_activation_key( $user->user_login );
 
 			// Build an email message
 			$message = '<p>';
-			
 			$message .= sprintf(__('A password reset request was submitted from %s. ','theme'), home_url('password-reset'));
 			$message .= __('If this was a mistake, you may safely ignore this email. ','theme');
-			
 			$message .= '</p><p>';
-
 			$message .= __('To reset your password, visit the following link:') . "\r\n\r\n" . '<br>';
-			
-			$message .= home_url('reset-password/' . rawurlencode( $user->user_login ) . '/' . $key );
+			$message .= home_url('reset-password/' . rawurlencode( $user->user_login ) . '/' . $activation_key );
 			$message .= '</p>';
 
 			// Set the email headers
@@ -515,7 +571,7 @@ if(!class_exists('MemberTools')){
 			$headers[] = 'Content-Type: text/html; charset=UTF-8';
 
 			// Attempt to send the email
-			if ( $message && !wp_mail($user->user_email, __('Password Reset Request','theme'), $message, $headers) ) {
+			if ( ! wp_mail($user->user_email, __('Password Reset Request','theme'), $message, $headers) ) {
 				// Didn't work
 				wp_redirect( home_url('reset-password/error/email') );
 				exit();
@@ -551,26 +607,26 @@ if(!class_exists('MemberTools')){
 			}
 
 			// Make sure the necessary security params are there before we go any further
-			if( empty( $params ) || empty( $params['username'] ) || empty( $params['key'] ) || empty( $params['user_id'] ) ){
+			if( empty( $params ) || empty( $params['username'] ) || empty( $params['activation_key'] ) || empty( $params['user_id'] ) ){
 				wp_redirect( home_url('reset-password/error/invalid') );
 				exit;
 			}
 
 			// If no password was entered
 			if( empty( $params['password'] ) ) {
-				wp_redirect( home_url('reset-password/'.$params['username'].'/'.$params['key'].'/error/password') );
+				wp_redirect( home_url('reset-password/'.$params['username'].'/'.$params['activation_key'].'/error/password') );
 				exit;
 			}
 
 			// If no confirmation was entered
 			if( empty( $params['confirm_password'] ) ) {
-				wp_redirect( home_url('reset-password/'.$params['username'].'/'.$params['key'].'/error/confirm') );
+				wp_redirect( home_url('reset-password/'.$params['username'].'/'.$params['activation_key'].'/error/confirm') );
 				exit;
 			}
 
 			// If the passwords don't match
 			if( trim( $params['password'] ) !== trim( $params['confirm_password'] ) ) {
-				wp_redirect( home_url('reset-password/'.$params['username'].'/'.$params['key'].'/error/match') );
+				wp_redirect( home_url('reset-password/'.$params['username'].'/'.$params['activation_key'].'/error/match') );
 				exit;
 			}
 
@@ -664,24 +720,62 @@ if(!class_exists('MemberTools')){
 				$user_data[$key] = esc_attr( $meta );
 			}
 
-			// Save the additional data
-			wp_update_user( $user_data );
+			
+			// If registration email activation is required
+			if( Settings::registration_activation_required() ){
+				
+				// Set their role to empty, to make their account inactive
+				$user_data['role'] = '';
 
-			// Log the user in by setting their auth cookie
-			wp_set_auth_cookie( $user_id );
+				// Save the additional data
+				wp_update_user( $user_data );
 
+				$activation_key = self::get_user_activation_key( $username );
 
-			//TO DO: Send confirmation email?
+				$message = '<p>';
+				$message .= sprintf(__('Thank you for registering on %s. To complete the process, please click the link below and login.','theme'), get_bloginfo('name'));
+				$message .= '</p><p>';
+				$message .= __('Activaye your registration here:') . "\r\n\r\n" . '<br>';
+				$message .= home_url('login/activate/' . rawurlencode( $params['data']['user_email'] ) . '/' . $activation_key );
+				$message .= '</p>';
 
+				// Set the email headers
+				$headers[] = 'From: '. get_bloginfo('name') . ' <' . get_option('admin_email') . '>';
+				$headers[] = 'Content-Type: text/html; charset=UTF-8';
 
-			// Redirect to either the profile page, or the admin
-			if( Settings::frontend_profile_enabled() ) {
-				wp_redirect( home_url('profile/created') );
-				exit;
+				// Attempt to send the email
+				if ( ! wp_mail( $params['data']['user_email'], __('Complete Your Registration','theme'), $message, $headers ) ) {
+					// Didn't work
+					wp_redirect( home_url('register/error/email') );
+					exit();
+				} else {
+					// Worked
+					if( Settings::frontend_profile_enabled() ) {
+						wp_redirect( home_url('status/registration-pending') );
+						exit;
+					} else {
+						wp_redirect( admin_url() );
+						exit;
+					}
+				}
+
+			// Otherwise, just log the user in right away
 			} else {
-				wp_redirect( admin_url() );
-				exit;
+
+				// Log the user in by setting their auth cookie
+				wp_set_auth_cookie( $user_id );
+
+				// Redirect to either the profile page, or the admin
+				if( Settings::frontend_profile_enabled() ) {
+					wp_redirect( home_url('profile/created') );
+					exit;
+				} else {
+					wp_redirect( admin_url() );
+					exit;
+				}
 			}
+
+			
 
 		}
 
@@ -789,6 +883,68 @@ if(!class_exists('MemberTools')){
 
 
 
+		static function _user_send_activation( $params ){
+
+			// Verify the nonce
+			if( ! isset( $_POST['user_send_activation_nonce'] ) || ! wp_verify_nonce( $_POST['user_send_activation_nonce'], 'user_send_activation' ) ) {
+				print('Invalid form submission');
+				exit;
+			}
+
+			if( empty( $params ) || empty( $params['username_email'] ) ) {
+				wp_redirect( home_url('reset-password/error/submission') );
+				exit;
+			}
+
+			// First attempt to get the user data by email
+			// It might not be an email address, but we'll start with that since its more likely/user-friendly
+			$user = get_user_by( 'email', trim( $params['username_email'] ) );
+
+			// If that didn't work...
+			if( ! $user ){
+
+				// Maybe its a username, try that
+				$user = get_user_by( 'login', $params['username_email'] );
+
+				// If that didn't work then its a failure
+				if( ! $user ) {
+
+					wp_redirect( home_url('activate/error/user') );
+					exit();
+
+				}
+			}
+
+
+			// If no error by now, we successfully found the user
+			// Get/create a user activation key
+			$activation_key = self::get_user_activation_key( $user->user_login );
+
+			// Build an email message
+			$message = '<p>';
+			$message .= sprintf(__('A profile activation request was submitted from %s. ','theme'), home_url('password-reset'));
+			$message .= '</p><p>';
+			$message .= __('To activate your profile, visit the following link:') . "\r\n\r\n" . '<br>';
+			$message .= home_url('login/activate/' . rawurlencode( $user->user_email ) . '/' . $activation_key );
+			$message .= '</p>';
+
+			// Set the email headers
+			$headers[] = 'From: '. get_bloginfo('name') . ' <' . get_option('admin_email') . '>';
+			$headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+			// Attempt to send the email
+			if ( ! wp_mail($user->user_email, __('Profile Activation Request','theme'), $message, $headers) ) {
+				// Didn't work
+				wp_redirect( home_url('activate/error/email') );
+				exit();
+			} else {
+				// Worked
+				wp_redirect( home_url('activate/pending') );
+				exit();
+			}
+		}
+
+
 
 
 		/**
@@ -799,13 +955,32 @@ if(!class_exists('MemberTools')){
 
 
 
+		protected static function get_user_activation_key( $username ){
+
+			// Get the WP Database global
+			global $wpdb;
+
+			// Check if theres a user activation key in the database
+			$activation_key = $wpdb->get_var( $wpdb->prepare("SELECT user_activation_key FROM $wpdb->users WHERE user_login = %s", $username ) );
+			
+			// If not, generate one
+			if( empty( $activation_key ) ) {
+				$activation_key = wp_generate_password(20, false);
+				$wpdb->update( $wpdb->users, array('user_activation_key' => $activation_key), array('user_login' => $username ) );
+			}
+
+			return $activation_key;
+		}
+
+
+
 		/**
-		 * Validate a reset-password key against a username
+		 * Validate an activation key against a username
 		 * @param  string $key      	Unique key from a reset-password link
 		 * @param  string $username 	The username from a reset-password link
 		 * @return boolean           	Did it validate?
 		 */
-		public static function validate_reset_key( $key, $username ){
+		public static function validate_activation_key( $key, $username ){
 
 			global $wpdb;
 
@@ -818,6 +993,20 @@ if(!class_exists('MemberTools')){
 		}
 		
 
+		public static function user_activated( $user ){
+
+			if( is_int( $user ) )
+				$user = get_userdata( $user );
+
+			if( is_wp_error( $user ) )
+				return false;
+
+			if( empty( $user->roles ) )
+				return false;
+
+			return true;
+
+		}
 
 		/**
 		 * Check if a username is unique, and if not append an incrementing number until it is
@@ -825,7 +1014,7 @@ if(!class_exists('MemberTools')){
 		 * @param 	int 	$iteration 	Iteration number, for recursive calls when a supplied username isn't unique	
 		 * @return 	string           	A unique username
 		 */
-		public static function uniquify_username( $username, $iteration = 1 ){
+		protected static function uniquify_username( $username, $iteration = 1 ){
 
 			if( username_exists( $username ) ) {
 

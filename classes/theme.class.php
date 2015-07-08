@@ -27,8 +27,10 @@ if(!class_exists('Theme')){
 			add_action('after_setup_theme', 					array(__CLASS__,'_setup_theme'));
 			add_action('update_option_template_settings', 		array(__CLASS__,'_updated_template_settings'), 10, 3);
 
+			
 			add_filter('skiplinks', 			array(__CLASS__,'_add_skiplinks'));
 			add_filter('template_include', 		array(__CLASS__,'_template_include'));
+			add_filter('redirect_canonical', 	array(__CLASS__,'_redirect_canonical'), 10, 2);
 			add_filter('theme_page_templates',	array(__CLASS__,'_theme_page_templates'));
 			add_filter('body_class', 			array(__CLASS__,'_body_class'));
 			add_filter('query_vars', 			array(__CLASS__,'_query_vars'));
@@ -448,7 +450,9 @@ if(!class_exists('Theme')){
 		 **/
 		static function _query_vars( $query_vars ) {
 
-			$new_vars = array();
+			$new_vars = array(
+				'status'
+			);
 			return array_merge( $new_vars, $query_vars );
 		}
 		
@@ -464,10 +468,34 @@ if(!class_exists('Theme')){
 		* @return array 			Modified rewrite rules array
 		**/
 		static function _rewrite_rules_array( $rules ) {
+
+			if( get_option( 'show_on_front' ) == 'page' ){
+				$home_page = get_post( get_option('page_on_front') );
+				$status_rule = 'index.php?pagename='.$home_page->post_name.'&status=$matches[1]';
+			} else {
+				$status_rule = 'index.php?status=$matches[1]';
+			}
 			
-			$new_rules = array();
+			$new_rules = array(
+
+				// General purpose status message for the home page
+				'status/([^/]+)/?$' => $status_rule
+
+			);
 			$rules = $new_rules + $rules;
 			return $rules;
+		}
+
+
+
+		static function _redirect_canonical( $redirect_url, $requested_url ){
+		
+			if( $redirect_url == home_url('/') && get_query_var('status')){
+				return $requested_url;
+			} else {
+				return $redirect_url;
+			}
+
 		}
 		
 

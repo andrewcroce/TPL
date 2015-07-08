@@ -37,6 +37,10 @@ get_header(); ?>
 
 
 				<?php tpl_wrapper_content_open(); ?>
+
+					<?php if( get_query_var('register_error',0) ){
+						tpl_block_register_error( get_query_var('register_error') );
+					} ?>
 		
 					<div itemprop="text"><?php echo $page->filterContent('post_content'); ?></div>
 

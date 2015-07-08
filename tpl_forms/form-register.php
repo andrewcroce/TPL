@@ -10,7 +10,7 @@
  * }	
  * 
  */ 
-extract( $params ); ?>
+//extract( $params ); ?>
 
 
 <form method="post" action="<?php the_permalink(); ?>" data-abide>
