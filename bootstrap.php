@@ -5,7 +5,7 @@
  */
 add_action('after_switch_theme', 'tpl_after_switch_theme');
 add_action('init', 'tpl_init');
-//add_action('admin_enqueue_scripts', 'tpl_admin_enqueue_scripts' );
+add_action('admin_enqueue_scripts', 'tpl_admin_enqueue_scripts' );
 
 
 

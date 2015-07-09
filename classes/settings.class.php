@@ -118,14 +118,14 @@ if( !class_exists( 'Settings' ) ) {
 			 */
 			
 			// register setting
-			register_setting('tpl-config','template_settings');
+			register_setting('tpl-config-template','template_settings');
 
 			// add setting section
 			add_settings_section(
 				'template-settings',
 				__('Page & Template Settings','theme'),
 				array(__CLASS__,'_render_template_settings_section'),
-				'tpl-config'
+				'tpl-config-template'
 			);
 
 			// add 'generate_home_page' field
@@ -133,7 +133,7 @@ if( !class_exists( 'Settings' ) ) {
 				'generate_home_page',
 				__('Home Page','theme'),
 				array(__CLASS__,'_render_generate_home_page_field'),
-				'tpl-config',
+				'tpl-config-template',
 				'template-settings'
 			);
 
@@ -142,7 +142,7 @@ if( !class_exists( 'Settings' ) ) {
 				'generate_style_guide',
 				__('Style Guide','theme'),
 				array(__CLASS__,'_render_generate_style_guide_field'),
-				'tpl-config',
+				'tpl-config-template',
 				'template-settings'
 			);
 
@@ -151,7 +151,7 @@ if( !class_exists( 'Settings' ) ) {
 				'enable_index_template',
 				__('Index template','theme'),
 				array(__CLASS__,'_render_enable_index_template_field'),
-				'tpl-config',
+				'tpl-config-template',
 				'template-settings'
 			);
 
@@ -164,14 +164,14 @@ if( !class_exists( 'Settings' ) ) {
 			 */
 			
 			// register setting
-			register_setting('tpl-config','member_tools_settings');
+			register_setting('tpl-config-member-tools','member_tools_settings');
 
 			// add setting section
 			add_settings_section(
 				'member-tools-settings',
 				__('Member Tools Settings','theme'),
 				array(__CLASS__,'_render_member_tools_settings_section'),
-				'tpl-config'
+				'tpl-config-member-tools'
 			);
 
 			// add 'enable_frontend_login' field
@@ -179,7 +179,15 @@ if( !class_exists( 'Settings' ) ) {
 				'enable_frontend_login',
 				__('Front End Login','theme'),
 				array(__CLASS__,'_render_enable_frontend_login_field'),
-				'tpl-config',
+				'tpl-config-member-tools',
+				'member-tools-settings'
+			);
+
+			add_settings_field(
+				'password_reset_email_content',
+				__('<span class="display-toggleable" data-toggle-control="enable_frontend_login">Password Reset Email Content</span>','theme'),
+				array(__CLASS__,'_render_password_reset_email_content_field'),
+				'tpl-config-member-tools',
 				'member-tools-settings'
 			);
 
@@ -188,7 +196,7 @@ if( !class_exists( 'Settings' ) ) {
 				'enable_frontend_profile',
 				__('Front End Profile','theme'),
 				array(__CLASS__,'_render_enable_frontend_profile_field'),
-				'tpl-config',
+				'tpl-config-member-tools',
 				'member-tools-settings'
 			);
 
@@ -197,16 +205,25 @@ if( !class_exists( 'Settings' ) ) {
 				'enable_frontend_registration',
 				__('Front End Registration','theme'),
 				array(__CLASS__,'_render_enable_frontend_registration_field'),
-				'tpl-config',
+				'tpl-config-member-tools',
 				'member-tools-settings'
 			);
 
 			// add 'registration_activation_required' field
 			add_settings_field(
 				'registration_activation_required',
-				__('Require Account Activation','theme'),
+				__('<span class="display-toggleable" data-toggle-control="enable_frontend_registration">Require Account Activation</span>','theme'),
 				array(__CLASS__,'_render_registration_activation_required_field'),
-				'tpl-config',
+				'tpl-config-member-tools',
+				'member-tools-settings'
+			);
+
+			// add 'registration_email_content' field
+			add_settings_field(
+				'registration_email_content',
+				__('<span class="display-toggleable" data-toggle-control="registration_activation_required">Registration Activation Email Content</span>','theme'),
+				array(__CLASS__,'_render_registration_email_content_field'),
+				'tpl-config-member-tools',
 				'member-tools-settings'
 			);
 
@@ -219,14 +236,14 @@ if( !class_exists( 'Settings' ) ) {
 			 */
 			
 			// register setting
-			register_setting('tpl-config','menu_settings');
+			register_setting('tpl-config-menus','menu_settings');
 
 			// add setting section
 			add_settings_section(
 				'menu-settings',
 				__('Menu Settings','theme'),
 				array(__CLASS__,'_render_menu_settings_section'),
-				'tpl-config'
+				'tpl-config-menus'
 			);
 
 			// add 'enable_index_template' field
@@ -234,7 +251,7 @@ if( !class_exists( 'Settings' ) ) {
 				'menu_locations',
 				__('Menu locations','theme'),
 				array(__CLASS__,'_render_menu_locations_field'),
-				'tpl-config',
+				'tpl-config-menus',
 				'menu-settings'
 			);
 
@@ -378,11 +395,27 @@ if( !class_exists( 'Settings' ) ) {
 			$options = get_option('member_tools_settings');
 			$value = isset( $options['enable_frontend_login'] ) ? $options['enable_frontend_login'] : 0;
 			$checked = checked( $value, 1, false );
-			echo '<input type="checkbox" id="enable_frontend_login" name="member_tools_settings[enable_frontend_login]" value="1" '.$checked.'>';
+			echo '<input class="display-toggle" type="checkbox" id="enable_frontend_login" name="member_tools_settings[enable_frontend_login]" value="1" '.$checked.'>';
 			echo '<label for="enable_frontend_login">'.__('Enable','theme').'</label>';
 			echo '<p class="description">'.__('This will generate front end login and password reset pages. Note: disabling this setting <strong>will not delete</strong> the pages.','theme').'</p>';
 		}
 
+		static function _render_password_reset_email_content_field(){
+			$options = get_option('member_tools_settings');
+			echo '<div class="display-toggleable" data-toggle-control="enable_frontend_login">';
+			$default = '<p>A password reset request was submitted for {user_display_name} <{user_email}>. If this was a mistake, you may safely ignore this email.</p><p>To reset your password, please click the following link:<br><strong>{reset_key_link}</strong></p>';
+			$value = isset( $options['password_reset_email_content'] ) ? $options['password_reset_email_content'] : $default;
+			wp_editor( $value, 'password_reset_email_content',
+				array(
+					'wpautop' => true,
+					'media_buttons' => true,
+					'textarea_name' => 'member_tools_settings[password_reset_email_content]',
+					'textarea_rows' => 6
+				)
+			);
+			echo '<p class="description">'.__('The content of the email sent for password reset requests. The following placeholder tags can be added: {reset_key_link}, {user_display_name}, {user_email}.','theme').'</p>';
+			echo '</div>';
+		}
 
 		static function _render_enable_frontend_profile_field(){
 			$options = get_option('member_tools_settings');
@@ -398,7 +431,7 @@ if( !class_exists( 'Settings' ) ) {
 			$options = get_option('member_tools_settings');
 			$value = isset( $options['enable_frontend_registration'] ) ? $options['enable_frontend_registration'] : 0;
 			$checked = checked( $value, 1, false );
-			echo '<input type="checkbox" id="enable_frontend_registration" name="member_tools_settings[enable_frontend_registration]" value="1" '.$checked.'>';
+			echo '<input class="display-toggle" type="checkbox" id="enable_frontend_registration" name="member_tools_settings[enable_frontend_registration]" value="1" '.$checked.'>';
 			echo '<label for="enable_frontend_registration">'.__('Enable','theme').'</label>';
 			echo '<p class="description">'.__('This will generate front end registration form page. Note: disabling this setting <strong>will not delete</strong> the page.','theme').'</p>';
 		}
@@ -407,11 +440,29 @@ if( !class_exists( 'Settings' ) ) {
 			$options = get_option('member_tools_settings');
 			$value = isset( $options['registration_activation_required'] ) ? $options['registration_activation_required'] : 0;
 			$checked = checked( $value, 1, false );
-			echo '<input type="checkbox" id="registration_activation_required" name="member_tools_settings[registration_activation_required]" value="1" '.$checked.'>';
+			echo '<div class="display-toggleable" data-toggle-control="enable_frontend_registration">';
+			echo '<input type="checkbox" class="display-toggle" id="registration_activation_required" name="member_tools_settings[registration_activation_required]" value="1" '.$checked.'>';
 			echo '<label for="registration_activation_required">'.__('Enable','theme').'</label>';
 			echo '<p class="description">'.__('If front end registration is enabled, this will send an email to new users, and required them to click a link and login to activate their account. Private account pages will be restricted until a user\'s account is activated.','theme').'</p>';
+			echo '</div>';
 		}
 		
+		static function _render_registration_email_content_field(){
+			$options = get_option('member_tools_settings');
+			echo '<div class="display-toggleable" data-toggle-control="registration_activation_required">';
+			$default = '<p>Thank you for registering on {site_title}. To complete the process, please click the link below and login.</p><p>Activate your registration here:<br><strong>{activation_link}</strong></p>';
+			$value = isset( $options['registration_email_content'] ) ? $options['registration_email_content'] : $default;
+			wp_editor( $value, 'registration_email_content',
+				array(
+					'wpautop' => true,
+					'media_buttons' => true,
+					'textarea_name' => 'member_tools_settings[registration_email_content]',
+					'textarea_rows' => 6
+				)
+			);
+			echo '<p class="description">'.__('The content of the email sent after registration with activation required. The following placeholder tags can be added: {activation_link}, {user_display_name}, {user_email}, {site_title}.','theme').'</p>';
+			echo '</div>';
+		}
 
 	}
 

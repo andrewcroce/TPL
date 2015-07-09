@@ -8,6 +8,7 @@
     "modernizr": "~2.8.3",
     "uri.js": "~1.15.1",
     "jquery-transporter": "~1.0.2",
-    "jquery-throttle-debounce": "*"
+    "jquery-throttle-debounce": "*",
+    "jquery.repeater": "~1.0.1"
   }
 }
