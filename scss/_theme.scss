@@ -19,6 +19,8 @@
 	line-height: $base-line-height * 1.25;
 }
 
+.caption-text {}
+
 
 // ======================================================
 // WYSIWYG Blocks
@@ -31,9 +33,9 @@
 	// ==============
 	// WYSIWYG Images
 	// ==============
-	
+
 	img, .wp-caption {
-		
+
 		margin: 0 auto $column-gutter;
 		width: 100%;
 		height: auto;
@@ -61,7 +63,7 @@
 		&.wp-caption {
 			width: auto !important;
 			.wp-caption-text {
-				// Caption styles
+				@extend .caption-text;
 			}
 		}
 	}
@@ -74,6 +76,20 @@
 // Buttons & Links
 // ===============
 
+
+// =========
+// Galleries
+// =========
+
+@for $i from 1 through 9 {
+	.gallery-columns-#{$i} {
+		.gallery-item {
+			float: left;
+			width: 100%/$i;
+			margin: em(10) 0;
+		}
+	}
+}
 
 
 // =====
@@ -96,6 +112,59 @@ input.check-pass-strength-meter {
 
 input[data-invalid] {
 	border-color: $red;
+}
+
+// Gravity form styles
+
+.gform_wrapper {
+	ul {
+		list-style: none;
+		margin: 0;
+	}
+}
+
+.gsection_title {
+	font-size: em(18);
+	color: $primary-color;
+	text-transform: uppercase;
+	border-bottom: 1px solid #DDD;
+	border-top: 1px solid #DDD;
+	margin: $column_gutter*2 0;
+	padding: $column_gutter 0;
+}
+
+.gform_page_footer {
+	border-top: 1px solid #DDD;
+	margin: $column_gutter*2 0;
+	padding: $column_gutter 0;
+}
+
+.gf_progressbar {
+	background: #DDD;
+	margin: $column_gutter/2 0;
+	border-radius: $global-radius;
+	.gf_progressbar_percentage {
+		background: $primary-color;
+		@include border-left-radius($global-radius);
+		&.percentbar_100 {
+			@include border-right-radius($global-radius);
+		}
+		span {
+			color: #FFF;
+		}
+	}
+}
+
+.gf_progressbar_title {
+	@extend .secondary-text;
+}
+
+.gfield_error {
+	@extend .error;
+}
+
+.validation_message, .validation_error {
+	@extend small.error;
 }
 
 

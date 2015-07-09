@@ -601,6 +601,8 @@ if(!class_exists('MemberTools')){
 			$activation_key = self::get_user_activation_key( $user->user_login );
 
 			// Build an email message
+			// TO DO: replace with content from option member_tools_settings[password_reset_email_content]
+			// replace {reset_key_link}, {user_display_name}, {user_email}
 			$message = '<p>';
 			$message .= sprintf(__('A password reset request was submitted from %s. ','theme'), home_url('password-reset'));
 			$message .= __('If this was a mistake, you may safely ignore this email. ','theme');
@@ -820,6 +822,8 @@ if(!class_exists('MemberTools')){
 				$activation_key = self::get_user_activation_key( $username );
 
 				// Build an email message
+				// TO DO: replace with content from option member_tools_settings[registration_email_content]
+				// replace {activation_link}, {user_display_name}, {user_email}, {site_title}
 				$message = '<p>';
 				$message .= sprintf(__('Thank you for registering on %s. To complete the process, please click the link below and login.','theme'), get_bloginfo('name'));
 				$message .= '</p><p>';
