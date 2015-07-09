@@ -39,7 +39,11 @@ get_header(); ?>
         
         <?php tpl_wrapper_secondary_open(); ?>
 
-          <?php tpl_form_send_activation(); ?>
+            <?php if( get_query_var('activation_status', 0) ){
+                tpl_block_activation_status( get_query_var('activation_status') );
+            }?>
+
+            <?php tpl_form_activation(); ?>
 
         <?php tpl_wrapper_secondary_close(); ?>
 

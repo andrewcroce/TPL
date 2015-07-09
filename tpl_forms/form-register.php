@@ -2,15 +2,7 @@
 /**
  * Registration form template - tpl_form_register()
  * 
- * @var array $params {
- *      
- *      Parameters passed into the template from tpl_form_register() 
- *      
- *		 
- * }	
- * 
- */ 
-//extract( $params ); ?>
+ */ ?>
 
 
 <form method="post" action="<?php the_permalink(); ?>" data-abide>

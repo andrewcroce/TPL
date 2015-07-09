@@ -204,7 +204,7 @@ if( !class_exists( 'Settings' ) ) {
 			// add 'registration_activation_required' field
 			add_settings_field(
 				'registration_activation_required',
-				__('Send Activation Email','theme'),
+				__('Require Account Activation','theme'),
 				array(__CLASS__,'_render_registration_activation_required_field'),
 				'tpl-config',
 				'member-tools-settings'
@@ -409,7 +409,7 @@ if( !class_exists( 'Settings' ) ) {
 			$checked = checked( $value, 1, false );
 			echo '<input type="checkbox" id="registration_activation_required" name="member_tools_settings[registration_activation_required]" value="1" '.$checked.'>';
 			echo '<label for="registration_activation_required">'.__('Enable','theme').'</label>';
-			echo '<p class="description">'.__('If front end registration is enabled, this will send an email to new users, and required them to click a link and login to activate their account.','theme').'</p>';
+			echo '<p class="description">'.__('If front end registration is enabled, this will send an email to new users, and required them to click a link and login to activate their account. Private account pages will be restricted until a user\'s account is activated.','theme').'</p>';
 		}
 		
 

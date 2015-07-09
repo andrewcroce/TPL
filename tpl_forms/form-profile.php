@@ -7,7 +7,7 @@
  *      Parameters passed into the template from tpl_form_profile() 
  *      
  *		 @var WP_User $user WP User object
- *		 @var onject $user_meta Object containing all usermeta fields
+ *		 @var object $user_meta Object containing all usermeta fields
  * }	
  * 
  */ 

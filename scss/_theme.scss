@@ -82,6 +82,7 @@
 
 input[type="submit"] {
 	@extend .button;
+	float: right;
 }
 
 input.check-pass-strength-meter {

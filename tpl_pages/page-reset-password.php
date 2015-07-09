@@ -26,6 +26,7 @@ get_header(); ?>
 
 
         <?php tpl_wrapper_content_open(); ?>
+
         
          <div itemprop="text">
             

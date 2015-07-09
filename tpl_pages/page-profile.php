@@ -20,11 +20,12 @@ get_header(); ?>
 					<header>
 
 						<h1 itemprop="headline" class="title"><?php echo $page->post_title; ?></h1>
-
+						
+						<span class="meta"><?php echo $user->display_name; ?></span>
+						<span class="meta"><a href="<?php echo wp_logout_url(); ?>"><?php echo __('Logout','theme'); ?></a></span>
+						
 						<?php if( current_user_can( 'manage_options' ) ) : ?>
 							
-							<span class="meta"><?php echo $user->display_name; ?></span>
-							<span class="meta"><a href="<?php echo wp_logout_url(); ?>"><?php echo __('Logout','theme'); ?></a></span>
 							<span class="meta"><a href="<?php echo admin_url(); ?>"><?php echo __('Wordpress Admin','theme'); ?></a></span>
 							<?php echo edit_post_link( __('Edit post'), $before = '<span class="meta">', $after = '</span>', $page->ID ); ?>
 							
