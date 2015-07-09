@@ -19,15 +19,18 @@ if(!class_exists('Theme')){
 		 */
 		public static function load() {
 
+			add_action('after_switch_theme', 					array(__CLASS__,'_theme_activated'));
+			add_action('init', 									array(__CLASS__,'_init'));
+			add_action('admin_menu',							array(__CLASS__,'_admin_menu'));
+			add_action('wp_print_styles', 						array(__CLASS__,'_add_styles'));
+			add_action('wp_print_scripts', 						array(__CLASS__,'_add_scripts'));
+			add_action('after_setup_theme', 					array(__CLASS__,'_setup_theme'));
+			add_action('update_option_template_settings', 		array(__CLASS__,'_updated_template_settings'), 10, 3);
 
-			add_action('after_switch_theme', 				array(__CLASS__,'_theme_activated'));
-			add_action('wp_print_styles', 					array(__CLASS__,'_add_styles'));
-			add_action('wp_print_scripts', 					array(__CLASS__,'_add_scripts'));
-			add_action('after_setup_theme', 				array(__CLASS__,'_setup_theme'));
-			add_action('update_option_template_settings', 	array(__CLASS__,'_updated_template_settings'), 10, 3);
-
+			
 			add_filter('skiplinks', 			array(__CLASS__,'_add_skiplinks'));
 			add_filter('template_include', 		array(__CLASS__,'_template_include'));
+			add_filter('redirect_canonical', 	array(__CLASS__,'_redirect_canonical'), 10, 2);
 			add_filter('theme_page_templates',	array(__CLASS__,'_theme_page_templates'));
 			add_filter('body_class', 			array(__CLASS__,'_body_class'));
 			add_filter('query_vars', 			array(__CLASS__,'_query_vars'));
@@ -53,8 +56,51 @@ if(!class_exists('Theme')){
 			if( Settings::generate_style_guide_enabled() ){
 				self::_generate_style_guide();
 			}
+
+			// Generate login and reset-password pages if the setting is enabled
+			if( Settings::frontend_login_enabled() ){
+				self::_generate_login_pages();
+			}
 			
 
+		}
+
+
+
+		/**
+		 * WP Initialized
+		 */
+		static function _init(){
+
+			/**
+			 * Require our custom ACF Fieldset for the post type index page template if the setting is enabled
+			 */
+			if( Settings::index_template_enabled() )
+				require get_template_directory() . '/includes/acf_fieldsets/index_post_type_fields.php';
+
+		}
+
+
+
+		/**
+		 * Admin Menu hook
+		 */
+		static function _admin_menu(){
+
+			// If this is a post edit page
+			if( isset( $_GET['post'] ) ) {
+
+				if( Settings::generate_home_page_enabled() ){
+
+					// Get the home page
+					$home_page_ID = get_option('page_on_front');
+
+					// If we're looking at the home page edit screen
+					// hide the "Page Attributes" metabox
+					if( $_GET['post'] == $home_page_ID )
+						remove_meta_box( 'pageparentdiv', 'page', 'normal' );
+				}
+			}
 		}
 		
 
@@ -108,13 +154,6 @@ if(!class_exists('Theme')){
 			wp_enqueue_style('theme', get_stylesheet_directory_uri() .'/css/app.css', array(), '1.0.0', 'screen');
 		}
 		
-
-		function _admin_menu() {
-			add_options_page( __('Functionality Settings','theme'), __('Functionality','theme'), 'manage_options', 'theme-functionality.php', array(&$this,'_functionality_settings_page') );
-		}
-		function _functionality_settings_page(){ 
-			include 'includes/admin/theme-functionality-settings.php';
-		}
 
 
 		/**
@@ -245,6 +284,7 @@ if(!class_exists('Theme')){
 					trigger_error('Error generating style guide page');
 			}
 		}
+
 
 
 
@@ -410,7 +450,9 @@ if(!class_exists('Theme')){
 		 **/
 		static function _query_vars( $query_vars ) {
 
-			$new_vars = array();
+			$new_vars = array(
+				'status'
+			);
 			return array_merge( $new_vars, $query_vars );
 		}
 		
@@ -426,10 +468,34 @@ if(!class_exists('Theme')){
 		* @return array 			Modified rewrite rules array
 		**/
 		static function _rewrite_rules_array( $rules ) {
+
+			if( get_option( 'show_on_front' ) == 'page' ){
+				$home_page = get_post( get_option('page_on_front') );
+				$status_rule = 'index.php?pagename='.$home_page->post_name.'&status=$matches[1]';
+			} else {
+				$status_rule = 'index.php?status=$matches[1]';
+			}
 			
-			$new_rules = array();
+			$new_rules = array(
+
+				// General purpose status message for the home page
+				'status/([^/]+)/?$' => $status_rule
+
+			);
 			$rules = $new_rules + $rules;
 			return $rules;
+		}
+
+
+
+		static function _redirect_canonical( $redirect_url, $requested_url ){
+		
+			if( $redirect_url == home_url('/') && get_query_var('status')){
+				return $requested_url;
+			} else {
+				return $redirect_url;
+			}
+
 		}
 		
 

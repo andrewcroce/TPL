@@ -30,13 +30,11 @@ get_header(); ?>
 
 				<?php tpl_wrapper_content_open(); ?>
 
+					<?php if( get_query_var( 'login_status', 0 ) ) {
 
-					<?php if( get_query_var( 'restricted', 0 ) ) {
-
-						tpl_block_alert( sprintf(__('You must be logged in to view the %s page','theme'), $redirect_page->post_title ), 'alert' );
-
+						tpl_block_login_status( get_query_var( 'login_status' ) );
+			
 					} ?>
-
 		
 					<div itemprop="text"><?php echo $page->filterContent('post_content'); ?></div>
 

@@ -1,10 +1,10 @@
 <?php 
 /**
- * Default Post Content Template - tpl_readmore()
+ * Read More Link Template - tpl_link_read_more()
  * 
  * @var array $params {
  *      
- *      Parameters passed into the template from tpl_readmore()
+ *      Parameters passed into the template from tpl_link_read_more()
  *
  * 		@var string $url     URL to link to
  * 		@var string $label   Link text. Default: 'Read More'

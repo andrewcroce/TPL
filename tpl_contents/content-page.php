@@ -38,6 +38,7 @@ extract( $params ); ?>
 
 
 	<?php tpl_wrapper_content_open(); ?>
+
 		
 		<div class="row">
 			

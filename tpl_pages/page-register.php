@@ -12,7 +12,7 @@ get_header(); ?>
 			$page = new ACFPost($post);
 			$user = get_userdata( get_current_user_id() ); ?>
 			
-			<article class="profile page" itemscope itemtype="http://schema.org/WebPage">
+			<article class="register page" itemscope itemtype="http://schema.org/WebPage">
 
 
 				<?php tpl_wrapper_header_open(); ?>
@@ -20,12 +20,11 @@ get_header(); ?>
 					<header>
 
 						<h1 itemprop="headline" class="title"><?php echo $page->post_title; ?></h1>
-						
-						<span class="meta"><?php echo $user->display_name; ?></span>
-						<span class="meta"><a href="<?php echo wp_logout_url(); ?>"><?php echo __('Logout','theme'); ?></a></span>
-						
+
 						<?php if( current_user_can( 'manage_options' ) ) : ?>
 							
+							<span class="meta"><?php echo $user->display_name; ?></span>
+							<span class="meta"><a href="<?php echo wp_logout_url(); ?>"><?php echo __('Logout','theme'); ?></a></span>
 							<span class="meta"><a href="<?php echo admin_url(); ?>"><?php echo __('Wordpress Admin','theme'); ?></a></span>
 							<?php echo edit_post_link( __('Edit post'), $before = '<span class="meta">', $after = '</span>', $page->ID ); ?>
 							
@@ -38,10 +37,10 @@ get_header(); ?>
 
 
 				<?php tpl_wrapper_content_open(); ?>
-	
-					<?php if( get_query_var('profile_status',0) ){
-						tpl_block_profile_status( get_query_var('profile_status') );
-					} ?>	
+
+					<?php if( get_query_var('register_error',0) ){
+						tpl_block_register_error( get_query_var('register_error') );
+					} ?>
 		
 					<div itemprop="text"><?php echo $page->filterContent('post_content'); ?></div>
 
@@ -51,7 +50,7 @@ get_header(); ?>
 				
 				<?php tpl_wrapper_secondary_open(); ?>
 
-					<?php tpl_form_profile( $user ); ?>
+					<?php tpl_form_register(); ?>
 
 				<?php tpl_wrapper_secondary_close(); ?>
 

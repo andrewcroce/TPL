@@ -26,6 +26,10 @@ require get_template_directory() . '/classes/theme.class.php';
 require get_template_directory() . '/classes/walkers/topbar-walker.class.php';
 require get_template_directory() . '/classes/walkers/offcanvas-walker.class.php';
 
+// Member tools class
+if( Settings::frontend_login_enabled() || Settings::frontend_profile_enabled() )
+	require get_template_directory() . '/classes/member-tools.class.php';
+
 
 
 /**
@@ -55,16 +59,10 @@ function tpl_init(){
 	 * this form can be handled by creating an action hook add_action('form_action_submit_something','my_form_submission_handler');
 	 */
 	if( isset( $_POST['form_action'] ) ) {
-		$action = '_'.$_POST['form_action'];
+		$action = $_POST['form_action'];
 		$params = !empty($_POST['params']) ? $_POST['params'] : array();
 		do_action( 'form_action_' . $action, $params );
 	}
-
-	/**
-	 * Require our custom ACF Fieldset for the post type index page template if the setting is enabled
-	 */
-	if( Settings::index_template_enabled() )
-		require get_template_directory() . '/includes/acf_fieldsets/index_post_type_fields.php';
 
 }
 
