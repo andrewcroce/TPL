@@ -81,8 +81,19 @@ function tpl_form_reset_password(){
 
 	if( get_query_var('reset_stage') == 'new' ) {
 
+		$user = get_user_by( 'email', urldecode( get_query_var('reset_email') ) );
+
+		PC::debug($user);
+
+		if( !$user ){
+			wp_redirect( home_url('reset-password/request/error/invalid') );
+			exit;
+		}
+
 		wp_enqueue_script( 'password-strength-meter' );
-		tpl( 'form' , 'new-password' );
+		tpl( 'form' , 'new-password', array(
+			'user' => $user
+		));
 
 	} else {
 

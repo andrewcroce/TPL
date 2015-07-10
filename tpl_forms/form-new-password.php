@@ -5,7 +5,14 @@
  * This form will load only if a valid activation_key and username are contained in the URL
  * Otherwise the reset-password form will be loaded
  *
- */ ?>
+ * @var array $params {
+ *      
+ *      Parameters passed into the template from tpl_form_login() 
+ *      @var WP_User $user
+ * }    
+ * 
+ */ 
+extract( $params );?>
 
 
 <form method="post" action="<?php the_permalink(); ?>" data-abide>

@@ -317,7 +317,7 @@ if(!class_exists('MemberTools')){
 				'profile/([^/]+)/?$' => 'index.php?pagename=profile&profile_status=$matches[1]',
 
 				// Reset password request
-				'reset-password/request' => 'index.php?pagename=reset-password&reset_stage=request',
+				'reset-password/request/?$' => 'index.php?pagename=reset-password&reset_stage=request',
 
 				// Reset password request errors
 				'reset-password/request/error/([^/]+)/?$' => 'index.php?pagename=reset-password&reset_stage=request&reset_status=error&reset_error=$matches[1]',
@@ -376,7 +376,7 @@ if(!class_exists('MemberTools')){
 
 						// If no activation key or user email are present in the URL
 						// redirect back to the request stage, they need to get a new request email
-						if( !get_query_var('activation_key', 0) || get_query_var('reset_email', 0) ){
+						if( !get_query_var('activation_key', 0) || !get_query_var('reset_email', 0) ){
 							wp_redirect( home_url('reset-password/request/error/invalid') );
 							exit;
 						}
@@ -600,16 +600,15 @@ if(!class_exists('MemberTools')){
 			// Get/create a user activation key
 			$activation_key = self::get_user_activation_key( $user->user_login );
 
-			// Build an email message
-			// TO DO: replace with content from option member_tools_settings[password_reset_email_content]
-			// replace {reset_key_link}, {user_display_name}, {user_email}
-			$message = '<p>';
-			$message .= sprintf(__('A password reset request was submitted from %s. ','theme'), home_url('password-reset'));
-			$message .= __('If this was a mistake, you may safely ignore this email. ','theme');
-			$message .= '</p><p>';
-			$message .= __('To reset your password, visit the following link:') . "\r\n\r\n" . '<br>';
-			$message .= home_url('reset-password/new/' . rawurlencode( $user->user_email ) . '/' . $activation_key );
-			$message .= '</p>';
+			// Build an email message from our 'password_reset_email_content' setting
+			$member_tools_settings = get_option('member_tools_settings');
+			$reset_key_url = home_url('reset-password/new/' . rawurlencode( $user->user_email ) . '/' . $activation_key );
+			$reset_key_link = '<a href="'.$reset_key_url.'">'.$reset_key_url.'</a>';
+			$message = str_replace(
+				array( '{reset_key_link}', '{user_display_name}', '{user_email}', '{site_title}' ),
+				array( $reset_key_link, $user->display_name, $user->user_email, get_bloginfo('name') ),
+				wpautop( $member_tools_settings['password_reset_email_content'] )
+			);
 
 			// Set the email headers
 			$headers[] = 'From: '. get_bloginfo('name') . ' <' . get_option('admin_email') . '>';
@@ -821,15 +820,15 @@ if(!class_exists('MemberTools')){
 				// Generate an activation key for the user
 				$activation_key = self::get_user_activation_key( $username );
 
-				// Build an email message
-				// TO DO: replace with content from option member_tools_settings[registration_email_content]
-				// replace {activation_link}, {user_display_name}, {user_email}, {site_title}
-				$message = '<p>';
-				$message .= sprintf(__('Thank you for registering on %s. To complete the process, please click the link below and login.','theme'), get_bloginfo('name'));
-				$message .= '</p><p>';
-				$message .= __('Activaye your registration here:') . "\r\n\r\n" . '<br>';
-				$message .= home_url('login/activate/' . rawurlencode( $params['data']['user_email'] ) . '/' . $activation_key );
-				$message .= '</p>';
+				// Build an email message from our 'registration_email_content' setting
+				$member_tools_settings = get_option('member_tools_settings');
+				$activation_url = home_url('login/activate/' . rawurlencode( $params['data']['user_email'] ) . '/' . $activation_key );
+				$activation_link = '<a href="'.$activation_url.'">'.$activation_url.'</a>';
+				$message = str_replace(
+					array( '{activation_link}', '{user_display_name}', '{user_email}', '{site_title}' ),
+					array( $activation_link, $params['data']['display_name'], $params['data']['user_email'], get_bloginfo('name') ),
+					wpautop( $member_tools_settings['registration_email_content'] )
+				);
 
 				// Set the email headers
 				$headers[] = 'From: '. get_bloginfo('name') . ' <' . get_option('admin_email') . '>';
@@ -1017,14 +1016,16 @@ if(!class_exists('MemberTools')){
 			// If no error by now, we successfully found the user
 			// Get/create a user activation key
 			$activation_key = self::get_user_activation_key( $user->user_login );
-
-			// Build an email message
-			$message = '<p>';
-			$message .= sprintf(__('A profile activation request was submitted from %s. ','theme'), home_url('password-reset'));
-			$message .= '</p><p>';
-			$message .= __('To activate your profile, visit the following link:') . "\r\n\r\n" . '<br>';
-			$message .= home_url('login/activate/' . rawurlencode( $user->user_email ) . '/' . $activation_key );
-			$message .= '</p>';
+			
+			// Build an email message from our 'activation_email_content' setting
+			$member_tools_settings = get_option('member_tools_settings');
+			$activation_url = home_url('login/activate/' . rawurlencode( $user->user_email ) . '/' . $activation_key );
+			$activation_link = '<a href="'.$activation_url.'">'.$activation_url.'</a>';
+			$message = str_replace(
+				array( '{activation_link}', '{user_display_name}', '{user_email}', '{site_title}' ),
+				array( $activation_link, $user->display_name, $user->user_email, get_bloginfo('name') ),
+				wpautop( $member_tools_settings['activation_email_content'] )
+			);
 
 			// Set the email headers
 			$headers[] = 'From: '. get_bloginfo('name') . ' <' . get_option('admin_email') . '>';

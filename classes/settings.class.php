@@ -227,6 +227,15 @@ if( !class_exists( 'Settings' ) ) {
 				'member-tools-settings'
 			);
 
+			// add 'activation_email_content' field
+			add_settings_field(
+				'activation_email_content',
+				__('<span class="display-toggleable" data-toggle-control="registration_activation_required">Resend Activation Email Content</span>','theme'),
+				array(__CLASS__,'_render_activation_email_content_field'),
+				'tpl-config-member-tools',
+				'member-tools-settings'
+			);
+
 
 
 			/**
@@ -413,7 +422,7 @@ if( !class_exists( 'Settings' ) ) {
 					'textarea_rows' => 6
 				)
 			);
-			echo '<p class="description">'.__('The content of the email sent for password reset requests. The following placeholder tags can be added: {reset_key_link}, {user_display_name}, {user_email}.','theme').'</p>';
+			echo '<p class="description">'.__('The content of the email sent for password reset requests. The following placeholder tags can be added: {reset_key_link}, {user_display_name}, {user_email}, {site_title}.','theme').'</p>';
 			echo '</div>';
 		}
 
@@ -461,6 +470,23 @@ if( !class_exists( 'Settings' ) ) {
 				)
 			);
 			echo '<p class="description">'.__('The content of the email sent after registration with activation required. The following placeholder tags can be added: {activation_link}, {user_display_name}, {user_email}, {site_title}.','theme').'</p>';
+			echo '</div>';
+		}
+
+		static function _render_activation_email_content_field(){
+			$options = get_option('member_tools_settings');
+			echo '<div class="display-toggleable" data-toggle-control="registration_activation_required">';
+			$default = '<p>A profile activation request was submitted for {user_display_name} <{user_email}>.</p><p>To activate your profile, please click the following link:<br><strong>{activation_link}</strong></p>';
+			$value = isset( $options['activation_email_content'] ) ? $options['activation_email_content'] : $default;
+			wp_editor( $value, 'activation_email_content',
+				array(
+					'wpautop' => true,
+					'media_buttons' => true,
+					'textarea_name' => 'member_tools_settings[activation_email_content]',
+					'textarea_rows' => 6
+				)
+			);
+			echo '<p class="description">'.__('The content of the email sent when an account re-activation is requested. The following placeholder tags can be added: {activation_link}, {user_display_name}, {user_email}, {site_title}.','theme').'</p>';
 			echo '</div>';
 		}
 
