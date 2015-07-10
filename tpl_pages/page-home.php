@@ -28,6 +28,9 @@ get_header(); ?>
 
 				<?php tpl_wrapper_content_open(); ?>
 
+				<?php $size = get_intermediate_image_sizes();
+                dump($size); ?>
+
 
 					<?php if( get_query_var('status',0) ) : ?>
 						<div class="row">

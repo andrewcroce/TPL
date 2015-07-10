@@ -230,6 +230,34 @@ if( !class_exists( 'Settings' ) ) {
 
 
 			/**
+			 * ==============
+			 * Media Settings
+			 * ==============
+			 */
+			
+			// register setting
+			register_setting('tpl-config-media','media_settings');
+
+			// add setting section
+			add_settings_section(
+				'media-settings',
+				__('Media Settings','theme'),
+				array(__CLASS__,'_render_media_settings_section'),
+				'tpl-config-media'
+			);
+
+			// add 'enable_index_template' field
+			add_settings_field(
+				'image_sizes',
+				__('Image Sizes','theme'),
+				array(__CLASS__,'_render_image_sizes_field'),
+				'tpl-config-media',
+				'media-settings'
+			);
+
+
+
+			/**
 			 * =============
 			 * Menu Settings
 			 * =============
@@ -249,7 +277,7 @@ if( !class_exists( 'Settings' ) ) {
 			// add 'enable_index_template' field
 			add_settings_field(
 				'menu_locations',
-				__('Menu locations','theme'),
+				__('Menu Locations','theme'),
 				array(__CLASS__,'_render_menu_locations_field'),
 				'tpl-config-menus',
 				'menu-settings'
@@ -272,49 +300,6 @@ if( !class_exists( 'Settings' ) ) {
 		 */
 		
 
-
-		/**
-		 * =======================
-		 * Menu Settings Renderers
-		 * =======================
-		 */
-
-		/**
-		 * Render content at the top of the Menu Settings section
-		 */
-		static function _render_menu_settings_section(){
-			// silence
-		}
-
-
-		static function _render_menu_locations_field(){
-
-			$options = get_option('menu_settings');
-			$value = isset( $options['menu_locations'] ) ? $options['menu_locations'] : 0;
-
-			echo '<div data-repeater-list="menu_settings[menu_locations][location]">';
-
-			if( $value ){
-
-				foreach( $value['location'] as $key => $location ) {
-					echo '<div data-repeater-item>';
-						echo '<label for="menu_location_slug_'.$key.'">'.__('Slug','theme').'</label> <input type="text" id="menu_location_slug_'.$key.'" name="menu_settings[menu_locations][location]['.$key.'][slug]" value="'.$location['slug'].'"> &nbsp;&nbsp;&nbsp;';
-						echo '<label for="menu_location_desc_'.$key.'">'.__('Description','theme').'</label> <input type="text" id="menu_location_desc_'.$key.'" name="menu_settings[menu_locations][location]['.$key.'][description]" value="'.$location['description'].'">';
-						echo '<input data-repeater-delete type="button" class="button-secondary" value="Delete"/>';
-					echo '</div>';
-				}
-
-			} else {
-				echo '<div data-repeater-item>';
-					echo '<label for="menu_location_slug">'.__('Slug','theme').'</label> <input type="text" id="menu_location_slug" name="menu_settings[menu_locations][location][][slug]" value="" > &nbsp;&nbsp;&nbsp;';
-					echo '<label for="menu_location_desc">'.__('Description','theme').'</label> <input type="text" id="menu_location_desc" name="menu_settings[menu_locations][location][][description]" value="">';
-					echo '<input data-repeater-delete type="button" class="button-secondary" value="Delete"/>';
-				echo '</div>';
-			}
-			echo '</div>';
-			echo '<p><input data-repeater-create class="button-secondary" type="button" value="Add Menu Location"/></p>';
-		
-		}
 
 
 
@@ -462,6 +447,189 @@ if( !class_exists( 'Settings' ) ) {
 			);
 			echo '<p class="description">'.__('The content of the email sent after registration with activation required. The following placeholder tags can be added: {activation_link}, {user_display_name}, {user_email}, {site_title}.','theme').'</p>';
 			echo '</div>';
+		}
+
+
+		static function _render_activation_email_content_field(){
+			$options = get_option('member_tools_settings');
+			echo '<div class="display-toggleable" data-toggle-control="registration_activation_required">';
+			$default = '<p>A profile activation request was submitted for {user_display_name} <{user_email}>.</p><p>To activate your profile, please click the following link:<br><strong>{activation_link}</strong></p>';
+			$value = isset( $options['activation_email_content'] ) ? $options['activation_email_content'] : $default;
+			wp_editor( $value, 'activation_email_content',
+				array(
+					'wpautop' => true,
+					'media_buttons' => true,
+					'textarea_name' => 'member_tools_settings[activation_email_content]',
+					'textarea_rows' => 6
+				)
+			);
+			echo '<p class="description">'.__('The content of the email sent when an account re-activation is requested. The following placeholder tags can be added: {activation_link}, {user_display_name}, {user_email}, {site_title}.','theme').'</p>';
+			echo '</div>';
+		}
+
+
+
+
+		/**
+		 * ========================
+		 * Media Settings Renderers
+		 * ========================
+		 */
+
+		/**
+		 * Render content at the top of the Member Tools Settings section
+		 */
+		static function _render_media_settings_section(){
+			// Silence
+		}
+
+
+		static function _render_image_sizes_field(){
+			$options = get_option('media_settings');
+			$value = isset( $options['image_sizes'] ) ? $options['image_sizes'] : 0;
+
+			echo '<div data-repeater-list="media_settings[image_sizes][size]">';
+
+			if( $value ){
+
+				foreach( $value['size'] as $key => $size ) {
+					
+					$soft_crop_checked = 'checked';
+					$hard_crop_checked = '';
+
+					$crop_x_center_selected = 'selected';
+					$crop_x_left_selected = '';
+					$crop_x_right_selected = '';
+
+					$crop_y_center_selected = 'selected';
+					$crop_y_top_selected = '';
+					$crop_y_bottom_selected = '';
+					
+					if( isset( $size['crop'] ) && $size['crop'] == 'hard' ){
+						$soft_crop_checked = '';
+						$hard_crop_checked = 'checked';
+					}
+
+					if( $size['crop_x'] == 'left' ){
+						$crop_x_center_selected = '';
+						$crop_x_left_selected = 'selected';
+						$crop_x_right_selected = '';
+					} elseif( $size['crop_x'] == 'right' ){
+						$crop_x_center_selected = '';
+						$crop_x_left_selected = '';
+						$crop_x_right_selected = 'selected';
+					}
+
+					if( $size['crop_y'] == 'top' ){
+						$crop_y_center_selected = '';
+						$crop_y_top_selected = 'selected';
+						$crop_y_bottom_selected = '';
+					} elseif( $size['crop_y'] == 'bottom' ){
+						$crop_y_center_selected = '';
+						$crop_y_top_selected = '';
+						$crop_y_bottom_selected = 'selected';
+					}
+
+
+
+					echo '<div data-repeater-item>';
+						echo '<label>'.__('Name','theme').'</label> <input class="input-text" type="text" id="image_size_name_'.$key.'" name="media_settings[image_sizes][size]['.$key.'][name]" value="'.$size['name'].'"> &nbsp;&nbsp;&nbsp;';
+						echo '<label>'.__('Width','theme').'</label> <input class="small-text" type="text" id="image_size_width_'.$key.'" name="media_settings[image_sizes][size]['.$key.'][width]" value="'.$size['width'].'"> &nbsp;&nbsp;&nbsp;';
+						echo '<label>'.__('Height','theme').'</label> <input class="small-text" type="text" id="image_size_height_'.$key.'" name="media_settings[image_sizes][size]['.$key.'][height]" value="'.$size['height'].'"> &nbsp;&nbsp;&nbsp;';
+						echo '<label>'.__('Crop','theme').'</label> ';
+							echo '<label><input type="radio" name="media_settings[image_sizes][size]['.$key.'][crop]" value="soft" id="image_size_crop_soft" '.$soft_crop_checked.'><span class="description">'.__('Soft','theme').'</span></label> &nbsp;&nbsp;&nbsp;';
+							echo '<label><input type="radio" name="media_settings[image_sizes][size]['.$key.'][crop]" value="hard" id="image_size_crop_hard" '.$hard_crop_checked.'><span class="description">'.__('Hard','theme').'</span></label> &nbsp;&nbsp;&nbsp;';
+							echo '<br><label for="image_size_crop_x">'.__('Crop Position','theme').'</label> ';
+								echo '<select id="image_size_crop_x" name="media_settings[image_sizes][size]['.$key.'][crop_x]>';
+									echo '<option value="">'.__('select position','theme').'</option>';
+									echo '<option value="center" '.$crop_x_center_selected.'>'.__('center','theme').'</option>';
+									echo '<option value="left" '.$crop_x_left_selected.'>'.__('left','theme').'</option>';
+									echo '<option value="right" '.$crop_x_right_selected.'>'.__('right','theme').'</option>';
+								echo '</select>';
+								echo '<select id="image_size_crop_y" name="media_settings[image_sizes][size]['.$key.'][crop_y]>';
+									echo '<option value="">'.__('select position','theme').'</option>';
+									echo '<option value="center" '.$crop_y_center_selected.'>'.__('center','theme').'</option>';
+									echo '<option value="top" '.$crop_y_top_selected.'>'.__('top','theme').'</option>';
+									echo '<option value="bottom" '.$crop_y_bottom_selected.'>'.__('bottom','theme').'</option>';
+								echo '</select>';
+						echo '<input data-repeater-delete type="button" class="button-secondary right" value="Delete"/>';
+						echo '<hr>';
+					echo '</div>';
+				}
+
+			} else {
+				echo '<div data-repeater-item>';
+					echo '<label>'.__('Name','theme').'</label> <input class="input-text" type="text" id="image_size_name" name="media_settings[image_sizes][size][][name]" value=""> &nbsp;&nbsp;&nbsp;';
+					echo '<label>'.__('Width','theme').'</label> <input class="small-text" type="text" id="image_size_width" name="media_settings[image_sizes][size][][width]" value="" > &nbsp;&nbsp;&nbsp;';
+					echo '<label>'.__('Height','theme').'</label> <input class="small-text" type="text" id="image_size_height" name="media_settings[image_sizes][size][][height]" value=""> &nbsp;&nbsp;&nbsp;';
+					echo '<label>'.__('Crop','theme').'</label> ';
+						echo '<label><input type="radio" name="media_settings[image_sizes][size][][crop]" value="soft" id="image_size_crop_soft" checked><span class="description">'.__('Soft','theme').'</span></label> &nbsp;&nbsp;&nbsp;';
+						echo '<label><input type="radio" name="media_settings[image_sizes][size][][crop]" value="hard" id="image_size_crop_hard"><span class="description">'.__('Hard','theme').'</span></label> &nbsp;&nbsp;&nbsp;';
+						echo '<br><label for="image_size_crop_x">'.__('Crop Position','theme').'</label> ';
+							echo '<select id="image_size_crop_x" name="media_settings[image_sizes][size][][crop_x]>';
+								echo '<option value="">'.__('select position','theme').'</option>';
+								echo '<option value="center" selected="selected">'.__('center','theme').'</option>';
+								echo '<option value="left">'.__('left','theme').'</option>';
+								echo '<option value="right">'.__('right','theme').'</option>';
+							echo '</select>';
+							echo '<select id="image_size_crop_y" name="media_settings[image_sizes][size][][crop_y]>';
+								echo '<option value="">'.__('select position','theme').'</option>';
+								echo '<option value="center" selected="selected">'.__('center','theme').'</option>';
+								echo '<option value="top">'.__('top','theme').'</option>';
+								echo '<option value="bottom">'.__('bottom','theme').'</option>';
+							echo '</select>';
+					echo '<input data-repeater-delete type="button" class="button-secondary right" value="Delete"/>';
+					echo '<hr>';
+				echo '</div>';
+			}
+			echo '</div>';
+			echo '<p><input data-repeater-create class="button-secondary" type="button" value="Add Image Size"/></p>';
+
+		}
+
+
+
+		/**
+		 * =======================
+		 * Menu Settings Renderers
+		 * =======================
+		 */
+
+		/**
+		 * Render content at the top of the Menu Settings section
+		 */
+		static function _render_menu_settings_section(){
+			// silence
+		}
+
+
+		static function _render_menu_locations_field(){
+
+			$options = get_option('menu_settings');
+			$value = isset( $options['menu_locations'] ) ? $options['menu_locations'] : 0;
+
+			echo '<div data-repeater-list="menu_settings[menu_locations][location]">';
+
+			if( $value ){
+
+				foreach( $value['location'] as $key => $location ) {
+					echo '<div data-repeater-item>';
+						echo '<label for="menu_location_slug_'.$key.'">'.__('Slug','theme').'</label> <input type="text" id="menu_location_slug_'.$key.'" name="menu_settings[menu_locations][location]['.$key.'][slug]" value="'.$location['slug'].'"> &nbsp;&nbsp;&nbsp;';
+						echo '<label for="menu_location_desc_'.$key.'">'.__('Description','theme').'</label> <input type="text" id="menu_location_desc_'.$key.'" name="menu_settings[menu_locations][location]['.$key.'][description]" value="'.$location['description'].'">';
+						echo '<input data-repeater-delete type="button" class="button-secondary" value="Delete"/>';
+					echo '</div>';
+				}
+
+			} else {
+				echo '<div data-repeater-item>';
+					echo '<label for="menu_location_slug">'.__('Slug','theme').'</label> <input type="text" id="menu_location_slug" name="menu_settings[menu_locations][location][][slug]" value="" > &nbsp;&nbsp;&nbsp;';
+					echo '<label for="menu_location_desc">'.__('Description','theme').'</label> <input type="text" id="menu_location_desc" name="menu_settings[menu_locations][location][][description]" value="">';
+					echo '<input data-repeater-delete type="button" class="button-secondary" value="Delete"/>';
+				echo '</div>';
+			}
+			echo '</div>';
+			echo '<p><input data-repeater-create class="button-secondary" type="button" value="Add Menu Location"/></p>';
+		
 		}
 
 	}

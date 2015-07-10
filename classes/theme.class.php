@@ -399,6 +399,24 @@ if(!class_exists('Theme')){
 			* Image Sizes
 			* refer to http://codex.wordpress.org/Function_Reference/add_image_size
 			**/
+
+			// Define image sizes in wp-admin/options-general.php?page=tpl-config&tab=media_settings
+			$media_settings = get_option('media_settings');
+
+			if( isset( $media_settings['image_sizes'] ) && isset( $media_settings['image_sizes']['size'] ) && count( $media_settings['image_sizes']['size'] ) ) {
+				foreach(  $media_settings['image_sizes']['size'] as $size ){
+
+					if( isset( $size['name'] ) && isset( $size['width'] ) && isset( $size['height'] ) ) {
+						$crop = isset( $size['crop'] ) ?  $size['crop'] : 'soft';
+						$crop_x = isset( $size['crop_x'] ) ? $size['crop_x'] : 'center';
+						$crop_y = isset( $size['crop_y'] ) ? $size['crop_y'] : 'center';
+						$crop = $crop == 'soft' ?  false : array( $crop_x, $crop_y );
+						add_image_size( $size['name'], $size['width'], $size['height'], $crop );				
+					}
+
+				}
+			}
+			// Manually add images sizes if you must
 			// add_image_size('my-image-size', 500,500,false);
 			
 			

@@ -15,7 +15,12 @@
 	$(document).ready(function(){
 		
 		$('.repeater').repeater({
-			isFirstItemUndeletable : true
+			isFirstItemUndeletable : false,
+			defaultValues: {
+				'crop' : 'soft',
+                'crop_y' : 'center',
+                'crop_x' : 'center'
+            },
 		});
 
 		if( $('.display-toggle').length ){
