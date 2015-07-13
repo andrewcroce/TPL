@@ -81,14 +81,14 @@ if( !class_exists( 'Media' ) ) {
 								return '';
 							}
 
-							$output = '<div class="gallery gallery-carousel">';
+							ob_start(); ?>
+							<div class="gallery gallery-carousel">
 
-							foreach ($attachments as $attachment) {
+							<?php foreach ($attachments as $attachment):
 
 								$img_url = wp_get_attachment_url( $attachment->ID );
-								$img_meta = wp_prepare_attachment_for_js( $attachment );
-								
-								ob_start(); ?>
+								$img_meta = wp_prepare_attachment_for_js( $attachment ); ?>
+
 								<li>
 									<figure>
 										<img src="<?php echo $img_url; ?>" alt="<?php echo $img_meta['alt']; ?>" />
@@ -97,11 +97,13 @@ if( !class_exists( 'Media' ) ) {
 										<?php } ?>
 									</figure>
 								</li>
-								<?php $output .= ob_get_clean();
 
-							}
 
-							$output .= '</div>';
+							<?php endforeach; ?>
+
+							</div>
+
+							<?php $output = ob_get_clean();
 
 						}
 
