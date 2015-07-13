@@ -55,11 +55,9 @@ if( !class_exists( 'Media' ) ) {
 					// Initialize
 					global $post, $wp_locale;
 
+					// Gallery instance counter
 					static $instance = 0;
 					$instance++;
-
-					// Get attributes from shortcode
-					extract( shortcode_atts( array(), $atts ) );
 
 					// if there's a gallery type defined...
 					if ( array_key_exists( 'type', $atts ) ) {
@@ -81,27 +79,27 @@ if( !class_exists( 'Media' ) ) {
 								return '';
 							}
 
-							$output = '<div class="gallery gallery-carousel">';
+							ob_start(); ?>
+							<div class="gallery gallery-carousel">
 
-							foreach ($attachments as $attachment) {
+							<?php foreach ($attachments as $attachment):
 
-								$img_url = wp_get_attachment_url( $attachment->ID );
-								$img_meta = wp_prepare_attachment_for_js( $attachment );
-								//echo '<pre>'; print_r($img_meta); echo '</pre>';
-								ob_start(); ?>
+								$img_meta = wp_prepare_attachment_for_js( $attachment ); ?>
+
 								<li>
 									<figure>
-										<img src="<?php echo $img_url; ?>" alt="<?php echo $img_meta['alt']; ?>" />
+										<img src="<?php echo $img_meta['url']; ?>" alt="<?php echo $img_meta['alt']; ?>" />
 										<?php if ( !empty( $img_meta['caption'] ) ) { ?>
 											<figcaption><?php echo $img_meta['caption']; ?></figcaption>
 										<?php } ?>
 									</figure>
 								</li>
-								<?php $output .= ob_get_clean();
 
-							}
+							<?php endforeach; ?>
 
-							$output .= '</div>';
+							</div>
+
+							<?php $output = ob_get_clean();
 
 						}
 
