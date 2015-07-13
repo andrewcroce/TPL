@@ -87,7 +87,7 @@ if( !class_exists( 'Media' ) ) {
 
 								$img_url = wp_get_attachment_url( $attachment->ID );
 								$img_meta = wp_prepare_attachment_for_js( $attachment );
-								//echo '<pre>'; print_r($img_meta); echo '</pre>';
+								
 								ob_start(); ?>
 								<li>
 									<figure>
