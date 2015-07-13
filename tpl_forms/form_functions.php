@@ -1,4 +1,11 @@
 <?php
+/**
+ * This file contains form TEMPLATE include functions.
+ * Form processing (for custom forms) occurs in on of the class files,
+ * in a function hooked to add_action('form_action_{do_something}',Class::_do_something);
+ */
+
+
 
 /**
  * Include the login form template
@@ -15,6 +22,9 @@ function tpl_form_login( $form_id, $redirect = null ) {
 	} else {
 		$redirect_url = get_permalink( get_page_by_path( $redirect ) );
 	}
+
+	if( get_query_var('login_status') == 'activate' )
+		$redirect_url .= 'created';
 
 	tpl( 'form' , 'login', array(
 		'form_id' => $form_id,
@@ -46,6 +56,52 @@ function tpl_form_profile( $user = null ) {
 
 	}
 }
+
+
+
+/**
+ * Include the registration form template 
+ * @param WP_User $user
+ */
+function tpl_form_register(){
+
+	wp_enqueue_script( 'password-strength-meter' );
+
+	tpl( 'form' , 'register' );
+
+}
+
+
+
+/**
+ * Include the reset password form template
+ * Depending on the stage, either the request form, or the new password form
+ */
+function tpl_form_reset_password(){
+
+	if( get_query_var('reset_stage') == 'new' ) {
+
+		wp_enqueue_script( 'password-strength-meter' );
+		tpl( 'form' , 'new-password' );
+
+	} else {
+
+		tpl( 'form' , 'request-reset-password' );
+	
+	}
+
+}
+
+
+
+/**
+ * Include the profile activation form
+ */
+function tpl_form_activation(){
+	tpl( 'form' , 'activation' );
+}
+
+
 
 /**
  * Include the search form template

@@ -11,14 +11,24 @@
 								<li><a href="<?php echo home_url(); ?>">©<?php echo date('Y'); ?> <?php bloginfo( 'name' ); ?></a></li>
 
 								<?php if( is_user_logged_in() ) : ?>
-									
-									<li><a href="<?php echo wp_logout_url(); ?>"><?php echo __('Logout','theme'); ?></a></li>
 
-									<li><a href="<?php echo home_url('profile'); ?>"><?php echo __('Profile','theme'); ?></a></li>
+									<?php if( Settings::frontend_login_enabled() ) : ?>
+										<li><?php tpl_link_logout(); ?></li>
+									<?php endif; ?>
+									
+									<?php if( Settings::frontend_profile_enabled() ) : ?>
+										<li><?php tpl_link_profile(); ?></li>
+									<?php endif; ?>
 								
 								<?php else : ?>
-									
-									<li><a href="<?php echo home_url('login'); ?>"><?php echo __('Login','theme'); ?></a></li>
+
+									<?php if( Settings::frontend_login_enabled() ) : ?>
+										<li><?php tpl_link_login(); ?></li>
+									<?php endif; ?>
+
+									<?php if( Settings::frontend_registration_enabled() ) : ?>
+										<li><?php tpl_link_register(); ?></li>
+									<?php endif; ?>
 
 								<?php endif; ?>
 

@@ -102,6 +102,7 @@
 
 input[type="submit"] {
 	@extend .button;
+	float: right;
 }
 
 input.check-pass-strength-meter {
@@ -168,6 +169,18 @@ input[data-invalid] {
 
 .validation_message, .validation_error {
 	@extend small.error;
+}
+
+
+
+// =========
+// Alert Box
+// =========
+.alert-box {
+	a {
+		color: inherit;
+		text-decoration: underline;
+	}
 }
 
 

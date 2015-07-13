@@ -10,6 +10,7 @@
     "jquery-transporter": "~1.0.2",
     "jquery-throttle-debounce": "*",
     "magnific-popup": "~1.0.0",
-    "slick.js": "~1.5.5"
+    "slick.js": "~1.5.5",
+    "jquery.repeater": "~1.0.1"
   }
 }

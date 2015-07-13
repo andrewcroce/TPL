@@ -37,7 +37,11 @@ jQuery(document).foundation( jQuery.foundationConfig );
 		$.initTaxonomyFilters();
 
 		if( $('.check-pass-strength').length ) {
-			$.password.init();
+			$.password.initStrengthMeter();
+		}
+
+		if( $('.show-password-toggle').length ) {
+			$.password.initShowPasswordToggle();
 		}
 
 		if( $('.gallery-carousel').length ) {

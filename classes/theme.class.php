@@ -9,25 +9,28 @@
 
 
 if(!class_exists('Theme')){
-
+	
 	class Theme {
-
-
+		
+		
 		/**
 		 * Load
 		 * Primarily used to set up action and filter hooks.
 		 */
 		public static function load() {
 
+			add_action('after_switch_theme', 					array(__CLASS__,'_theme_activated'));
+			add_action('init', 									array(__CLASS__,'_init'));
+			add_action('admin_menu',							array(__CLASS__,'_admin_menu'));
+			add_action('wp_print_styles', 						array(__CLASS__,'_add_styles'));
+			add_action('wp_print_scripts', 						array(__CLASS__,'_add_scripts'));
+			add_action('after_setup_theme', 					array(__CLASS__,'_setup_theme'));
+			add_action('update_option_template_settings', 		array(__CLASS__,'_updated_template_settings'), 10, 3);
 
-			add_action('after_switch_theme', 				array(__CLASS__,'_theme_activated'));
-			add_action('wp_print_styles', 					array(__CLASS__,'_add_styles'));
-			add_action('wp_print_scripts', 					array(__CLASS__,'_add_scripts'));
-			add_action('after_setup_theme', 				array(__CLASS__,'_setup_theme'));
-			add_action('update_option_template_settings', 	array(__CLASS__,'_updated_template_settings'), 10, 3);
-
+			
 			add_filter('skiplinks', 			array(__CLASS__,'_add_skiplinks'));
 			add_filter('template_include', 		array(__CLASS__,'_template_include'));
+			add_filter('redirect_canonical', 	array(__CLASS__,'_redirect_canonical'), 10, 2);
 			add_filter('theme_page_templates',	array(__CLASS__,'_theme_page_templates'));
 			add_filter('body_class', 			array(__CLASS__,'_body_class'));
 			add_filter('query_vars', 			array(__CLASS__,'_query_vars'));
@@ -48,15 +51,58 @@ if(!class_exists('Theme')){
 				self::_generate_home_page();
 				self::_activate_home_page();
 			}
-
+			
 			// Generate a style guide if the setting is enabled
 			if( Settings::generate_style_guide_enabled() ){
 				self::_generate_style_guide();
 			}
 
+			// Generate login and reset-password pages if the setting is enabled
+			if( Settings::frontend_login_enabled() ){
+				self::_generate_login_pages();
+			}
+			
 
 		}
 
+
+
+		/**
+		 * WP Initialized
+		 */
+		static function _init(){
+
+			/**
+			 * Require our custom ACF Fieldset for the post type index page template if the setting is enabled
+			 */
+			if( Settings::index_template_enabled() )
+				require get_template_directory() . '/includes/acf_fieldsets/index_post_type_fields.php';
+
+		}
+
+
+
+		/**
+		 * Admin Menu hook
+		 */
+		static function _admin_menu(){
+
+			// If this is a post edit page
+			if( isset( $_GET['post'] ) ) {
+
+				if( Settings::generate_home_page_enabled() ){
+
+					// Get the home page
+					$home_page_ID = get_option('page_on_front');
+
+					// If we're looking at the home page edit screen
+					// hide the "Page Attributes" metabox
+					if( $_GET['post'] == $home_page_ID )
+						remove_meta_box( 'pageparentdiv', 'page', 'normal' );
+				}
+			}
+		}
+		
 
 
 		/**
@@ -66,7 +112,7 @@ if(!class_exists('Theme')){
 		 */
 		static function _updated_template_settings( $old_settings, $settings ){
 
-
+			
 			// Settings are enabled
 			if( !empty( $settings ) ) {
 
@@ -96,8 +142,8 @@ if(!class_exists('Theme')){
 			}
 		}
 
-
-
+		
+		
 		/**
 		*
 		* Add Styles
@@ -107,14 +153,7 @@ if(!class_exists('Theme')){
 			if (is_admin()) return;
 			wp_enqueue_style('theme', get_stylesheet_directory_uri() .'/css/app.css', array(), '1.0.0', 'screen');
 		}
-
-
-		function _admin_menu() {
-			add_options_page( __('Functionality Settings','theme'), __('Functionality','theme'), 'manage_options', 'theme-functionality.php', array(&$this,'_functionality_settings_page') );
-		}
-		function _functionality_settings_page(){
-			include 'includes/admin/theme-functionality-settings.php';
-		}
+		
 
 
 		/**
@@ -122,7 +161,7 @@ if(!class_exists('Theme')){
 		* Add Scripts
 		* This adds javascript files to the theme. Add any additional script files using the wp_enqueue_script() method.
 		* Be mindful of the array of dependencies, the third parameter. Specifying a dependencies will ensure scripts are loaded in proper order.
-		*
+		* 
 		* Only modernizr is loaded in the header, otherwise we could see a noticable delay in applied CSS that depends on modernizr classes (FOUC <http://en.wikipedia.org/wiki/Flash_of_unstyled_content>).
 		* All other scripts are loaded in non render-blocking fashion in the footer
 		*
@@ -130,7 +169,7 @@ if(!class_exists('Theme')){
 		* This will keep the number of individual HTTP requests to a minimum.
 		**/
 		static function _add_scripts() {
-
+			
 			// Don't mess with admin scripts
 			if (is_admin()) return;
 
@@ -143,7 +182,7 @@ if(!class_exists('Theme')){
 			wp_enqueue_script('modernizr', get_stylesheet_directory_uri() .'/bower_components/modernizr/modernizr.js', array(), '2.8.3');
 			wp_enqueue_script('jquery', site_url('/wp-includes/js/jquery/jquery.js?ver='.$wp_jquery_ver), array(), $wp_jquery_ver, true );
 			wp_enqueue_script('theme.app', get_stylesheet_directory_uri() .'/js/min/app-min.js', array('modernizr','jquery'), '0.1.0', true);
-			wp_localize_script('theme.app', 'theme', self::_add_js_vars()); // Call _add_js_vars() to add PHP variables to frontend
+			wp_localize_script('theme.app', 'theme', self::_add_js_vars()); // Call _add_js_vars() to add PHP variables to frontend 
 
 			if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 				wp_enqueue_script( 'comment-reply' );
@@ -159,7 +198,7 @@ if(!class_exists('Theme')){
 		* This adds PHP side variables to a front end Javascript object 'theme'.
 		* This is useful for doing AJAX, for example. In JS, theme.ajax_url will return the URL where all AJAX requests should be posted.
 		* @return  array Array of variables to be added to the front end window.theme
-		*
+		* 
 		**/
 		static function _add_js_vars() {
 			return array(
@@ -252,10 +291,11 @@ if(!class_exists('Theme')){
 
 
 
+
 		/**
 		 * Custom filter function that adds skiplinks to tpl_navs/nav-skiplinks.php
 		 * @return array List of anchor links to add
-		 *    {anchor} => {label}
+		 *    {anchor} => {label} 
 		 */
 		static function _add_skiplinks() {
 
@@ -268,17 +308,17 @@ if(!class_exists('Theme')){
 			// if( is_page('foo') ){
 			//    $links['#foo'] = __('Skip to foo');
 			// }
-
+		
 			return $links;
 		}
-
-
-
+		
+		
+		
 		/**
 		*
 		* General Theme Setup
 		* Add various functionality, such as sidebars, menus, image sizes, and whatnot
-		*
+		* 
 		**/
 		static function _setup_theme() {
 
@@ -296,19 +336,19 @@ if(!class_exists('Theme')){
 			 */
 			add_theme_support( 'title-tag' );
 
-
+			
 			/**
 			 * Theme text domain, by default just called "theme"
 			 * So you can use i10n/i18n string functions __( $string, 'theme' ); and _e( $string, 'theme' );
 			 * For language translations, create a '/languages' directory, and add your .mo files there
 			 */
 			load_theme_textdomain( 'theme', get_template_directory() . '/languages' );
-
+			
 			/**
 			* Widget Positions
 			* You will be able to add widgets to these positions in the WordPress admin.
 			**/
-
+			
 			/*
 			register_sidebar( array(
 				'name' => 'Column One',
@@ -319,8 +359,8 @@ if(!class_exists('Theme')){
 				'after_title' => '</h3>',
 			) );
 			*/
-
-
+			
+			
 			/**
 			* Register Menus
 			* Menu locations can be added in the WP Admin -> Settings -> TPL Config
@@ -341,29 +381,47 @@ if(!class_exists('Theme')){
 				register_nav_menus( $menu_locations );
 			}
 
-
+			
 
 
 
 			/**
 			 * Switch default core markup to output valid HTML5
 			 */
-
+			
 			add_theme_support( 'html5', array(
 				'search-form', 'comment-form', 'comment-list', 'gallery', 'caption'
 			) );
-
+			
 
 
 			/**
 			* Image Sizes
 			* refer to http://codex.wordpress.org/Function_Reference/add_image_size
 			**/
+
+			// Define image sizes in wp-admin/options-general.php?page=tpl-config&tab=media_settings
+			$media_settings = get_option('media_settings');
+
+			if( isset( $media_settings['image_sizes'] ) && isset( $media_settings['image_sizes']['size'] ) && count( $media_settings['image_sizes']['size'] ) ) {
+				foreach(  $media_settings['image_sizes']['size'] as $size ){
+
+					if( isset( $size['name'] ) && isset( $size['width'] ) && isset( $size['height'] ) ) {
+						$crop = isset( $size['crop'] ) ?  $size['crop'] : 'soft';
+						$crop_x = isset( $size['crop_x'] ) ? $size['crop_x'] : 'center';
+						$crop_y = isset( $size['crop_y'] ) ? $size['crop_y'] : 'center';
+						$crop = $crop == 'soft' ?  false : array( $crop_x, $crop_y );
+						add_image_size( $size['name'], $size['width'], $size['height'], $crop );				
+					}
+
+				}
+			}
+			// Manually add images sizes if you must
 			// add_image_size('my-image-size', 500,500,false);
-
-
+			
+			
 		}
-
+		
 
 
 		/**
@@ -374,7 +432,7 @@ if(!class_exists('Theme')){
 		static function _body_class( $classes ){
 
 			global $post;
-
+			
 			// Add the page slug class "page-{post_name}"
 			if( is_page() ){
 				$classes[] = 'page-' . $post->post_name;
@@ -392,30 +450,32 @@ if(!class_exists('Theme')){
 			    $path = pathinfo( $template );
 			    $classes[] = str_replace( 'tpl_', 'template-', $path['filename'] );
 			}
-
+			
 			return $classes;
 		}
-
-
-
+		
+		
+	
 		/**
 		 * Add Custom WP Query Variables
 		 *
 		 * Allows you to add any new query variables you need to the WP query system.
 		 * This will allow you to do things like query/search/filter by your custom variable using WP's built-in functionality,
 		 * rather than using the $_REQUEST global and reinventing the wheel.
-		 *
+		 *  
 		 * @param  array $query_vars  	Query vars array to be modified
 		 * @return array 				Modified query vars array
 		 **/
 		static function _query_vars( $query_vars ) {
 
-			$new_vars = array();
+			$new_vars = array(
+				'status'
+			);
 			return array_merge( $new_vars, $query_vars );
 		}
-
-
-
+		
+		
+		
 		/**
 		*
 		* Setup Custom URLS
@@ -427,11 +487,35 @@ if(!class_exists('Theme')){
 		**/
 		static function _rewrite_rules_array( $rules ) {
 
-			$new_rules = array();
+			if( get_option( 'show_on_front' ) == 'page' ){
+				$home_page = get_post( get_option('page_on_front') );
+				$status_rule = 'index.php?pagename='.$home_page->post_name.'&status=$matches[1]';
+			} else {
+				$status_rule = 'index.php?status=$matches[1]';
+			}
+			
+			$new_rules = array(
+
+				// General purpose status message for the home page
+				'status/([^/]+)/?$' => $status_rule
+
+			);
 			$rules = $new_rules + $rules;
 			return $rules;
 		}
 
+
+
+		static function _redirect_canonical( $redirect_url, $requested_url ){
+		
+			if( $redirect_url == home_url('/') && get_query_var('status')){
+				return $requested_url;
+			} else {
+				return $redirect_url;
+			}
+
+		}
+		
 
 
 		/**
@@ -443,16 +527,6 @@ if(!class_exists('Theme')){
 		static function _template_include( $template ){
 
 			global $post;
-
-			// If this is an attachment page, try to locate the right template, otherwise just return the attachment
-			if( is_attachment() ) {
-				if( is_readable( get_template_directory() . '/tpl_pages/page-attachment.php' ) ){
-					return locate_template( 'tpl_pages/page-attachment.php' );
-				} else {
-					header('Location: ' . wp_get_attachment_url($post->ID) );
-					exit;
-				}
-			}
 
 			// If this is a page, try to locate a template file with a matching name
 			if( is_page() && !is_page_template() ) {
@@ -550,9 +624,9 @@ if(!class_exists('Theme')){
 
 			return $content;
 		}
-
+		
 	}
-
+	
 }
 
 
