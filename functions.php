@@ -10,7 +10,7 @@ include_once( get_template_directory() . '/classes/membership-tools.class.php');
 /**
  * ==========================
  * Include tpl function files
- * 
+ *
  * This little snippet automatically includes any function files in tpl_ folders according to the naming structure.
  * So, a file at path tpl_foos/foo_functions.php will be included here
  * ===================================================================
@@ -22,7 +22,7 @@ foreach( $folders as $folder ) {
 
 	$foldername = pathinfo( $folder , PATHINFO_FILENAME ); // Get the folder name
 	$prefix = substr( $foldername , 4 , strlen( $foldername ) - 5 ); // Infer the corresponding prefix name
-	
+
 	// If the matching functions file exists and is readable, include it.
 	if( is_readable( $folder . '/' . $prefix . '_functions.php' ) ) require_once $folder . '/' . $prefix . '_functions.php';
 }
@@ -43,9 +43,9 @@ foreach( $folders as $folder ) {
  * This will look for a PHP file matching the naming stucture {$prefix}-{$name}.php
  * within a directory tpl_{$prefix}s (note the 's' at the end, the pluralization of the $prefix).
  * So calling tpl('foo','bar'); will look for tpl_foos/foo_bar.php
- * 
+ *
  * If a params array is passed in the third parameter, it will be available in the template
- * 
+ *
  * @param string $prefix The first segment of the filename
  * @param string $name The second segment of the filename
  * @param array $params An optional parameters array to pass to the template file
@@ -60,7 +60,7 @@ function tpl( $prefix, $name = null, $params = null ) {
 
 	// If the matching file exists...
 	if( is_readable( dirname(__FILE__) . '/' . $filepath ) ) {
-		
+
 		// Include the template
 		include locate_template( $filepath ) ;
 
@@ -96,7 +96,7 @@ function get_index_vars( $page, $paged = 0 ) {
 	$index_arguments = array(
 		'post_type' => $page->index_post_type,
 		'paged' => $paged
-	);	
+	);
 
 	// Prepare an empty taxonomy query
 	$tax_query = array();
@@ -117,7 +117,7 @@ function get_index_vars( $page, $paged = 0 ) {
 				'terms' => explode( ',', $value )
 			);
 		}
-		
+
 	}
 	// Apply the taxonomy query to the WP query arguments
 	$index_arguments['tax_query'] = $tax_query;
@@ -140,7 +140,7 @@ function get_index_vars( $page, $paged = 0 ) {
 			// Add a custom property "filter_style" to the object
 			// Unless changed, this is either "single" or "multi", to allow admin to choose whether each taxonomy can use filter by multiple terms at once
 			$taxonomy_object->filter_style = $page->{'filter_style_for_' . $page->index_post_type . '_' . $taxonomy};
-			
+
 			// Add them to the vars array
 			$vars['taxonomies'][] = $taxonomy_object;
 		}
@@ -159,7 +159,7 @@ function get_index_vars( $page, $paged = 0 ) {
  * @param  WP_Query $query A WP Query object from which to generate page variables
  * @return array {
  *         Array of pagination-related variables
- *         
+ *
  *         @var int $page_number	Current page number
  *         @var int $start_number	The number of the first post on this page
  *         @var int $end_number		The number of the last post on this page
@@ -187,10 +187,10 @@ function get_paged_vars( $query ) {
 /**
  * Check if a page has a family tree, i.e. it has children or ancestors
  * @param  int/WP_Post $post A page ID or WP Post object
- * @return boolean       
+ * @return boolean
  */
 function page_has_family_tree( $post = null ){
-	
+
 	if( is_null( $post ) ) {
 		global $post;
 	} else {
@@ -292,7 +292,7 @@ function add_descendents( &$post ) {
 
     // If there are children, add them to the object
     if( !empty( $children ) ){
-        
+
         $post->children = $children;
 
         // Loop through each child and recursively call this function again to add their children
@@ -348,7 +348,7 @@ function nested_list( &$items, $params = array() ) {
 
         if( $post->ID == $item->ID )
             $this_item_class .= ' active';
-        
+
         // If its a post object (any post type)
         if( $object_type == 'post' ) {
 
@@ -359,7 +359,7 @@ function nested_list( &$items, $params = array() ) {
             // Wrap title in permalink by default
             if( $link_items ) {
                 $item_html .= '<a href="' . get_permalink( $item->ID ) . '">' . $item->post_title . '</a>';
-            
+
             // Otherwise just output the title
             } else {
                 $item_html .= $item->post_title;
@@ -398,10 +398,10 @@ function nested_list( &$items, $params = array() ) {
  * @param string $html HTML string to truncate
  * @param array $params {
  *          Parameters array
- *          
+ *
  *          @var int $max_length Maximum character length to truncate the string to
  *          @var string $end_string Text to follow the truncated text
- *          @var string $before Append content before the truncated string 
+ *          @var string $before Append content before the truncated string
  *          @var string $after Append content after the truncated string
  *          @var boolean $is_utf8 Is the string UTF8 encoded?
  * }
@@ -425,7 +425,7 @@ function truncate( $html, $params ) {
     if( strlen( $html ) <= $max_length ) {
         return wpautop( $before . $html . $after );
     }
-    
+
     $output = "";
     $printedLength = 0;
     $position = 0;
@@ -437,22 +437,22 @@ function truncate( $html, $params ) {
         : '{</?([a-z]+)[^>]*>|&#?[a-zA-Z0-9]+;}';
 
     while( $printedLength < $max_length && preg_match( $re, $html, $match, PREG_OFFSET_CAPTURE, $position ) ) {
-        
+
         list( $tag, $tagPosition ) = $match[0];
 
         // Print text leading up to the tag.
         $str = substr( $html, $position, $tagPosition - $position );
-        
+
         //check to see if adding this text to the output would put us over the max length
         if( $printedLength + strlen($str) > $max_length){
-            
+
             if( preg_match( '{\b}', $str, $wordBoundary, PREG_OFFSET_CAPTURE, $max_length - $printedLength ) ) {
-                
+
                 //we found a word boundary after the truncation point
                 $wordBoundary = $wordBoundary[0][1]; //linearize to the position of the boundary
                 $output .= substr( $str, 0, $wordBoundary );
                 $printedLength += $wordBoundary;
-            
+
             } else {
                 //there's no word boundary after the truncation point
                 $output .= substr($str, 0, $max_length - $printedLength);
@@ -464,7 +464,7 @@ function truncate( $html, $params ) {
 
         $output .= $str;
         $printedLength += strlen($str);
-        
+
         if( $printedLength >= $max_length ) break;
 
         if( $tag[0] == '&' || ord( $tag ) >= 0x80 ){
@@ -489,9 +489,9 @@ function truncate( $html, $params ) {
 
                 // Self-closing tag.
                 $output .= $tag;
-            
+
             } else {
-                
+
                 // Opening tag.
                 $output .= $tag;
                 $tags[] = $tagName;
@@ -505,18 +505,17 @@ function truncate( $html, $params ) {
     // Print any remaining text.
     if( $printedLength < $max_length && $position < strlen( $html ) )
         $output .= substr($html, $position, $max_length - $printedLength);
-    
+
     // Concatenate all the parts together
     $output = $before . $output . $end_string . $after;
-    
+
     // Close any open tags.
     while (!empty($tags))
         $output .= '</'.array_pop($tags).'>';
-    
+
     return wpautop( $output, false );
 
 }
-
 
 
 

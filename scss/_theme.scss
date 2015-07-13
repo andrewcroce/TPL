@@ -79,12 +79,18 @@
 // Galleries
 // =========
 
+.gallery {
+	@extend .clearfix;
+	margin-bottom: $column_gutter;
+}
+
 @for $i from 1 through 9 {
 	.gallery-columns-#{$i} {
 		.gallery-item {
 			float: left;
 			width: 100%/$i;
-			margin: em(10) 0;
+			margin: em(10) 0 0;
+			text-align: center;
 		}
 	}
 }

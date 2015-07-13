@@ -49,6 +49,11 @@
 @import "foundation_mod/offcanvas";
 @import "foundation_mod/side-nav";
 
+// Slick carousel styles
+@import "../bower_components/slick.js/slick/slick.scss";
+@import "../bower_components/slick.js/slick/slick-theme.scss";
+
+// Theme styles
 @import "wrappers";
 @import "style_guide";
 @import "theme";
