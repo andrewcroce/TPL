@@ -86,8 +86,18 @@ if( !class_exists( 'Media' ) ) {
 							foreach ($attachments as $attachment) {
 
 								$img_url = wp_get_attachment_url( $attachment->ID );
-								//echo '<pre>'; print_r($parsed); echo '</pre>';
-								$output .= '<li><img src="'.$img_url.'" alt="'.$attachment->post_excerpt.'" /></li>';
+								$img_meta = wp_prepare_attachment_for_js( $attachment );
+								//echo '<pre>'; print_r($img_meta); echo '</pre>';
+								ob_start(); ?>
+								<li>
+									<figure>
+										<img src="<?php echo $img_url; ?>" alt="<?php echo $img_meta['alt']; ?>" />
+										<?php if ( !empty( $img_meta['caption'] ) ) { ?>
+											<figcaption><?php echo $img_meta['caption']; ?></figcaption>
+										<?php } ?>
+									</figure>
+								</li>
+								<?php $output .= ob_get_clean();
 
 							}
 
