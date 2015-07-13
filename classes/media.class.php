@@ -84,12 +84,11 @@ if( !class_exists( 'Media' ) ) {
 
 							<?php foreach ($attachments as $attachment):
 
-								$img_url = wp_get_attachment_url( $attachment->ID );
 								$img_meta = wp_prepare_attachment_for_js( $attachment ); ?>
 
 								<li>
 									<figure>
-										<img src="<?php echo $img_url; ?>" alt="<?php echo $img_meta['alt']; ?>" />
+										<img src="<?php echo $img_meta['url']; ?>" alt="<?php echo $img_meta['alt']; ?>" />
 										<?php if ( !empty( $img_meta['caption'] ) ) { ?>
 											<figcaption><?php echo $img_meta['caption']; ?></figcaption>
 										<?php } ?>
