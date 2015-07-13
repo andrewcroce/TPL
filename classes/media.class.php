@@ -55,11 +55,9 @@ if( !class_exists( 'Media' ) ) {
 					// Initialize
 					global $post, $wp_locale;
 
+					// Gallery instance counter
 					static $instance = 0;
 					$instance++;
-
-					// Get attributes from shortcode
-					extract( shortcode_atts( array(), $atts ) );
 
 					// if there's a gallery type defined...
 					if ( array_key_exists( 'type', $atts ) ) {
@@ -97,7 +95,6 @@ if( !class_exists( 'Media' ) ) {
 										<?php } ?>
 									</figure>
 								</li>
-
 
 							<?php endforeach; ?>
 
