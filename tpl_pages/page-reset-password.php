@@ -29,8 +29,14 @@ get_header(); ?>
 
         
          <div itemprop="text">
+
+            <?php if( get_query_var('reset_status', 0) ){
+
+                tpl_block_password_reset_status( get_query_var('reset_stage', 'reset'),  get_query_var('reset_status') );
             
-            <?php if( get_query_var('reset_key', 0) || get_query_var('reset_username', 0) ) : ?>
+            } ?>   
+            
+            <?php if( get_query_var('reset_stage', 0) == 'new' ) : ?>
                 
                 <?php echo $page->filterContent('new_password_content'); ?>
 
