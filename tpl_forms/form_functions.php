@@ -83,8 +83,6 @@ function tpl_form_reset_password(){
 
 		$user = get_user_by( 'email', urldecode( get_query_var('reset_email') ) );
 
-		PC::debug($user);
-
 		if( !$user ){
 			wp_redirect( home_url('reset-password/request/error/invalid') );
 			exit;
